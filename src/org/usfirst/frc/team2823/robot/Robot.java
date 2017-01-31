@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
@@ -24,59 +25,72 @@ public class Robot extends IterativeRobot {
 	VictorSP intake;
 	VictorSP uptake;
 	
-	Compressor c;
+	AdvancedPIDController shooterControl;
+	CANTalonPIDSource shooterEncoderSource;
+	
+	ToggleSwitch intakeState;
+	ToggleSwitch shooterState;
+	
+	Compressor compressor;
 	DoubleSolenoid solenoid1;
-	double count = 0;
-	boolean solenoidForward = false;
-    String direction = "forward";
 	
 	Joystick stick1;
-	Joystick stick2;
-	boolean yButtonClicked = false;
-	boolean yButtonWasClicked = false;
-	boolean aButtonClicked = false;
-	boolean aButtonWasClicked = false;
-	double rampSpeed = 0.0;
 	
 	AHRS ahrs;
-	double navxDriftFromOrigin = 0.0;
-	double navxOrigin = 0.0;
-	double navx2DriftFromOrigin = 0.0;
-	double navx2Origin = 0.0;
-	
 	ADXRS450_Gyro gyro;
-	double gyroDriftFromOrigin = 0.0;
-	double gyroOrigin = 0.0;
+	
+	double navxOrigin;
+	double navx2Origin;
+	double gyroOrigin;
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
 		stick1 = new Joystick (0);
-		//stick2 = new Joystick(1);
+		
         shooter = new CANTalon(0);
-        SmartDashboard.putNumber("Shooter", 0.0);
         intake = new VictorSP(4);
-        SmartDashboard.putNumber("Intake", 0.0);
         uptake = new VictorSP(5);
+        
+        //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        shooter.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
+        //shooter.configEncoderCodesPerRev(1);
+        
+        shooterEncoderSource = new CANTalonPIDSource(shooter);
+        shooterControl = new AdvancedPIDController(0.0, 0.0, 0.0, shooterEncoderSource, shooter, 0.01);
+        shooterControl.setOutputRange(0.0, 1.0);
+        
+        intakeState = new ToggleSwitch();
+        shooterState = new ToggleSwitch();
+        
+        SmartDashboard.putNumber("Shooter", 0.0);
+        SmartDashboard.putNumber("Intake", 0.0);
         SmartDashboard.putNumber("Uptake", 0.0);
+        
+        SmartDashboard.putNumber("P", 0.0);
+        SmartDashboard.putNumber("I", 0.0);
+        SmartDashboard.putNumber("D", 0.0);
+        SmartDashboard.putNumber("Setpoint", 0.0);
+        
+        //shooter.changeControlMode(CANTalon.TalonControlMode.Speed);
+        //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        //shooter.setPID(1, 1, 1);
         
         ahrs = new AHRS(I2C.Port.kOnboard);
     	gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
         
-        //c = new Compressor(0);
-        //c.setClosedLoopControl(true);
+        //compressor = new Compressor(0);
+        //compressor.setClosedLoopControl(true);
         
         //solenoid1 = new DoubleSolenoid(0,1);
-        
-        count = Timer.getFPGATimestamp();
         
         try{
     		gyro.reset();
     	}catch(Exception e) {
     		System.out.println("Gyro not work");
     	}
-        rampSpeed = 0.0;
         navxOrigin = ahrs.getFusedHeading();
         navx2Origin = ahrs.getCompassHeading();
         gyroOrigin = gyro.getAngle();
@@ -106,76 +120,40 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	//double lSpeed = stick1.getRawAxis(1);
-    	//double rSpeed = -stick2.getRawAxis(1);
-    	//motor1.set(lSpeed);
-    	//System.out.println("Speed: " + lSpeed);
-    	//motor2.set(rSpeed);
-    	//System.out.println("NavX: "+ ahrs.getAngle());
-    	//navxDriftFromOrigin = Math.abs(ahrs.getFusedHeading()-navxOrigin);
-    	//navx2DriftFromOrigin =  Math.abs(ahrs.getCompassHeading()-navx2Origin);
-    	//System.out.println("Navx Fused Origin Drift: " + navxDriftFromOrigin);
-    	//System.out.println("Navx Compass Origin Drift: " + navx2DriftFromOrigin);
-    	//System.out.println("Gyro: " + gyro.getAngle());
-    	//gyroDriftFromOrigin = Math.abs(gyro.getAngle()-gyroOrigin);
-    	//System.out.println("Gyro Origin Drift: " + gyroDriftFromOrigin);
     	
-//    	yButtonClicked = stick1.getRawButton(4);
-//    	aButtonClicked = stick1.getRawButton(2);
-//    	if(yButtonClicked){
-//    		yButtonWasClicked = true;
-//    	}
-//    	if(aButtonClicked){
-//    		aButtonWasClicked = true;
-//    	}
-//    	if(yButtonWasClicked && rampSpeed < 1.0 && !yButtonClicked){
-//    		rampSpeed = (rampSpeed + 0.05);
-//    		yButtonWasClicked = false;
-//    	}else if(aButtonWasClicked && rampSpeed > -1.0 && !aButtonClicked){
-//    		rampSpeed = (rampSpeed - 0.05);
-//    		aButtonWasClicked = false;
-//    	}   	
-//    	motor1.set(rampSpeed);
-//    	System.out.println(rampSpeed);
-    	if(stick1.getRawButton(1)){
-    		intake.set(1.0);
-    		uptake.set(1.0);
-    		//intake.set(SmartDashboard.getNumber("Intake", 0.0));
-    		//intake.set(SmartDashboard.getNumber("Uptake", 0.0));
-    	}else{
-    		intake.set(0.0);
-    		uptake.set(0.0);
-    	}
-    	if(stick1.getRawButton(2)){
-    		//shooter.set(-0.75);
-    		shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
-    	}else{
-    		shooter.set(0.0);
-    	}
+    	//System.out.println("pos: " + shooter.getEncPosition() + " enc-rate: " + shooter.getEncVelocity() + " pid-rate: " + shooterEncoderSource.pidGet());
+    	shooterEncoderSource.pidGet();
     	
+    	shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
     	
-    	//System.out.println("Gyro: " + gyro.getAngle());
-    	/*if(SmartDashboard.getBoolean("M2")){
-    		//motor2.set(0.5);
-    		//solenoid1.set(DoubleSolenoid.Value.kReverse);
-    		if((Timer.getFPGATimestamp() - count) >= 0.25) {
-    			if(solenoidForward) {
-    				solenoid1.set(DoubleSolenoid.Value.kForward);
-    			} else {
-    				solenoid1.set(DoubleSolenoid.Value.kReverse);
-    			}
-    		
-    			solenoidForward = !solenoidForward;
-    			count = Timer.getFPGATimestamp();
+    	if(intakeState.updateState(stick1.getRawButton(1))){
+    		if(intakeState.switchEnabled()) {
+    			intake.set(-1.0);
+    			uptake.set(-1.0);
+    			//intake.set(SmartDashboard.getNumber("Intake", 0.0));
+    			//intake.set(SmartDashboard.getNumber("Uptake", 0.0));
+    		}else{
+    			intake.set(0.0);
+    			uptake.set(0.0);
     		}
     	}
-    	else{
-    		//motor2.set(0);
-    		//solenoid1.set(DoubleSolenoid.Value.kForward);
-    		solenoid1.set(DoubleSolenoid.Value.kOff);
 
-    	}*/
-    	
+    	if(shooterState.updateState(stick1.getRawButton(2))){
+    		//shooter.set(-0.75);
+    		if(shooterState.switchEnabled()){
+	    		/*shooterControl.setSetpoint(SmartDashboard.getNumber("Setpoint", 0.0));
+	    		shooterControl.enableLog("Shooter.csv");*/    		
+    			shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
+    			}else{
+        		//shooter.disableControl();
+        		//shooterControl.reset();
+        		//shooterControl.closeLog();
+        		shooter.set(0.0);
+        	}
+    		
+    		//
+    		//shooter.enableControl();
+    	}
     }
     
     /**
