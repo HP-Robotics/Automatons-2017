@@ -120,14 +120,15 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	
+    	intakeState.update(stick1.getRawButton(1));
+    	shooterState.update(stick1.getRawButton(2));
     	//System.out.println("pos: " + shooter.getEncPosition() + " enc-rate: " + shooter.getEncVelocity() + " pid-rate: " + shooterEncoderSource.pidGet());
     	shooterEncoderSource.pidGet();
     	
     	shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
     	
-    	if(intakeState.updateState(stick1.getRawButton(1))){
-    		if(intakeState.switchEnabled()) {
+    	if(intakeState.changed()){
+    		if(intakeState.on()) {
     			intake.set(-1.0);
     			uptake.set(-1.0);
     			//intake.set(SmartDashboard.getNumber("Intake", 0.0));
@@ -138,9 +139,9 @@ public class Robot extends IterativeRobot {
     		}
     	}
 
-    	if(shooterState.updateState(stick1.getRawButton(2))){
+    	if(shooterState.changed()){
     		//shooter.set(-0.75);
-    		if(shooterState.switchEnabled()){
+    		if(shooterState.on()){
 	    		/*shooterControl.setSetpoint(SmartDashboard.getNumber("Setpoint", 0.0));
 	    		shooterControl.enableLog("Shooter.csv");*/    		
     			shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
