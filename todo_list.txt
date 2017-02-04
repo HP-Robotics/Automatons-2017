@@ -1,0 +1,46 @@
+Autonomous
+-Do nothing
+-Drive to hopper and shoot
+-Drive to lift and load gear
+
+//Vector PID
+//Consolidate vector + rotation PIDs
+Motion profiling X + Y
+Motion profiling vector
+PID control Talon using Versa planetary encoder
+Finish robot SDF model
+Write gyro rotation PID for practice chassis
+Use gyro instead of encoders for drive modes?
+
+Version control working across multiple computers
+Thoughtful source code layout
+-clean up main code to mirror simulator code
+-consolidate simulator and real source code into one Git tree?
+
+Drive rotation modes
+-Robot-oriented
+-Field-oriented
+-Perp. intake
+-Snap to gear lift
+-Snap to boiler
+
+Driving notes
+-get and place gears quickly with and without defense
+-fill up with balls when defended, then shoot when not defended
+-know defense rules
+-preferred shot: hide behind airship?
+
+----------------------------------
+drive			joystick XYZ axes
+shoot			press-hold
+ground intake		toggle
+climber			toggle
+
+drive button modes
+-gear			toggle
+-shoot			toggle
+-intake			press-hold
+-robot			toggle
+-field			default
+
+adv. auto shoot		press-hold

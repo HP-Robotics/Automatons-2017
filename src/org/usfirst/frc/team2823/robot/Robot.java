@@ -126,6 +126,7 @@ public class Robot extends IterativeRobot {
     	
     	shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
     	System.out.println("''I've heard that penguins are pretty cool...'' - David Attenborough, 2017.");
+    	System.out.println("'Penguins are alright I guess' -Albert Einstein");
     	if(intakeState.changed()){
     		if(intakeState.on()) {
     			//intake.set(-1.0);
