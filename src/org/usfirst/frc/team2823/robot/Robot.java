@@ -129,13 +129,15 @@ public class Robot extends IterativeRobot {
     	
     	if(intakeState.changed()){
     		if(intakeState.on()) {
-    			intake.set(-1.0);
-    			uptake.set(-1.0);
-    			//intake.set(SmartDashboard.getNumber("Intake", 0.0));
-    			//intake.set(SmartDashboard.getNumber("Uptake", 0.0));
+    			//intake.set(-1.0);
+    			//uptake.set(-1.0);
+    			intake.set(SmartDashboard.getNumber("Intake", 0.0));
+    			uptake.set(SmartDashboard.getNumber("Uptake", 0.0));
+    			shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
     		}else{
     			intake.set(0.0);
     			uptake.set(0.0);
+    			shooter.set(0.0);
     		}
     	}
 
@@ -144,12 +146,12 @@ public class Robot extends IterativeRobot {
     		if(shooterState.on()){
 	    		/*shooterControl.setSetpoint(SmartDashboard.getNumber("Setpoint", 0.0));
 	    		shooterControl.enableLog("Shooter.csv");*/    		
-    			shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
+    			//shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
     			}else{
         		//shooter.disableControl();
         		//shooterControl.reset();
         		//shooterControl.closeLog();
-        		shooter.set(0.0);
+        		//shooter.set(0.0);
         	}
     		
     		//
