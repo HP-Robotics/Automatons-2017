@@ -1,4 +1,3 @@
-
 package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -126,7 +125,7 @@ public class Robot extends IterativeRobot {
     	shooterEncoderSource.pidGet();
     	
     	shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-    	
+    	System.out.println("''I've heard that penguins are pretty cool...'' - David Attenborough, 2017.");
     	if(intakeState.changed()){
     		if(intakeState.on()) {
     			//intake.set(-1.0);
