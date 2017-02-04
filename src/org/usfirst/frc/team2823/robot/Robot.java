@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 
 import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
@@ -41,6 +43,8 @@ public class Robot extends IterativeRobot {
 	double navxOrigin;
 	double navx2Origin;
 	double gyroOrigin;
+	
+	TestMode testMode;
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -93,6 +97,8 @@ public class Robot extends IterativeRobot {
         navxOrigin = ahrs.getFusedHeading();
         navx2Origin = ahrs.getCompassHeading();
         gyroOrigin = gyro.getAngle();
+        
+        testMode = new TestMode(this);
     }
     
 	/**
@@ -119,43 +125,8 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	intakeState.update(stick1.getRawButton(1));
-    	shooterState.update(stick1.getRawButton(2));
-    	//System.out.println("pos: " + shooter.getEncPosition() + " enc-rate: " + shooter.getEncVelocity() + " pid-rate: " + shooterEncoderSource.pidGet());
-    	shooterEncoderSource.pidGet();
-    	
-    	shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-    	System.out.println("''I've heard that penguins are pretty cool...'' - David Attenborough, 2017.");
-    	System.out.println("'Penguins are alright I guess' -Albert Einstein");
-    	if(intakeState.changed()){
-    		if(intakeState.on()) {
-    			//intake.set(-1.0);
-    			//uptake.set(-1.0);
-    			intake.set(SmartDashboard.getNumber("Intake", 0.0));
-    			uptake.set(SmartDashboard.getNumber("Uptake", 0.0));
-    			shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
-    		}else{
-    			intake.set(0.0);
-    			uptake.set(0.0);
-    			shooter.set(0.0);
-    		}
-    	}
-
-    	if(shooterState.changed()){
-    		//shooter.set(-0.75);
-    		if(shooterState.on()){
-	    		/*shooterControl.setSetpoint(SmartDashboard.getNumber("Setpoint", 0.0));
-	    		shooterControl.enableLog("Shooter.csv");*/    		
-    			//shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
-    			}else{
-        		//shooter.disableControl();
-        		//shooterControl.reset();
-        		//shooterControl.closeLog();
-        		//shooter.set(0.0);
-        	}
-    		
-    		//
-    		//shooter.enableControl();
+    	if(SmartDashboard.getBoolean("TestMode", false)){
+    		testMode.testPeriodic();
     	}
     }
     
