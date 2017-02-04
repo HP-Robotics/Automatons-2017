@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.Jaguar;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
 import com.kauailabs.navx.frc.AHRS;
 
 public class Robot extends IterativeRobot {
@@ -34,6 +36,8 @@ public class Robot extends IterativeRobot {
     CANTalon shooter;
 	VictorSP intake;
 	VictorSP uptake;
+	
+	CANTalon talon;
 	
 	EncoderThread encoderThread;
 	AHRS ahrs;
@@ -98,14 +102,24 @@ public class Robot extends IterativeRobot {
 		
 		teleopMode = new TeleopMode(this);
         testMode = new TestMode(this);
+        SmartDashboard.putBoolean("TestMode", false);
 		
 		robotDrive = new RobotDrive(kFrontLeftChannel, kRearLeftChannel, kFrontRightChannel, kRearRightChannel);
 		robotDrive.setExpiration(0.1);
 		
-        shooter = new CANTalon(0);
+        shooter = new CANTalon(1);
         intake = new VictorSP(4);
         uptake = new VictorSP(5);
+        
+        talon = new CANTalon(0);
+        talon.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+        talon.reverseSensor(false);
 		
+        talon.configNominalOutputVoltage(0.0, 0.0);
+        talon.configPeakOutputVoltage(12.0, 0.0);
+        
+        talon.setProfile(0);
+        
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
 		

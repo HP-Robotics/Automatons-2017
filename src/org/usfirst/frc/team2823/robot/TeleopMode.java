@@ -28,12 +28,12 @@ public class TeleopMode {
 	
 	public void teleopPeriodic() {
 		//update buttons
-		robot.xButton.update(robot.stick.getRawButton(1));
+		robot.xButton.update(robot.stick1.getRawButton(1));
 		
 		//prevent joysticks from driving robot when within a threshold value of zero
-		double x = Math.abs(robot.stick.getX()) < robot.kStickThreshold ? 0.0 : robot.stick.getX();
-		double y = Math.abs(robot.stick.getY()) < robot.kStickThreshold ? 0.0 : robot.stick.getY();
-		double z = Math.abs(robot.stick.getZ()) < robot.kStickThreshold ? 0.0 : robot.stick.getZ();
+		double x = Math.abs(robot.stick1.getX()) < robot.kStickThreshold ? 0.0 : robot.stick1.getX();
+		double y = Math.abs(robot.stick1.getY()) < robot.kStickThreshold ? 0.0 : robot.stick1.getY();
+		double z = Math.abs(robot.stick1.getZ()) < robot.kStickThreshold ? 0.0 : robot.stick1.getZ();
 		
 		//get gyro angle
 		double t = robot.gyro.getAngle();
@@ -73,7 +73,7 @@ public class TeleopMode {
 		//System.out.println(encoderThread.getX() + " " + encoderThread.getY() + " | " + encoderThread.getR());
 
 		//apply drive values to drive the robot
-		robot.robotDrive.mecanumDrive_Cartesian(robot.stick.getX(), robot.stick.getY(), robot.stick.getZ(), -t);
+		robot.robotDrive.mecanumDrive_Cartesian(robot.stick1.getX(), robot.stick1.getY(), robot.stick1.getZ(), -t);
 		//robot.robotDrive.mecanumDrive_Cartesian(robot.driveX, robot.driveY, robot.driveR, -t);
 	}
 }
