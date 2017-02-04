@@ -126,6 +126,7 @@ public class Robot extends IterativeRobot {
     	shooterEncoderSource.pidGet();
     	
     	shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+    	System.out.println("'Penguins are alright I guess' -Albert Einstein");
     	
     	if(intakeState.changed()){
     		if(intakeState.on()) {
