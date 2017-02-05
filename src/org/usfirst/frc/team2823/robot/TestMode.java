@@ -5,7 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.ctre.CANTalon.TalonControlMode;
+import org.usfirst.frc.team2823.robot.OurCANTalon;
+import org.usfirst.frc.team2823.robot.OurCANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

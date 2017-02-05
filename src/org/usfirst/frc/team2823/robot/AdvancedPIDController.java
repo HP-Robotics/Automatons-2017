@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.TimerTask;
 import java.util.LinkedList;
 
-import edu.wpi.first.wpilibj.CANSpeedController;
 import edu.wpi.first.wpilibj.HLUsageReporting;
 import edu.wpi.first.wpilibj.PIDInterface;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -32,7 +31,7 @@ import edu.wpi.first.wpilibj.util.BoundaryException;
  * Creates a separate thread which reads the given PIDSource and takes care of
  * the integral calculations, as well as writing the given PIDOutput
  */
-public class AdvancedPIDController implements PIDInterface, LiveWindowSendable, CANSpeedController {
+public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
 
   public static final double kDefaultPeriod = .05;
   private static int instances = 0;
@@ -1112,111 +1111,5 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable, 
   @Override
   public void stopLiveWindowMode() {}
 
-public void set(double speed, byte syncGroup) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void set(double speed) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void setInverted(boolean isInverted) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public boolean getInverted() {
-	// TODO Auto-generated method stub
-	return false;
-}
-
-@Override
-public void pidWrite(double output) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public ControlMode getControlMode() {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public void setControlMode(int mode) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void setP(double p) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void setI(double i) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void setD(double d) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public double getBusVoltage() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-
-@Override
-public double getOutputVoltage() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-
-@Override
-public double getOutputCurrent() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-
-@Override
-public double getTemperature() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-
-@Override
-public double getPosition() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-
-@Override
-public double getSpeed() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-
-@Override
-public void setVoltageRampRate(double rampRate) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void stopMotor() {
-	// TODO Auto-generated method stub
-	
-}
 }
 

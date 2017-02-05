@@ -1,6 +1,5 @@
 package org.usfirst.frc.team2823.robot;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -19,9 +18,12 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.FeedbackDevice;
-import com.kauailabs.navx.frc.AHRS;
+
+import org.usfirst.frc.team2823.robot.OurCANTalon;
+import org.usfirst.frc.team2823.robot.OurCANTalon.TalonControlMode;
+import org.usfirst.frc.team2823.robot.OurCANTalon.FeedbackDevice;
+import org.usfirst.frc.team2823.robot.OurADXRS450_Gyro;
+
 
 public class Robot extends IterativeRobot {
 	//declare objects
@@ -33,15 +35,15 @@ public class Robot extends IterativeRobot {
 	TestMode testMode;
 	
 	RobotDrive robotDrive;
-    CANTalon shooter;
-	VictorSP intake;
-	VictorSP uptake;
+    OurCANTalon shooter;
+	OurVictorSP intake;
+	OurVictorSP uptake;
 	
-	CANTalon talon;
+	OurCANTalon talon;
 	
 	EncoderThread encoderThread;
-	AHRS ahrs;
-	ADXRS450_Gyro gyro;
+	OurAHRS ahrs;
+	OurADXRS450_Gyro gyro;
 	
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
@@ -107,11 +109,11 @@ public class Robot extends IterativeRobot {
 		robotDrive = new RobotDrive(kFrontLeftChannel, kRearLeftChannel, kFrontRightChannel, kRearRightChannel);
 		robotDrive.setExpiration(0.1);
 		
-        shooter = new CANTalon(1);
-        intake = new VictorSP(4);
-        uptake = new VictorSP(5);
+        shooter = new OurCANTalon(1);
+        intake = new OurVictorSP(4);
+        uptake = new OurVictorSP(5);
         
-        talon = new CANTalon(0);
+        talon = new OurCANTalon(0);
         talon.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
         talon.reverseSensor(false);
 		
@@ -140,7 +142,7 @@ public class Robot extends IterativeRobot {
 		rControl = new AdvancedPIDController(0.002, 0.000001, 0.5, rSource, rOutput, 0.01);
         
         //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        shooter.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
+        shooter.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
         //shooter.configEncoderCodesPerRev(1);
         
         shooterEncoderSource = new CANTalonPIDSource(shooter);
@@ -160,19 +162,19 @@ public class Robot extends IterativeRobot {
         //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         //shooter.setPID(1, 1, 1);
         
-        ahrs = new AHRS(I2C.Port.kOnboard);
-    	gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
+        ahrs = new OurAHRS(OurI2C.Port.kOnboard);
+        gyro = new OurADXRS450_Gyro(OurADXRS450_Gyro.Port.kOnboardCS0);
         
         //compressor = new Compressor(0);
         //compressor.setClosedLoopControl(true);
         
         //solenoid1 = new DoubleSolenoid(0,1);
-        
+
         try{
-    		gyro.reset();
-    	}catch(Exception e) {
-    		System.out.println("Gyro not work");
-    	}
+        	gyro.reset();
+        }catch(Exception e) {
+        	System.out.println("Gyro not work");
+        }
         navxOrigin = ahrs.getFusedHeading();
         navx2Origin = ahrs.getCompassHeading();
         gyroOrigin = gyro.getAngle();
@@ -209,6 +211,7 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void teleopPeriodic() {
+    			
     	if(SmartDashboard.getBoolean("TestMode", false)){
     		testMode.testPeriodic();
     	} else {

@@ -1,18 +1,16 @@
 package org.usfirst.frc.team2823.robot;
 
-import com.ctre.CANTalon;
-
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Timer;
 
 public class CANTalonPIDSource implements PIDSource {
 	
-	CANTalon talon;
+	OurCANTalon talon;
 	double lastTime = Timer.getFPGATimestamp();
 	double lastPosition;
 	
-	public CANTalonPIDSource (CANTalon talon){
+	public CANTalonPIDSource (OurCANTalon talon){
 		this.talon = talon;
 		
 		lastPosition = talon.getEncPosition();
