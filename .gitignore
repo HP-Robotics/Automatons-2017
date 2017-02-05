@@ -1,6 +1,7 @@
 *.class
 *.xml
 .classpath
+*.bak
 build.properties
 .project
 
