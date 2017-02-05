@@ -1,5 +1,39 @@
+/* In order to use FRCSIM, there are some classes that have to be stubbed out.
+ *   This is one of them.  What we do is have 'production' code in the same
+ *   file as the simulation code, and then when it's time to simulate, we just
+ *   switch which is which.
+ */
 package org.usfirst.frc.team2823.robot;
 
+/* Non Simulation code */
+import com.ctre.CANTalon;
+public class OurCANTalon extends CANTalon {
+
+	public OurCANTalon(int deviceNumber) {
+		super(deviceNumber);
+	}
+	
+	public void speedMode() {
+		changeControlMode(TalonControlMode.Speed);
+	}
+	
+	public void normalMode() {
+		changeControlMode(TalonControlMode.PercentVbus);
+	}
+
+	public void relativeFeedback() {
+	    setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);	
+	}
+	
+	public void absoluteFeedback() {
+	    setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);	
+	}
+
+	
+}
+
+/* Simulation code */
+/*
 import edu.wpi.first.wpilibj.PIDOutput;
 
 public class OurCANTalon implements PIDOutput {
@@ -86,3 +120,4 @@ public class OurCANTalon implements PIDOutput {
 	}
 
 }
+*/
