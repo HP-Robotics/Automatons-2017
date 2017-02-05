@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.usfirst.frc.team2823.robot.OurCANTalon;
-import org.usfirst.frc.team2823.robot.OurCANTalon.TalonControlMode;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -98,7 +95,7 @@ public class TestMode {
     		}
 
     		if(robot.shooterState.on()){
-	    		robot.talon.changeControlMode(TalonControlMode.Speed);
+	    		robot.talon.speedMode();
 	    		robot.talon.set(SmartDashboard.getNumber("Setpoint", 0.0));
 	    		enableLog("Shooter.csv");
 	    		if(m_logEnabled) {
@@ -112,7 +109,7 @@ public class TestMode {
 	    	      }
 	    		
     			}else{
-        		robot.talon.changeControlMode(TalonControlMode.PercentVbus);
+        		robot.talon.normalMode();
         		robot.talon.set(0);
         		closeLog();
         	}

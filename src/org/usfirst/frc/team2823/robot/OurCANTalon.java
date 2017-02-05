@@ -1,26 +1,8 @@
 package org.usfirst.frc.team2823.robot;
 
-import org.usfirst.frc.team2823.robot.OurCANTalon.TalonControlMode;
-
 import edu.wpi.first.wpilibj.PIDOutput;
 
 public class OurCANTalon implements PIDOutput {
-	
-	public enum TalonControlMode {
-		Speed,
-		PercentVbus
-	}
-	
-	public enum FeedbackDevice {
-		AnalogEncoder,
-		AnalogPot,
-		CtreMagEncoder_Absolute, 
-		CtreMagEncoder_Relative,
-		EncFalling,
-		EncRising,
-		PulseWidth, 
-		QuadEncoder 
-	}
 
 	public OurCANTalon(int i) {
 		// TODO Auto-generated constructor stub
@@ -86,15 +68,21 @@ public class OurCANTalon implements PIDOutput {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public void changeControlMode(TalonControlMode speed) {
-		// TODO Auto-generated method stub
-		
+	
+	public void speedMode() {
+		// TODO In the real one set TalonControlMode.Speed
+	}
+	
+	public void normalMode() {
+		// TODO In the real one set TalonControlMode.PercentVbus
 	}
 
-	public void setFeedbackDevice(FeedbackDevice ctremagencoderRelative) {
-		// TODO Auto-generated method stub
-		
+	public void relativeFeedback() {
+	    //TODO In real one do setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);	
+	}
+	
+	public void absoluteFeedback() {
+	    //TODO In real one do setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);	
 	}
 
 }

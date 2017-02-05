@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team2823.robot.OurCANTalon;
-import org.usfirst.frc.team2823.robot.OurCANTalon.TalonControlMode;
-import org.usfirst.frc.team2823.robot.OurCANTalon.FeedbackDevice;
 import org.usfirst.frc.team2823.robot.OurADXRS450_Gyro;
 
 
@@ -114,7 +112,7 @@ public class Robot extends IterativeRobot {
         uptake = new OurVictorSP(5);
         
         talon = new OurCANTalon(0);
-        talon.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+        talon.relativeFeedback();
         talon.reverseSensor(false);
 		
         talon.configNominalOutputVoltage(0.0, 0.0);
@@ -142,7 +140,7 @@ public class Robot extends IterativeRobot {
 		rControl = new AdvancedPIDController(0.002, 0.000001, 0.5, rSource, rOutput, 0.01);
         
         //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        shooter.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+        shooter.absoluteFeedback();
         //shooter.configEncoderCodesPerRev(1);
         
         shooterEncoderSource = new CANTalonPIDSource(shooter);
@@ -162,8 +160,8 @@ public class Robot extends IterativeRobot {
         //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         //shooter.setPID(1, 1, 1);
         
-        ahrs = new OurAHRS(OurI2C.Port.kOnboard);
-        gyro = new OurADXRS450_Gyro(OurADXRS450_Gyro.Port.kOnboardCS0);
+        ahrs = new OurAHRS();
+        gyro = new OurADXRS450_Gyro();
         
         //compressor = new Compressor(0);
         //compressor.setClosedLoopControl(true);
