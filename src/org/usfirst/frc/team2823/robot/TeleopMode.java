@@ -73,7 +73,8 @@ public class TeleopMode {
 		//System.out.println(encoderThread.getX() + " " + encoderThread.getY() + " | " + encoderThread.getR());
 
 		//apply drive values to drive the robot
-		robot.robotDrive.mecanumDrive_Cartesian(robot.stick1.getX(), robot.stick1.getY(), robot.stick1.getZ(), -t);
+		//robot.robotDrive.mecanumDrive_Cartesian(robot.stick1.getX(), robot.stick1.getY(), robot.stick1.getZ(), -t);
+		robot.robotDrive.mecanumDrive_Cartesian(x, y, z, t);
 		//robot.robotDrive.mecanumDrive_Cartesian(robot.driveX, robot.driveY, robot.driveR, -t);
 	}
 }

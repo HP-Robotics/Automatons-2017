@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,12 +67,12 @@ public class Robot extends IterativeRobot {
 	//declare constants
 	//simulator wheel PWM channels
 	final int kFrontLeftChannel = 0;
-	final int kFrontRightChannel = 1;
-	final int kRearLeftChannel = 2;
+	final int kRearLeftChannel = 1;
+	final int kFrontRightChannel = 2;
 	final int kRearRightChannel = 3;
 	
 	//joystick zero-sensitivity threshold
-	final double kStickThreshold = 0.05;
+	final double kStickThreshold = 0.15;
 
 	// The channel on the driver station that the joystick is connected to
 	final int kJoystickChannel = 0;
@@ -105,6 +106,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("TestMode", false);
 		
 		robotDrive = new RobotDrive(kFrontLeftChannel, kRearLeftChannel, kFrontRightChannel, kRearRightChannel);
+		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
+		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		robotDrive.setExpiration(0.1);
 		
         shooter = new OurCANTalon(1);
