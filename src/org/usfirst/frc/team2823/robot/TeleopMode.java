@@ -67,7 +67,7 @@ public class TeleopMode {
 		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, z, t);
-		robot.robotDrive.mecanumDrive_Cartesian(robot.driveX, robot.driveY, robot.driveR, robot.driveT);
+		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
 	
 	//select a drive mode based on button input

@@ -269,7 +269,24 @@ public class Robot extends IterativeRobot {
 		vControl.setSetpoint(dp * -27);
 	}
 	
-	//maybe these should be removed since driveXYZ are public
+	//get drive values for use in autonomous and teleop
+	public double getDriveX() {
+		return driveX;
+	}
+	
+	public double getDriveY() {
+		return driveY;
+	}
+	
+	public double getDriveR() {
+		return driveR;
+	}
+	
+	public double getDriveT() {
+		return driveT;
+	}
+	
+	//set drive values based on PIDs and joysticks
 	public void setDriveX(double x) {
 		driveX = x;
 	}
