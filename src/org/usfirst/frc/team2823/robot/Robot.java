@@ -80,6 +80,9 @@ public class Robot extends IterativeRobot {
 	
 	//joystick zero-sensitivity threshold
 	final double kStickThreshold = 0.15;
+	
+	//intake rotation-sensitivity threshold
+	final double kIntakeRotationThreshold = 1.0;
 
 	// The channels on the driver station that the joysticks connect to
 	final int kJoystick1Channel = 0;
@@ -90,6 +93,7 @@ public class Robot extends IterativeRobot {
 	double driveX;
 	double driveY;
 	double driveR;
+	double driveT;
 	
 	double initTime;
 	
@@ -276,5 +280,9 @@ public class Robot extends IterativeRobot {
 	
 	public void setDriveR(double r) {
 		driveR = r;
+	}
+	
+	public void setDriveT(double t) {
+		driveT = t;
 	}
 }
