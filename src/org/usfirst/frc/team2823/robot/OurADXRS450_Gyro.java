@@ -6,7 +6,10 @@
 
 package org.usfirst.frc.team2823.robot;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
+
 /* Non Simulation code */
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI.Port;
 
@@ -16,21 +19,26 @@ public class OurADXRS450_Gyro extends ADXRS450_Gyro {
 	}
 }
 
+
 /* Simulation code */
 /*
 public class OurADXRS450_Gyro {
+	AnalogGyro gyro;
 	
 	public OurADXRS450_Gyro() {
+		gyro = new AnalogGyro(0);
+		gyro.reset();
 		// TODO Auto-generated constructor stub
 		//TODO - in the real one use Port.kOnboardCS0
 	}
 
 	public double getAngle() {
 		// TODO Auto-generated method stub
-		return 0;
+		return gyro.getAngle();
 	}
 
 	public void reset() {
+		gyro.reset();
 		// TODO Auto-generated method stub
 		
 	}

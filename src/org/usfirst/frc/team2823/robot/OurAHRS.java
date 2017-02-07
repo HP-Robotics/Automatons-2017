@@ -5,8 +5,10 @@
  */
 package org.usfirst.frc.team2823.robot;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 
 /* Non Simulation code */
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
 public class OurAHRS extends AHRS {
@@ -17,18 +19,22 @@ public class OurAHRS extends AHRS {
 	
 }
 
+
 /* Simulation code */
 /*
 public class OurAHRS {
-
+	AnalogGyro gyro;
+	
 	public OurAHRS() {
+		gyro = new AnalogGyro(0);
+		gyro.reset();
 		// TODO Auto-generated constructor stub
 		// TODO in real one use I2C.Port.konboard
 	}
 
 	public double getFusedHeading() {
 		// TODO Auto-generated method stub
-		return 0;
+		return gyro.getAngle();
 	}
 
 	public double getCompassHeading() {

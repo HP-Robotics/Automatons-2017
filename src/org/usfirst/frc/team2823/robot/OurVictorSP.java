@@ -6,6 +6,7 @@
 package org.usfirst.frc.team2823.robot;
 
 /* Non simulation code */
+
 import edu.wpi.first.wpilibj.VictorSP;
 
 public class OurVictorSP extends VictorSP {
@@ -15,6 +16,7 @@ public class OurVictorSP extends VictorSP {
 	}
 	
 }
+
 
 /* Simulation code */
 /*

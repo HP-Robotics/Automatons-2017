@@ -6,6 +6,7 @@
 package org.usfirst.frc.team2823.robot;
 
 /* Non Simulation code */
+
 import com.ctre.CANTalon;
 public class OurCANTalon extends CANTalon {
 
@@ -31,6 +32,7 @@ public class OurCANTalon extends CANTalon {
 
 	
 }
+
 
 /* Simulation code */
 /*
