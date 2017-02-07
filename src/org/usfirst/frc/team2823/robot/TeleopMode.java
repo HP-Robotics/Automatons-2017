@@ -28,6 +28,12 @@ public class TeleopMode {
 	
 	public void teleopPeriodic() {
 		//update buttons
+		robot.robotButton.update(robot.stick1.getRawButton(2));
+		robot.fieldButton.update(robot.stick1.getRawButton(5));
+		robot.intakeButton.update(robot.stick1.getRawButton(3));
+		robot.gearOutButton.update(robot.stick1.getRawButton(6));
+		robot.gearInButton.update(robot.stick1.getRawButton(4));
+		
 		robot.xButton.update(robot.stick1.getRawButton(1));
 		
 		//prevent joysticks from driving robot when within a threshold value of zero

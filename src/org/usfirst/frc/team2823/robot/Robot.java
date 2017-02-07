@@ -28,6 +28,12 @@ public class Robot extends IterativeRobot {
 	//declare objects
 	Joystick stick1;
 	
+	Button robotButton;
+	Button fieldButton;
+	Button intakeButton;
+	Button gearOutButton;
+	Button gearInButton;
+	
 	Button xButton;
 	
 	TeleopMode teleopMode;
@@ -97,6 +103,12 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	stick1 = new Joystick(kJoystickChannel);
 		
+		robotButton = new Button();
+		fieldButton = new Button();
+		intakeButton = new Button();
+		gearOutButton = new Button();
+		gearInButton = new Button();
+    	
 		xButton = new Button();
         intakeState = new ToggleSwitch();
         shooterState = new ToggleSwitch();
