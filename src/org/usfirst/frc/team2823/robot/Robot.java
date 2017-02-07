@@ -27,6 +27,7 @@ import org.usfirst.frc.team2823.robot.OurADXRS450_Gyro;
 public class Robot extends IterativeRobot {
 	//declare objects
 	Joystick stick1;
+	Joystick stick2;
 	
 	Button robotButton;
 	Button fieldButton;
@@ -80,8 +81,9 @@ public class Robot extends IterativeRobot {
 	//joystick zero-sensitivity threshold
 	final double kStickThreshold = 0.15;
 
-	// The channel on the driver station that the joystick is connected to
-	final int kJoystickChannel = 0;
+	// The channels on the driver station that the joysticks connect to
+	final int kJoystick1Channel = 0;
+	final int kJoystick2Channel = 1;
 	
 	//declare variables
 	//drive values
@@ -101,7 +103,8 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	stick1 = new Joystick(kJoystickChannel);
+    	stick1 = new Joystick(kJoystick1Channel);
+    	stick2 = new Joystick(kJoystick2Channel);
 		
 		robotButton = new Button();
 		fieldButton = new Button();

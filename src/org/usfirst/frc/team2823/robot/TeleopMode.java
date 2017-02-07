@@ -21,7 +21,7 @@ public class TeleopMode {
 		robot.gearOutButton.update(robot.stick1.getRawButton(6));
 		robot.gearInButton.update(robot.stick1.getRawButton(4));
 		
-		robot.xButton.update(robot.stick1.getRawButton(1));
+		robot.xButton.update(robot.stick2.getRawButton(1));
 		
 		//prevent joysticks from driving robot when within a threshold value of zero
 		double x = Math.abs(robot.stick1.getX()) < robot.kStickThreshold ? 0.0 : robot.stick1.getX();
