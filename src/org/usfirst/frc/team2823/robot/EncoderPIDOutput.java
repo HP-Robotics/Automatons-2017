@@ -8,7 +8,7 @@ public class EncoderPIDOutput implements PIDOutput {
 	private double t;
 	
 	public enum Axis {
-		X, Y, T, R
+		V, X, Y, R
 	}
 	
 	public EncoderPIDOutput(Robot robot, Axis a) {
@@ -25,15 +25,15 @@ public class EncoderPIDOutput implements PIDOutput {
 	@Override
 	public void pidWrite(double output) {
 		switch(a) {
+			case V:
+				robot.setDriveX(output * Math.sin(t));
+				robot.setDriveY(output * Math.cos(t));
+				break;
 			case X:
 				robot.setDriveX(output);
 				break;
 			case Y:
 				robot.setDriveY(output);
-				break;
-			case T:
-				robot.setDriveX(output * Math.sin(t));
-				robot.setDriveY(output * Math.cos(t));
 				break;
 			case R:
 				robot.setDriveR(output);

@@ -9,7 +9,7 @@ public class EncoderPIDSource implements PIDSource {
 	private double t;
 	
 	public enum Axis {
-		X, Y, T, R
+		V, X, Y, R
 	}
 	
 	public EncoderPIDSource(EncoderThread e, Axis a) {
@@ -26,12 +26,12 @@ public class EncoderPIDSource implements PIDSource {
 	@Override
 	public double pidGet() {
 		switch(a) {
+		case V:
+			return (Math.sin(t) * -e.getX()) + (Math.cos(t) * -e.getY());
 		case X:
 			return e.getX();
 		case Y:
 			return e.getY();
-		case T:
-			return (Math.sin(t) * e.getX()) + (Math.cos(t) * e.getY());
 		case R:
 			return e.getR();
 		default:

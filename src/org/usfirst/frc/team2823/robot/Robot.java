@@ -51,20 +51,20 @@ public class Robot extends IterativeRobot {
 	OurAHRS ahrs;
 	OurADXRS450_Gyro gyro;
 	
+	EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
-	EncoderPIDSource tSource;
 	EncoderPIDSource rSource;
 	CANTalonPIDSource shooterEncoderSource;
 	
+	EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
 	EncoderPIDOutput yOutput;
-	EncoderPIDOutput tOutput;
 	EncoderPIDOutput rOutput;
 	
+	AdvancedPIDController vControl;
 	AdvancedPIDController xControl;
 	AdvancedPIDController yControl;
-	AdvancedPIDController tControl;
 	AdvancedPIDController rControl;
 	AdvancedPIDController shooterControl;
 	
@@ -141,20 +141,20 @@ public class Robot extends IterativeRobot {
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
 		
+		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V, encoderThread.getR());
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		tSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.T, encoderThread.getR());
 		rSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.R);
 		
+		vOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.V, encoderThread.getR());
 		xOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.X);
 		yOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.Y);
-		tOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.T, encoderThread.getR());
 		rOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.R);
 		
 		//old 0.0045, 0.000001, 0.35
+		vControl = new AdvancedPIDController(0.004, 0.000001, 0.4, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.004, 0.000001, 0.4, ySource, yOutput, 0.01);
-		tControl = new AdvancedPIDController(0.004, 0.000001, 0.4, tSource, tOutput, 0.01);
 		rControl = new AdvancedPIDController(0.002, 0.000001, 0.5, rSource, rOutput, 0.01);
         
         //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
@@ -244,9 +244,9 @@ public class Robot extends IterativeRobot {
     
     @Override
 	public void disabledInit() {
+		vControl.disable();
 		xControl.disable();
 		yControl.disable();
-		tControl.disable();
 		rControl.disable();
 		
 		robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
@@ -260,9 +260,9 @@ public class Robot extends IterativeRobot {
 		double dp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		double t = Math.atan(dx / dy);
 		
-		tSource.setDirection(t);
-		tOutput.setDirection(t);
-		tControl.setSetpoint(dp * -27);
+		vSource.setDirection(t);
+		vOutput.setDirection(t);
+		vControl.setSetpoint(dp * -27);
 	}
 	
 	//maybe these should be removed since driveXYZ are public

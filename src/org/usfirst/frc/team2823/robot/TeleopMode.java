@@ -31,7 +31,7 @@ public class TeleopMode {
 		//get gyro angle
 		double t = robot.gyro.getAngle();
 		
-		if(robot.xButton.changed()) {
+		/*if(robot.xButton.changed()) {
 			if(robot.xButton.on()) {
 				robot.xControl.setSetpoint(1000 * -27);
 				robot.xControl.enableLog("zanzibar_spumoni.csv");
@@ -40,10 +40,10 @@ public class TeleopMode {
 				robot.xControl.disable();
 				robot.xControl.closeLog();
 			}
-		}
+		}*/
 		
 		//apply drive values to drive the robot
-		robot.robotDrive.mecanumDrive_Cartesian(x, y, z, t);
-		//robot.robotDrive.mecanumDrive_Cartesian(robot.driveX, robot.driveY, robot.driveR, -t);
+		//robot.robotDrive.mecanumDrive_Cartesian(x, y, z, t);
+		robot.robotDrive.mecanumDrive_Cartesian(robot.driveX, robot.driveY, robot.driveR, -t);
 	}
 }
