@@ -6,8 +6,6 @@
 
 package org.usfirst.frc.team2823.robot;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-
 /* Non Simulation code */
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -22,6 +20,8 @@ public class OurADXRS450_Gyro extends ADXRS450_Gyro {
 
 /* Simulation code */
 /*
+import edu.wpi.first.wpilibj.AnalogGyro;
+
 public class OurADXRS450_Gyro {
 	AnalogGyro gyro;
 	

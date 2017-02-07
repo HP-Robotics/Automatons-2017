@@ -5,8 +5,6 @@
  */
 package org.usfirst.frc.team2823.robot;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-
 /* Non Simulation code */
 
 import com.kauailabs.navx.frc.AHRS;
@@ -22,6 +20,8 @@ public class OurAHRS extends AHRS {
 
 /* Simulation code */
 /*
+import edu.wpi.first.wpilibj.AnalogGyro;
+
 public class OurAHRS {
 	AnalogGyro gyro;
 	
