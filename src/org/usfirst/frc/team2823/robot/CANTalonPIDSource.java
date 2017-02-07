@@ -47,8 +47,6 @@ public class CANTalonPIDSource implements PIDSource {
 		
 		double velocity = (lastPosition - currentPosition)/(currentTime - lastTime);
 		
-		System.out.println(lastPosition + " " + currentPosition + " " + (currentTime - lastTime) + " | " + velocity);
-		
 		lastTime = currentTime;
 		lastPosition = currentPosition;
 		

@@ -35,7 +35,7 @@ public class TestMode {
 	  	m_bw = new BufferedWriter(m_fw);
 	  	
 	  	try {
-	  		m_bw.write("Timestamp, Speed, Error \n" );
+	  		m_bw.write("Timestamp, Speed, Setpoint, Error \n" );
 	  		
 	  		m_logEnabled = true;
 	  		
@@ -65,14 +65,14 @@ public class TestMode {
 	}
 	
 	public void testInit(){
-		SmartDashboard.putNumber("Somethin", 0);
+		
 	}
 	
 	public void testPeriodic(){
 		
-		robot.talon.setP(SmartDashboard.getNumber("P", 0.0));
-		robot.talon.setI(SmartDashboard.getNumber("I", 0.0));
-		robot.talon.setD(SmartDashboard.getNumber("D", 0.0));
+		robot.subShooter.setP(SmartDashboard.getNumber("P", 0.0));
+		robot.subShooter.setI(SmartDashboard.getNumber("I", 0.0));
+		robot.subShooter.setD(SmartDashboard.getNumber("D", 0.0));
 		
 		robot.intakeState.update(robot.stick1.getRawButton(1));
     	robot.shooterState.update(robot.stick1.getRawButton(2));
@@ -88,19 +88,24 @@ public class TestMode {
     			robot.intake.set(SmartDashboard.getNumber("Intake", 0.0));
     			robot.uptake.set(SmartDashboard.getNumber("Uptake", 0.0));
     			robot.shooter.set(SmartDashboard.getNumber("Shooter", 0.0));
+    			robot.climbMotor1.set(SmartDashboard.getNumber("Climb 1", 0.0));
+    			robot.climbMotor2.set(SmartDashboard.getNumber("Climb 2", 0.0));
     		}else{
     			robot.intake.set(0.0);
     			robot.uptake.set(0.0);
     			robot.shooter.set(0.0);
+    			robot.climbMotor1.set(0.0);
+    			robot.climbMotor2.set(0.0);
     		}
 
     		if(robot.shooterState.on()){
-	    		robot.talon.speedMode();
-	    		robot.talon.set(SmartDashboard.getNumber("Setpoint", 0.0));
+	    		robot.subShooter.speedMode();
+	    		robot.subShooter.set(SmartDashboard.getNumber("Setpoint", 0.0));
+	    		System.out.println(robot.subShooter.getError());
 	    		enableLog("Shooter.csv");
 	    		if(m_logEnabled) {
 	    	    	  try{
-	    	    		  m_bw.write(Timer.getFPGATimestamp() + ", " + robot.talon.getSpeed() + ", " + robot.talon.getClosedLoopError() + "\n");
+	    	    		  m_bw.write(Timer.getFPGATimestamp() + ", " + robot.subShooter.getSpeed() +  ", " + robot.subShooter.getSetpoint() +", " + robot.subShooter.getClosedLoopError() + "\n");
 
 	    	    	  } catch(IOException e) {
 	    	    		  System.out.println("PID logging died on us");
@@ -109,11 +114,12 @@ public class TestMode {
 	    	      }
 	    		
     			}else{
-        		robot.talon.normalMode();
-        		robot.talon.set(0);
+        		robot.subShooter.normalMode();
+        		robot.subShooter.set(0.8);
         		closeLog();
         	}
-    		
+    		System.out.println(robot.subShooter.getSpeed());
+    		System.out.println(robot.subShooter.getOutputVoltage()/robot.subShooter.getBusVoltage());
     		//
     		//shooter.enableControl();
     	
