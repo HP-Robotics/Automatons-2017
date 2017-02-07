@@ -26,7 +26,7 @@ public class OurAHRS {
 	AnalogGyro gyro;
 	
 	public OurAHRS() {
-		gyro = new AnalogGyro(0);
+		gyro = new AnalogGyro(1);
 		gyro.reset();
 		// TODO Auto-generated constructor stub
 		// TODO in real one use I2C.Port.konboard
