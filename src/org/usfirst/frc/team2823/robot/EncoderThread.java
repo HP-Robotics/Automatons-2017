@@ -38,7 +38,7 @@ public class EncoderThread extends Thread {
 				//get encoder travel distances (forward, sideways, and rotation)
 				double f = (rEncoder.getDistance() + lEncoder.getDistance()) / 2;
 				double s = cEncoder.getDistance();
-				r = (rEncoder.getDistance() - lEncoder.getDistance()) / 0.4;
+				r = (rEncoder.getDistance() - lEncoder.getDistance()) / robot.kEncoderWheelDistance;
 				
 				//get current time
 				double t = Timer.getFPGATimestamp();

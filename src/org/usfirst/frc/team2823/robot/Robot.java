@@ -57,13 +57,13 @@ public class Robot extends IterativeRobot {
 	EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
-	EncoderPIDSource rSource;
+	GyroPIDSource rSource;
 	CANTalonPIDSource shooterEncoderSource;
 	
 	EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
 	EncoderPIDOutput yOutput;
-	EncoderPIDOutput rOutput;
+	GyroPIDOutput rOutput;
 	
 	AdvancedPIDController vControl;
 	AdvancedPIDController xControl;
@@ -86,6 +86,9 @@ public class Robot extends IterativeRobot {
 	
 	//intake rotation-sensitivity threshold
 	final double kIntakeRotationThreshold = 1.0;
+	
+	//distance between left and right encoder wheels
+	final double kEncoderWheelDistance = 0.4;
 
 	// The channels on the driver station that the joysticks connect to
 	final int kJoystick1Channel = 0;
@@ -128,7 +131,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("TestMode", false);
 		
         robotDrive = new RobotDrive(kFrontLeftChannel, kRearLeftChannel, kFrontRightChannel, kRearRightChannel);
-		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
+		//robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
+        robotDrive.setInvertedMotor(MotorType.kRearRight, true);
 		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		robotDrive.setExpiration(0.1);
 		
@@ -154,12 +158,12 @@ public class Robot extends IterativeRobot {
 		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V, encoderThread.getR());
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		rSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.R);
+		rSource = new GyroPIDSource(gyro);
 		
 		vOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.V, encoderThread.getR());
 		xOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.X);
 		yOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.Y);
-		rOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.R);
+		rOutput = new GyroPIDOutput(this);
 		
 		//old 0.0045, 0.000001, 0.35
 		vControl = new AdvancedPIDController(0.004, 0.000001, 0.4, vSource, vOutput, 0.01);

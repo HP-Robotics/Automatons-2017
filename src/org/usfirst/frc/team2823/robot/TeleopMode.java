@@ -44,6 +44,8 @@ public class TeleopMode {
 		//get gyro angle
 		double t = -robot.gyro.getAngle();
 		
+		System.out.println("gyro " + t + "; encoder r " + robot.encoderThread.getR());
+		
 		//update which drive mode the robot is in
 		mode = setDriveMode();
 		
@@ -128,26 +130,51 @@ public class TeleopMode {
 	/** IS THIS FINE? Can I reset() or enable() PIDs every time, or should I do this only once?**/
 	public void setDrivePIDs() {
 		switch(mode) {
-		case ROBOT:		//ROBOT mode, no PIDs
+ 		case ROBOT:		//ROBOT mode, no PIDs
 			robot.rControl.reset();
-			break;
-		
-		case FIELD:		//FIELD mode, no PIDs
+			if (robot.rControl.isEnabled()) {
+				robot.rControl.reset();
+				robot.rControl.closeLog();
+				System.out.println("Robot");
+			}
+ 			break;
+ 		
+ 		case FIELD:		//FIELD mode, no PIDs
 			robot.rControl.reset();
-			break;
-		
-		case INTAKE:	//INTAKE mode, PIDing along direction of travel
+			if (robot.rControl.isEnabled()) {
+				robot.rControl.reset();
+				robot.rControl.closeLog();
+				System.out.println("Field");
+			}
+ 			break;
+ 		
+ 		case INTAKE:	//INTAKE mode, PIDing along direction of travel
 			robot.rControl.enable();
-			break;
-		
-		case GEAR_OUT:	//GEAR_OUT mode, PIDing to the nearest airship lift
+			if (!robot.rControl.isEnabled()) {
+				robot.rControl.enable();
+				robot.rControl.enableLog("intake.csv");
+				System.out.println("Intake");
+			}
+ 			break;
+ 		
+ 		case GEAR_OUT:	//GEAR_OUT mode, PIDing to the nearest airship lift
 			robot.rControl.enable();
-			break;
-		
-		case GEAR_IN:	//GEAR_IN mode, PIDing to the feeder station
+			if (!robot.rControl.isEnabled()) {
+				robot.rControl.enable();
+				robot.rControl.enableLog("gearout.csv");
+				System.out.println("GearOut");
+			}
+ 			break;
+ 		
+ 		case GEAR_IN:	//GEAR_IN mode, PIDing to the feeder station
 			robot.rControl.enable();
-			break;
-		}
+			if (!robot.rControl.isEnabled()) {
+				robot.rControl.enable();
+				robot.rControl.enableLog("gearin.csv");
+				System.out.println("GearIn");
+			}
+ 			break;
+ 		}
 	}
 	
 	//update PID setpoints and determine XYZ power outputs
@@ -209,7 +236,7 @@ public class TeleopMode {
 		
 		//if the output is not defined or the change in position is very small (standing still), PID to the current rotation
 		if(Double.isNaN(t) || Math.abs(dp) < robot.kIntakeRotationThreshold) {
-			return robot.encoderThread.getR();
+			return robot.gyro.getAngle();
 		}
 		
 		return t;
