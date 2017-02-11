@@ -4,30 +4,31 @@ import edu.wpi.first.wpilibj.PIDOutput;
 
 public class EncoderPIDOutput implements PIDOutput {
 	private Robot robot;
+	private EncoderThread e;
 	private Axis a;
-	private double t;
+	private double x;
+	private double y;
 	
 	public enum Axis {
 		V, X, Y, R
 	}
 	
-	public EncoderPIDOutput(Robot robot, Axis a) {
+	public EncoderPIDOutput(Robot robot, EncoderThread e, Axis a) {
 		this.robot = robot;
+		this.e = e;
 		this.a = a;
-	}
-	
-	public EncoderPIDOutput(Robot robot, Axis a, double t) {
-		this.robot = robot;
-		this.a = a;
-		this.t = t;
 	}
 
 	@Override
 	public void pidWrite(double output) {
 		switch(a) {
 			case V:
-				robot.setDriveX(output * Math.sin(t));
-				robot.setDriveY(output * Math.cos(t));
+				double dx = x - e.getX();
+				double dy = y - e.getY();
+				double t = Math.atan2(dy, dx);
+				
+				robot.setDriveX(output * Math.cos(t));
+				robot.setDriveY(output * Math.sin(t));
 				break;
 			case X:
 				robot.setDriveX(output);
@@ -41,7 +42,8 @@ public class EncoderPIDOutput implements PIDOutput {
 		}
 	}
 	
-	public void setDirection(double t) {
-		this.t = t;
+	public void setTarget(double x, double y) {
+		this.x = x;
+		this.y = y;
 	}
 }

@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class EncoderPIDSource implements PIDSource {
 	private EncoderThread e;
 	private Axis a;
-	private double t;
+	private double x;
+	private double y;
 	
 	public enum Axis {
 		V, X, Y, R
@@ -17,17 +18,13 @@ public class EncoderPIDSource implements PIDSource {
 		this.a = a;
 	}
 	
-	public EncoderPIDSource(EncoderThread e, Axis a, double t) {
-		this.e = e;
-		this.a = a;
-		this.t = t;
-	}
-	
 	@Override
 	public double pidGet() {
 		switch(a) {
 		case V:
-			return (Math.sin(t) * -e.getX()) + (Math.cos(t) * -e.getY());
+			double dx = x - e.getX();
+			double dy = y - e.getY();
+			return -Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		case X:
 			return e.getX();
 		case Y:
@@ -39,8 +36,9 @@ public class EncoderPIDSource implements PIDSource {
 		}
 	}
 	
-	public void setDirection(double t) {
-		this.t = t;
+	public void setTarget(double x, double y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override

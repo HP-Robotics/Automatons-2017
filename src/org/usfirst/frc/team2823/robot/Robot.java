@@ -158,20 +158,20 @@ public class Robot extends IterativeRobot {
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
 		
-		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V, encoderThread.getR());
+		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
 		rSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.R);
 		
-		vOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.V, encoderThread.getR());
-		xOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.X);
-		yOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.Y);
-		rOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.R);
+		vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
+		xOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.X);
+		yOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.Y);
+		rOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.R);
 		
 		//old 0.0045, 0.000001, 0.35
 		vControl = new AdvancedPIDController(0.004, 0.000001, 0.4, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
-		yControl = new AdvancedPIDController(0.004, 0.000001, 0.4, ySource, yOutput, 0.01);
+		yControl = new AdvancedPIDController(0.004, 0.0001, 0.4, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
         
         SmartDashboard.putNumber("Shooter", 0.0);
@@ -185,9 +185,6 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("D", 0.0);
         SmartDashboard.putNumber("F", 0.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
-        
-        ahrs = new OurAHRS();
-        gyro = new OurADXRS450_Gyro();
         
         //compressor = new Compressor(0);
         //compressor.setClosedLoopControl(true);
@@ -273,9 +270,9 @@ public class Robot extends IterativeRobot {
 		double dp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		double t = Math.atan(dx / dy);
 		
-		vSource.setDirection(t);
-		vOutput.setDirection(t);
-		vControl.setSetpoint(-dp);
+		vSource.setTarget(x, y);
+		vOutput.setTarget(x, y);
+		vControl.setSetpoint(0);
 	}
 	
 	//get drive values for use in autonomous and teleop
