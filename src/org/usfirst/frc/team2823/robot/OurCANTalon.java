@@ -121,5 +121,45 @@ public class OurCANTalon implements PIDOutput {
 	    //TODO In real one do setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);	
 	}
 
+	public String getP() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getI() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getD() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getF() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public double getSetpoint() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getOutputVoltage() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getBusVoltage() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setF(double number) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 */
