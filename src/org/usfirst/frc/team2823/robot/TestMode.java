@@ -65,15 +65,12 @@ public class TestMode {
 	}
 	
 	public void testInit(){
-		System.out.println("init");
     	if(robot.stick1.getName().contains("3D")){
     		robot.driverStick = robot.stick1;
     		robot.operatorStick = robot.stick2;
-    		System.out.println("first");
     	} else {
     		robot.driverStick = robot.stick2;
     		robot.operatorStick = robot.stick1;
-    		System.out.println("second");
     	}
 	}
 	

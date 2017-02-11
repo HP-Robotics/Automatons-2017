@@ -39,6 +39,8 @@ public class Robot extends IterativeRobot {
 	Button gearInButton;
 	
 	Button xButton;
+	Button yButton;
+	
 	
 	TeleopMode teleopMode;
 	TestMode testMode;
@@ -46,11 +48,11 @@ public class Robot extends IterativeRobot {
 	RobotDrive robotDrive;
 	RobotDrive opponentDrive;
     OurCANTalon shooter;
-	OurVictorSP intake;
-	OurVictorSP uptake;
+	OurCANTalon intake;
+	OurCANTalon uptake;
 	
-	OurVictorSP climbMotor1;
-	OurVictorSP climbMotor2;
+	OurCANTalon climbMotor1;
+	OurCANTalon climbMotor2;
 	
 	OurCANTalon subShooter;
 	
@@ -84,10 +86,18 @@ public class Robot extends IterativeRobot {
 	final int kFrontRightChannel = 2;
 	final int kRearRightChannel = 3;
 	
+	
 	final int kOppFrontLeftChannel = 40;
 	final int kOppRearLeftChannel = 41;
 	final int kOppFrontRightChannel = 42;
 	final int kOppRearRightChannel = 43;
+	
+	final int kShooter1Channel = 0;
+	final int kShooter2Channel = 1;
+	final int kClimb1Channel = 2;
+	final int kClimb2Channel = 3;
+	final int kIntakeChannel = 4;
+	final int kUptakeChannel = 5;
 	
 	//joystick zero-sensitivity threshold
 	final double kStickThreshold = 0.15;
@@ -136,6 +146,7 @@ public class Robot extends IterativeRobot {
 		gearInButton = new Button();
     	
 		xButton = new Button();
+		yButton = new Button();
         intakeState = new ToggleSwitch();
         shooterState = new ToggleSwitch();
 		
@@ -153,14 +164,14 @@ public class Robot extends IterativeRobot {
 		opponentDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		opponentDrive.setExpiration(0.1);
 		
-        shooter = new OurCANTalon(1);
-        intake = new OurVictorSP(4);
-        uptake = new OurVictorSP(5);
+        shooter = new OurCANTalon(kShooter2Channel);
+        intake = new OurCANTalon(kIntakeChannel);
+        uptake = new OurCANTalon(kUptakeChannel);
         
-        climbMotor1 = new OurVictorSP(7);
-        climbMotor2 = new OurVictorSP(8);
+        climbMotor1 = new OurCANTalon(kClimb1Channel);
+        climbMotor2 = new OurCANTalon(kClimb2Channel);
         
-        subShooter = new OurCANTalon(0);
+        subShooter = new OurCANTalon(kShooter1Channel);
         subShooter.absoluteFeedback();
         subShooter.reverseSensor(true);
 		
