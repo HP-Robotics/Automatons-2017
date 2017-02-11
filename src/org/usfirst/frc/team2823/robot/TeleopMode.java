@@ -44,14 +44,14 @@ public class TeleopMode {
 		//get gyro angle
 		double t = -robot.gyro.getAngle();
 		
-		System.out.println("gyro " + t + "; encoder r " + robot.encoderThread.getR());
-		
 		//update which drive mode the robot is in
 		mode = setDriveMode();
 		
 		//update whether rotation PID is enabled
 		/** CHANGE NAME? GOOD ENOUGH?**/
 		setDrivePIDs();
+		
+		//System.out.println("x: " + robot.encoderThread.getX() + "y: " + robot.encoderThread.getY());
 		
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
@@ -68,7 +68,7 @@ public class TeleopMode {
 		}*/
 		
 		//drive robot using calculated values
-		//robot.robotDrive.mecanumDrive_Cartesian(x, y, z, t);
+		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
 	
@@ -131,7 +131,6 @@ public class TeleopMode {
 	public void setDrivePIDs() {
 		switch(mode) {
  		case ROBOT:		//ROBOT mode, no PIDs
-			robot.rControl.reset();
 			if (robot.rControl.isEnabled()) {
 				robot.rControl.reset();
 				robot.rControl.closeLog();
@@ -140,7 +139,6 @@ public class TeleopMode {
  			break;
  		
  		case FIELD:		//FIELD mode, no PIDs
-			robot.rControl.reset();
 			if (robot.rControl.isEnabled()) {
 				robot.rControl.reset();
 				robot.rControl.closeLog();
@@ -149,7 +147,6 @@ public class TeleopMode {
  			break;
  		
  		case INTAKE:	//INTAKE mode, PIDing along direction of travel
-			robot.rControl.enable();
 			if (!robot.rControl.isEnabled()) {
 				robot.rControl.enable();
 				robot.rControl.enableLog("intake.csv");
@@ -158,7 +155,6 @@ public class TeleopMode {
  			break;
  		
  		case GEAR_OUT:	//GEAR_OUT mode, PIDing to the nearest airship lift
-			robot.rControl.enable();
 			if (!robot.rControl.isEnabled()) {
 				robot.rControl.enable();
 				robot.rControl.enableLog("gearout.csv");
@@ -167,8 +163,8 @@ public class TeleopMode {
  			break;
  		
  		case GEAR_IN:	//GEAR_IN mode, PIDing to the feeder station
-			robot.rControl.enable();
 			if (!robot.rControl.isEnabled()) {
+				robot.rControl.setSetpoint(1.5707);
 				robot.rControl.enable();
 				robot.rControl.enableLog("gearin.csv");
 				System.out.println("GearIn");
@@ -195,7 +191,7 @@ public class TeleopMode {
 			break;
 		
 		case INTAKE:
-			robot.rControl.setSetpoint(getTrajectoryAngle() * -27);
+			robot.rControl.setSetpoint(getTrajectoryAngle());
 			
 			robot.setDriveX(x);
 			robot.setDriveY(y);
@@ -236,7 +232,7 @@ public class TeleopMode {
 		
 		//if the output is not defined or the change in position is very small (standing still), PID to the current rotation
 		if(Double.isNaN(t) || Math.abs(dp) < robot.kIntakeRotationThreshold) {
-			return robot.gyro.getAngle();
+			return robot.encoderThread.getR();
 		}
 		
 		return t;
