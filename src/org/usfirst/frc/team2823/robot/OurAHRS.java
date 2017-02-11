@@ -10,17 +10,17 @@ package org.usfirst.frc.team2823.robot;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
 public class OurAHRS extends AHRS {
-	final double kFieldRotation = 90;
+	final float kFieldRotation = 90;
 
 	public OurAHRS() {
 		super(I2C.Port.kOnboard);
 	}
 	
-	public double getFusedHeading() {
+	public float getFusedHeading() {
 		return super.getFusedHeading() - kFieldRotation;
 	}
 	
-	public double getCompassHeading() {
+	public float getCompassHeading() {
 		return super.getCompassHeading() - kFieldRotation;
 	}
 	
