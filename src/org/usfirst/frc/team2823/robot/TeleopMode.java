@@ -23,7 +23,7 @@ public class TeleopMode {
 	}
 	
 	public void teleopInit() {
-    	if(robot.stick1.getName().contains("3D")){
+    	if(robot.stick1.getName().contains("3D") || robot.stick1.getName().isEmpty()){
     		robot.driverStick = robot.stick1;
     		robot.operatorStick = robot.stick2;
     	} else {
@@ -100,7 +100,7 @@ public class TeleopMode {
 		
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 		robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
-		System.out.println(opx + " " + opy + " " + opr + " " + opt);
+		//System.out.println(opx + " " + opy + " " + opr + " " + opt);
 	}
 	
 	//select a drive mode based on button input
