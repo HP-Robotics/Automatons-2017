@@ -57,12 +57,12 @@ public class Robot extends IterativeRobot {
 	EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
-	GyroPIDSource rSource;
+	EncoderPIDSource rSource;
 	
 	EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
 	EncoderPIDOutput yOutput;
-	GyroPIDOutput rOutput;
+	EncoderPIDOutput rOutput;
 	
 	AdvancedPIDController vControl;
 	AdvancedPIDController xControl;
@@ -87,6 +87,9 @@ public class Robot extends IterativeRobot {
 	
 	//distance between left and right encoder wheels
 	final double kEncoderWheelDistance = 0.4;
+	
+	//robot initial rotation on field
+	final double kFieldRotation = 90;
 
 	// The channels on the driver station that the joysticks connect to
 	final int kJoystick1Channel = 0;
@@ -129,8 +132,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("TestMode", false);
 		
         robotDrive = new RobotDrive(kFrontLeftChannel, kRearLeftChannel, kFrontRightChannel, kRearRightChannel);
-		//robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
-        robotDrive.setInvertedMotor(MotorType.kRearRight, true);
+		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
 		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		robotDrive.setExpiration(0.1);
 		
@@ -150,24 +152,27 @@ public class Robot extends IterativeRobot {
         
         subShooter.setProfile(0);
         
+        ahrs = new OurAHRS();
+        gyro = new OurADXRS450_Gyro();
+        
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
 		
 		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V, encoderThread.getR());
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		rSource = new GyroPIDSource(gyro);
+		rSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.R);
 		
 		vOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.V, encoderThread.getR());
 		xOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.X);
 		yOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.Y);
-		rOutput = new GyroPIDOutput(this);
+		rOutput = new EncoderPIDOutput(this, EncoderPIDOutput.Axis.R);
 		
 		//old 0.0045, 0.000001, 0.35
 		vControl = new AdvancedPIDController(0.004, 0.000001, 0.4, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.004, 0.000001, 0.4, ySource, yOutput, 0.01);
-		rControl = new AdvancedPIDController(0.002, 0.000001, 0.5, rSource, rOutput, 0.01);
+		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
         
         SmartDashboard.putNumber("Shooter", 0.0);
         SmartDashboard.putNumber("Intake", 0.0);
@@ -226,6 +231,11 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopInit() {
     	
+    	if(SmartDashboard.getBoolean("TestMode", false)) {
+    		testMode.testInit();
+    	} else {
+    		teleopMode.teleopInit();
+    	}
     }
     
     @Override
@@ -265,7 +275,7 @@ public class Robot extends IterativeRobot {
 		
 		vSource.setDirection(t);
 		vOutput.setDirection(t);
-		vControl.setSetpoint(dp * -27);
+		vControl.setSetpoint(-dp);
 	}
 	
 	//get drive values for use in autonomous and teleop

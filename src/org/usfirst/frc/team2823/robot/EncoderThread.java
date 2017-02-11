@@ -10,6 +10,7 @@ public class EncoderThread extends Thread {
 	Encoder rEncoder;
 	Encoder cEncoder;
 	
+	final double kFieldRotation = 90;
 	boolean running = true;
 	
 	double lf = 0;
@@ -92,7 +93,7 @@ public class EncoderThread extends Thread {
 	
 	public double getR() {
 		synchronized(this) {
-			return r;
+			return r  - (kFieldRotation * Math.PI / 180);
 		}
 	}
 }
