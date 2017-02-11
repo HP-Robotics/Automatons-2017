@@ -23,23 +23,30 @@ public class TeleopMode {
 	}
 	
 	public void teleopInit() {
-		
+    	if(robot.stick1.getName().contains("3D")){
+    		robot.driverStick = robot.stick1;
+    		robot.operatorStick = robot.stick2;
+    	} else {
+    		robot.driverStick = robot.stick2;
+    		robot.operatorStick = robot.stick1;
+    	}
+    	
 	}
 	
 	public void teleopPeriodic() {
 		//update buttons
-		robot.robotButton.update(robot.stick1.getRawButton(2));
-		robot.fieldButton.update(robot.stick1.getRawButton(5));
-		robot.intakeButton.update(robot.stick1.getRawButton(3));
-		robot.gearOutButton.update(robot.stick1.getRawButton(6));
-		robot.gearInButton.update(robot.stick1.getRawButton(4));
+		robot.robotButton.update(robot.driverStick.getRawButton(2));
+		robot.fieldButton.update(robot.driverStick.getRawButton(5));
+		robot.intakeButton.update(robot.driverStick.getRawButton(3));
+		robot.gearOutButton.update(robot.driverStick.getRawButton(6));
+		robot.gearInButton.update(robot.driverStick.getRawButton(4));
 		
-		robot.xButton.update(robot.stick2.getRawButton(1));
+		robot.xButton.update(robot.operatorStick.getRawButton(1));
 		
 		//prevent joysticks from driving robot when within a threshold value of zero
-		double x = Math.abs(robot.stick1.getX()) < robot.kStickThreshold ? 0.0 : robot.stick1.getX();
-		double y = Math.abs(robot.stick1.getY()) < robot.kStickThreshold ? 0.0 : robot.stick1.getY();
-		double r = Math.abs(robot.stick1.getZ()) < robot.kStickThreshold ? 0.0 : robot.stick1.getZ();
+		double x = Math.abs(robot.driverStick.getX()) < robot.kStickThreshold ? 0.0 : robot.driverStick.getX();
+		double y = Math.abs(robot.driverStick.getY()) < robot.kStickThreshold ? 0.0 : robot.driverStick.getY();
+		double r = Math.abs(robot.driverStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.driverStick.getZ();
 		
 		//get gyro angle
 		double t = -robot.gyro.getAngle();
