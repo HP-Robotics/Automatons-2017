@@ -308,7 +308,6 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   
   public void setRobot (Robot robot2){
 	  robot = robot2;
-	  m_safeArm = true;
   }
   
   //QUICKCLICK motion planning methods
@@ -1045,10 +1044,10 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   //QUICKCLICK enableLog
   public void enableLog(String file) {
 	  try {
-		if(Files.exists(Paths.get("/tmp"))) {
-			m_f = new File("/tmp/" + file);
-		} else {
+		if(Files.exists(Paths.get("/home/lvuser"))) {
 			m_f = new File("home/lvuser/" + file);
+		} else {
+			m_f = new File("/tmp/" + file);
 		}
 		
   		if(!m_f.exists()) {
