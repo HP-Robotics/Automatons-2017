@@ -11,6 +11,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.TimerTask;
 import java.util.LinkedList;
 
@@ -1043,8 +1045,12 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   //QUICKCLICK enableLog
   public void enableLog(String file) {
 	  try {
-  		m_f = new File("home/lvuser/" + file);
-  		
+		if(Files.exists(Paths.get("/tmp"))) {
+			m_f = new File("/tmp/" + file);
+		} else {
+			m_f = new File("home/lvuser/" + file);
+		}
+		
   		if(!m_f.exists()) {
   			m_f.createNewFile();
   		}
