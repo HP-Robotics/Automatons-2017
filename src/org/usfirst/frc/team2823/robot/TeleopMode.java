@@ -42,6 +42,8 @@ public class TeleopMode {
 		robot.gearInButton.update(robot.driverStick.getRawButton(4));
 		
 		robot.xButton.update(robot.operatorStick.getRawButton(1));
+		robot.yButton.update(robot.operatorStick.getRawButton(2));
+		robot.intakeState.update(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225);
 		
 		//prevent joysticks from driving robot when within a threshold value of zero
 		double x = Math.abs(robot.driverStick.getX()) < robot.kStickThreshold ? 0.0 : robot.driverStick.getX();
@@ -76,7 +78,23 @@ public class TeleopMode {
 		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
+		
+		if(robot.intakeState.on()){
+			robot.intake.set(1.0);
+		}else{
+			robot.intake.set(0.0);
+		}
+		
+		if(robot.yButton.on()){
+			robot.climbMotor1.set(0.8);//not production values
+			robot.climbMotor2.set(0.8);
+		} else {
+			robot.climbMotor1.set(0.0);
+			robot.climbMotor2.set(0.0);
+		}
+		
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
+		
 	}
 	
 	//select a drive mode based on button input
