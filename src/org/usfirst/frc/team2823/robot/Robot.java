@@ -28,6 +28,8 @@ public class Robot extends IterativeRobot {
 	//declare objects
 	Joystick stick1;
 	Joystick stick2;
+	Joystick driverStick;
+	Joystick operatorStick;
 	
 	Button robotButton;
 	Button fieldButton;
@@ -144,7 +146,7 @@ public class Robot extends IterativeRobot {
         climbMotor2 = new OurVictorSP(8);
         
         subShooter = new OurCANTalon(0);
-        subShooter.relativeFeedback();
+        subShooter.absoluteFeedback();
         subShooter.reverseSensor(true);
 		
         subShooter.configNominalOutputVoltage(0.0, 0.0);
@@ -180,10 +182,10 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Climb 1", 0.0);
         SmartDashboard.putNumber("Climb 2", 0.0);
         
-        SmartDashboard.putNumber("P", 0.0);
-        SmartDashboard.putNumber("I", 0.0);
-        SmartDashboard.putNumber("D", 0.0);
-        SmartDashboard.putNumber("F", 0.0);
+        SmartDashboard.putNumber("P", 0.03);
+        SmartDashboard.putNumber("I", 0.000006);
+        SmartDashboard.putNumber("D", 1.0);
+        SmartDashboard.putNumber("F", 0.025);
         SmartDashboard.putNumber("Setpoint", 0.0);
         
         ahrs = new OurAHRS();
