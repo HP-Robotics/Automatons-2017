@@ -145,7 +145,7 @@ public class Robot extends IterativeRobot {
         
         subShooter = new OurCANTalon(0);
         subShooter.relativeFeedback();
-        subShooter.reverseSensor(false);
+        subShooter.reverseSensor(true);
 		
         subShooter.configNominalOutputVoltage(0.0, 0.0);
         subShooter.configPeakOutputVoltage(12.0, 0.0);
@@ -188,6 +188,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("P", 0.0);
         SmartDashboard.putNumber("I", 0.0);
         SmartDashboard.putNumber("D", 0.0);
+        SmartDashboard.putNumber("F", 0.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
         
         //shooter.changeControlMode(CANTalon.TalonControlMode.Speed);
