@@ -58,7 +58,6 @@ public class Robot extends IterativeRobot {
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
 	GyroPIDSource rSource;
-	CANTalonPIDSource shooterEncoderSource;
 	
 	EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
@@ -69,7 +68,6 @@ public class Robot extends IterativeRobot {
 	AdvancedPIDController xControl;
 	AdvancedPIDController yControl;
 	AdvancedPIDController rControl;
-	AdvancedPIDController shooterControl;
 	
 	ToggleSwitch intakeState;
 	ToggleSwitch shooterState;
@@ -171,14 +169,6 @@ public class Robot extends IterativeRobot {
 		yControl = new AdvancedPIDController(0.004, 0.000001, 0.4, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(0.002, 0.000001, 0.5, rSource, rOutput, 0.01);
         
-        //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        shooter.absoluteFeedback();
-        //shooter.configEncoderCodesPerRev(1);
-        
-        shooterEncoderSource = new CANTalonPIDSource(shooter);
-        shooterControl = new AdvancedPIDController(0.0, 0.0, 0.0, shooterEncoderSource, shooter, 0.01);
-        shooterControl.setOutputRange(0.0, 1.0);
-        
         SmartDashboard.putNumber("Shooter", 0.0);
         SmartDashboard.putNumber("Intake", 0.0);
         SmartDashboard.putNumber("Uptake", 0.0);
@@ -190,10 +180,6 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("D", 0.0);
         SmartDashboard.putNumber("F", 0.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
-        
-        //shooter.changeControlMode(CANTalon.TalonControlMode.Speed);
-        //shooter.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        //shooter.setPID(1, 1, 1);
         
         ahrs = new OurAHRS();
         gyro = new OurADXRS450_Gyro();

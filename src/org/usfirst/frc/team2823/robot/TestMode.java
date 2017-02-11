@@ -78,11 +78,6 @@ public class TestMode {
 		robot.intakeState.update(robot.stick1.getRawButton(1));
     	robot.shooterState.update(robot.stick1.getRawButton(2));
     	
-    	//System.out.println("pos: " + shooter.getEncPosition() + " enc-rate: " + shooter.getEncVelocity() + " pid-rate: " + shooterEncoderSource.pidGet());
-    	robot.shooterEncoderSource.pidGet();
-    	
-    	robot.shooterControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-    	
     		if(robot.intakeState.on()) {
     			robot.climbMotor1.set(SmartDashboard.getNumber("Climb 1", 0.0));
     			robot.climbMotor2.set(SmartDashboard.getNumber("Climb 2", 0.0));
@@ -116,7 +111,6 @@ public class TestMode {
         		closeLog();
         	}
     		System.out.println("Speed: "+ robot.subShooter.getSpeed() + ", Division: "+ robot.subShooter.getOutputVoltage()/robot.subShooter.getBusVoltage());
-    		//shooter.enableControl();
     	
 	}
 }
