@@ -35,7 +35,7 @@ public class TestMode {
 	  	m_bw = new BufferedWriter(m_fw);
 	  	
 	  	try {
-	  		m_bw.write("Timestamp, Speed, Setpoint, Error, P, I, D, F \n" );
+	  		m_bw.write("Timestamp, Speed, Setpoint, Error, Output \n" );
 	  		
 	  		m_logEnabled = true;
 	  		
@@ -65,7 +65,16 @@ public class TestMode {
 	}
 	
 	public void testInit(){
-		
+		System.out.println("init");
+    	if(robot.stick1.getName().contains("3D")){
+    		robot.driverStick = robot.stick1;
+    		robot.operatorStick = robot.stick2;
+    		System.out.println("first");
+    	} else {
+    		robot.driverStick = robot.stick2;
+    		robot.operatorStick = robot.stick1;
+    		System.out.println("second");
+    	}
 	}
 	
 	public void testPeriodic(){
@@ -75,8 +84,8 @@ public class TestMode {
 		robot.subShooter.setD(SmartDashboard.getNumber("D", 0.0));
 		robot.subShooter.setF(SmartDashboard.getNumber("F", 0.0));
 		
-		robot.intakeState.update(robot.stick1.getRawButton(1));
-    	robot.shooterState.update(robot.stick1.getRawButton(2));
+		robot.intakeState.update(robot.operatorStick.getRawButton(1));
+    	robot.shooterState.update(robot.operatorStick.getRawButton(2));
     	
     		if(robot.intakeState.on()) {
     			robot.climbMotor1.set(SmartDashboard.getNumber("Climb 1", 0.0));
@@ -97,8 +106,8 @@ public class TestMode {
 	    		enableLog("Shooter.csv");
 	    		if(m_logEnabled) {
 	    	    	  try{
-	    	    		  m_bw.write(Timer.getFPGATimestamp() + ", " + robot.subShooter.getSpeed() +  ", " + robot.subShooter.getSetpoint() +", " + (robot.subShooter.getClosedLoopError()/(4096.0/600.0))+ ", ");
-	    	    		  m_bw.write(robot.subShooter.getP()+ ", "+ robot.subShooter.getI()+", "+ robot.subShooter.getD()+", "+ robot.subShooter.getF()+"\n");
+	    	    		  m_bw.write(Timer.getFPGATimestamp() + ", " + robot.subShooter.getSpeed() +  ", " + robot.subShooter.getSetpoint() +", ");
+	    	    		  m_bw.write((robot.subShooter.getClosedLoopError()/(4096.0/600.0))+ ", "+robot.subShooter.getOutputVoltage()+"\n");
 	    	    	  } catch(IOException e) {
 	    	    		  System.out.println("PID logging died on us");
 	    	    		  m_logEnabled = false;
