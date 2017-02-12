@@ -24,7 +24,7 @@ public class EncoderPIDSource implements PIDSource {
 		case V:
 			double dx = x - e.getX();
 			double dy = y - e.getY();
-			return -Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+			return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		case X:
 			return e.getX();
 		case Y:

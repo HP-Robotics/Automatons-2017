@@ -27,8 +27,8 @@ public class EncoderPIDOutput implements PIDOutput {
 				double dy = y - e.getY();
 				double t = Math.atan2(dy, dx);
 				
-				robot.setDriveX(output * Math.cos(t));
-				robot.setDriveY(output * Math.sin(t));
+				robot.setDriveX(output * Math.sin(t));
+				robot.setDriveY(output * -Math.cos(t));
 				break;
 			case X:
 				robot.setDriveX(output);
