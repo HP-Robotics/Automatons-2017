@@ -32,7 +32,7 @@ public class ShootAutonomous extends Autonomous {
 		}
 		
 		//update heading regardless of stage
-		robot.setDriveT(robot.gyro.getAngle());
+		robot.setDriveT(-robot.gyro.getAngle());
 		
 		//set drive motor powers after PIDs have run, regardless of stage
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
