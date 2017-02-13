@@ -41,8 +41,8 @@ public class Robot extends IterativeRobot {
 	Button xButton;
 	Button yButton;
 	
-	
 	TeleopMode teleopMode;
+	ShootAutonomous autonomous;
 	TestMode testMode;
 	
 	RobotDrive robotDrive;
@@ -151,6 +151,7 @@ public class Robot extends IterativeRobot {
         shooterState = new ToggleSwitch();
 		
 		teleopMode = new TeleopMode(this);
+		autonomous = new ShootAutonomous(this);
         testMode = new TestMode(this);
         SmartDashboard.putBoolean("TestMode", false);
 		
@@ -198,7 +199,7 @@ public class Robot extends IterativeRobot {
 		rOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.R);
 		
 		//old 0.0045, 0.000001, 0.35
-		vControl = new AdvancedPIDController(0.004, 0.000001, 0.4, vSource, vOutput, 0.01);
+		vControl = new AdvancedPIDController(0.006, 0.000001, 0.2, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.004, 0.0001, 0.4, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
@@ -241,14 +242,14 @@ public class Robot extends IterativeRobot {
 	 * If using the SendableChooser make sure to add them to the chooser code above as well.
 	 */
     public void autonomousInit() {
-    	
+    	autonomous.init();
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	
+    	autonomous.periodic();
     }
 
     /**
