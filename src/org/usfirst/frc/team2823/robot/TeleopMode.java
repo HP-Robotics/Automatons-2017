@@ -50,13 +50,13 @@ public class TeleopMode {
 		double y = Math.abs(robot.driverStick.getY()) < robot.kStickThreshold ? 0.0 : robot.driverStick.getY();
 		double r = Math.abs(robot.driverStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.driverStick.getZ();
 		
-		double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
-		double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
-		double opr = Math.abs(robot.opponentStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getZ();
+		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
+		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
+		//double opr = Math.abs(robot.opponentStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getZ();
 		
 		//get gyro angle
 		double t = -robot.gyro.getAngle();
-		double opt = -(robot.opponentGyro.getAngle() + 90);
+		//double opt = -(robot.opponentGyro.getAngle() + 90);
 		
 		//update which drive mode the robot is in
 		mode = setDriveMode();
@@ -99,7 +99,7 @@ public class TeleopMode {
 		}
 		
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
-		robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
+		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
 		//System.out.println(opx + " " + opy + " " + opr + " " + opt);
 	}
 	

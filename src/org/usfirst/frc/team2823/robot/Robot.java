@@ -30,7 +30,7 @@ public class Robot extends IterativeRobot {
 	Joystick stick2;
 	Joystick driverStick;
 	Joystick operatorStick;
-	Joystick opponentStick;
+	//Joystick opponentStick;
 	
 	Button robotButton;
 	Button fieldButton;
@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
 	TestMode testMode;
 	
 	RobotDrive robotDrive;
-	RobotDrive opponentDrive;
+	//RobotDrive opponentDrive;
     OurCANTalon shooter;
 	OurCANTalon intake;
 	OurCANTalon uptake;
@@ -59,7 +59,7 @@ public class Robot extends IterativeRobot {
 	EncoderThread encoderThread;
 	OurAHRS ahrs;
 	OurADXRS450_Gyro gyro;
-	AnalogGyro opponentGyro;
+	//AnalogGyro opponentGyro;
 	
 	EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
@@ -87,10 +87,10 @@ public class Robot extends IterativeRobot {
 	final int kRearRightChannel = 3;
 	
 	
-	final int kOppFrontLeftChannel = 40;
-	final int kOppRearLeftChannel = 41;
-	final int kOppFrontRightChannel = 42;
-	final int kOppRearRightChannel = 43;
+	//final int kOppFrontLeftChannel = 40;
+	//final int kOppRearLeftChannel = 41;
+	//final int kOppFrontRightChannel = 42;
+	//final int kOppRearRightChannel = 43;
 	
 	final int kShooter1Channel = 0;
 	final int kShooter2Channel = 1;
@@ -137,7 +137,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	driverStick = stick1 = new Joystick(kJoystick1Channel);
     	operatorStick = stick2 = new Joystick(kJoystick2Channel);
-    	opponentStick = new Joystick(kJoystickOppChannel);
+    	//opponentStick = new Joystick(kJoystickOppChannel);
 		
 		robotButton = new Button();
 		fieldButton = new Button();
@@ -160,10 +160,10 @@ public class Robot extends IterativeRobot {
 		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		robotDrive.setExpiration(0.1);
 		
-		opponentDrive = new RobotDrive(kOppFrontLeftChannel, kOppRearLeftChannel, kOppFrontRightChannel, kOppRearRightChannel);
-		opponentDrive.setInvertedMotor(MotorType.kFrontLeft, true);
-		opponentDrive.setInvertedMotor(MotorType.kRearLeft, true);
-		opponentDrive.setExpiration(0.1);
+		//opponentDrive = new RobotDrive(kOppFrontLeftChannel, kOppRearLeftChannel, kOppFrontRightChannel, kOppRearRightChannel);
+		//opponentDrive.setInvertedMotor(MotorType.kFrontLeft, true);
+		//opponentDrive.setInvertedMotor(MotorType.kRearLeft, true);
+		//opponentDrive.setExpiration(0.1);
 		
         shooter = new OurCANTalon(kShooter2Channel);
         intake = new OurCANTalon(kIntakeChannel);
@@ -183,7 +183,7 @@ public class Robot extends IterativeRobot {
         
         ahrs = new OurAHRS();
         gyro = new OurADXRS450_Gyro();
-        opponentGyro = new AnalogGyro(40);
+        //opponentGyro = new AnalogGyro(40);
         
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
@@ -224,7 +224,7 @@ public class Robot extends IterativeRobot {
 
         try{
         	gyro.reset();
-        	opponentGyro.reset();
+        	//opponentGyro.reset();
         }catch(Exception e) {
         	System.out.println("Gyro not work");
         }
@@ -292,7 +292,7 @@ public class Robot extends IterativeRobot {
 		rControl.disable();
 		
 		robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
-		opponentDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
+		//opponentDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
 	}
 	
 	//PID along a straight line to the given x and y values
