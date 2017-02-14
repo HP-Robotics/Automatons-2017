@@ -79,14 +79,15 @@ public class Robot extends IterativeRobot {
 	ToggleSwitch intakeState;
 	ToggleSwitch shooterState;
 	
+	CSVLogger log;
+	
 	//declare constants
 	//simulator wheel PWM channels
 	final int kFrontLeftChannel = 0;
 	final int kRearLeftChannel = 1;
 	final int kFrontRightChannel = 2;
 	final int kRearRightChannel = 3;
-	
-	
+		
 	final int kOppFrontLeftChannel = 40;
 	final int kOppRearLeftChannel = 41;
 	final int kOppFrontRightChannel = 42;
@@ -221,7 +222,10 @@ public class Robot extends IterativeRobot {
         //compressor.setClosedLoopControl(true);
         
         //solenoid1 = new DoubleSolenoid(0,1);
-
+        
+        //use System.getProperty("user.home") to get path to home directory
+        log = new CSVLogger("/tmp");
+        
         try{
         	gyro.reset();
         	opponentGyro.reset();
