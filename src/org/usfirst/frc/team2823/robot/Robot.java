@@ -2,7 +2,9 @@ package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -30,36 +32,38 @@ public class Robot extends IterativeRobot {
 	Joystick stick2;
 	Joystick driverStick;
 	Joystick operatorStick;
-	Joystick opponentStick;
+	//Joystick opponentStick;
 	
 	Button robotButton;
 	Button fieldButton;
 	Button intakeButton;
 	Button gearOutButton;
 	Button gearInButton;
+	Button shootTrigger;
+	Button shooterWheelsButton;
 	
 	Button xButton;
-	Button yButton;
+	Button climbButton;
 	
 	TeleopMode teleopMode;
 	ShootAutonomous autonomous;
 	TestMode testMode;
 	
 	RobotDrive robotDrive;
-	RobotDrive opponentDrive;
-    OurCANTalon shooter;
+	//RobotDrive opponentDrive;
+    OurCANTalon bottomShooter;
 	OurCANTalon intake;
 	OurCANTalon uptake;
 	
 	OurCANTalon climbMotor1;
 	OurCANTalon climbMotor2;
 	
-	OurCANTalon subShooter;
+	OurCANTalon topShooter;
 	
 	EncoderThread encoderThread;
 	OurAHRS ahrs;
 	OurADXRS450_Gyro gyro;
-	AnalogGyro opponentGyro;
+	//AnalogGyro opponentGyro;
 	
 	EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
@@ -83,39 +87,39 @@ public class Robot extends IterativeRobot {
 	
 	//declare constants
 	//simulator wheel PWM channels
-	final int kFrontLeftChannel = 0;
-	final int kRearLeftChannel = 1;
-	final int kFrontRightChannel = 2;
-	final int kRearRightChannel = 3;
-		
-	final int kOppFrontLeftChannel = 40;
-	final int kOppRearLeftChannel = 41;
-	final int kOppFrontRightChannel = 42;
-	final int kOppRearRightChannel = 43;
+	final int FRONT_LEFT_CHANNEL = 0;
+	final int REAR_LEFT_CHANNEL = 1;
+	final int FRONT_RIGHT_CHANNEL = 2;
+	final int REAR_RIGHT_CHANNEL = 3;
 	
-	final int kShooter1Channel = 0;
-	final int kShooter2Channel = 1;
-	final int kClimb1Channel = 2;
-	final int kClimb2Channel = 3;
-	final int kIntakeChannel = 4;
-	final int kUptakeChannel = 5;
+	//final int kOppFrontLeftChannel = 40;
+	//final int kOppRearLeftChannel = 41;
+	//final int kOppFrontRightChannel = 42;
+	//final int kOppRearRightChannel = 43;
+	
+	final int TOP_SHOOTER_CHANNEL = 0;
+	final int BOTTOM_SHOOTER_CHANNEL = 1;
+	final int CLIMB1_CHANNEL = 2;
+	final int CLIMB2_CHANNEL = 3;
+	final int INTAKE_CHANNEL = 4;
+	final int UPTAKE_CHANNEL = 5;
 	
 	//joystick zero-sensitivity threshold
-	final double kStickThreshold = 0.15;
+	final double STICKTHRESHOLD = 0.15;
 	
 	//intake rotation-sensitivity threshold
-	final double kIntakeRotationThreshold = 1.0;
+	final double INTAKE_ROTATION_THRESHOLD = 1.0;
 	
 	//distance between left and right encoder wheels
-	final double kEncoderWheelDistance = 0.4;
+	final double ENCODER_WHEEL_DISTANCE = 0.4;
 	
 	//robot initial rotation on field
-	final double kFieldRotation = 90;
+	final double FIELD_ROTATION = 90;
 
 	// The channels on the driver station that the joysticks connect to
-	final int kJoystick1Channel = 0;
-	final int kJoystick2Channel = 1;
-	final int kJoystickOppChannel = 2;
+	final int JOYSTICK1_CHANNEL = 0;
+	final int JOYSTICK2_CHANNEL = 1;
+	final int JOYSTICKOPP_CHANNEL = 2;
 	
 	//declare variables
 	//drive values
@@ -136,18 +140,19 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	driverStick = stick1 = new Joystick(kJoystick1Channel);
-    	operatorStick = stick2 = new Joystick(kJoystick2Channel);
-    	opponentStick = new Joystick(kJoystickOppChannel);
+    	driverStick = stick1 = new Joystick(JOYSTICK1_CHANNEL);
+    	operatorStick = stick2 = new Joystick(JOYSTICK2_CHANNEL);
+    	//opponentStick = new Joystick(kJoystickOppChannel);
 		
 		robotButton = new Button();
 		fieldButton = new Button();
 		intakeButton = new Button();
 		gearOutButton = new Button();
 		gearInButton = new Button();
+		shootTrigger = new Button();
     	
-		xButton = new Button();
-		yButton = new Button();
+		shooterWheelsButton = new Button();
+		climbButton = new Button();
         intakeState = new ToggleSwitch();
         shooterState = new ToggleSwitch();
 		
@@ -156,35 +161,52 @@ public class Robot extends IterativeRobot {
         testMode = new TestMode(this);
         SmartDashboard.putBoolean("TestMode", false);
 		
-        robotDrive = new RobotDrive(kFrontLeftChannel, kRearLeftChannel, kFrontRightChannel, kRearRightChannel);
+        robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
 		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
 		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		robotDrive.setExpiration(0.1);
 		
-		opponentDrive = new RobotDrive(kOppFrontLeftChannel, kOppRearLeftChannel, kOppFrontRightChannel, kOppRearRightChannel);
-		opponentDrive.setInvertedMotor(MotorType.kFrontLeft, true);
-		opponentDrive.setInvertedMotor(MotorType.kRearLeft, true);
-		opponentDrive.setExpiration(0.1);
+		//opponentDrive = new RobotDrive(kOppFrontLeftChannel, kOppRearLeftChannel, kOppFrontRightChannel, kOppRearRightChannel);
+		//opponentDrive.setInvertedMotor(MotorType.kFrontLeft, true);
+		//opponentDrive.setInvertedMotor(MotorType.kRearLeft, true);
+		//opponentDrive.setExpiration(0.1);
 		
-        shooter = new OurCANTalon(kShooter2Channel);
-        intake = new OurCANTalon(kIntakeChannel);
-        uptake = new OurCANTalon(kUptakeChannel);
+       
+        intake = new OurCANTalon(INTAKE_CHANNEL);
+        uptake = new OurCANTalon(UPTAKE_CHANNEL);
         
-        climbMotor1 = new OurCANTalon(kClimb1Channel);
-        climbMotor2 = new OurCANTalon(kClimb2Channel);
+        climbMotor1 = new OurCANTalon(CLIMB1_CHANNEL);
+        climbMotor2 = new OurCANTalon(CLIMB2_CHANNEL);
         
-        subShooter = new OurCANTalon(kShooter1Channel);
-        subShooter.absoluteFeedback();
-        subShooter.reverseSensor(true);
+        topShooter = new OurCANTalon(TOP_SHOOTER_CHANNEL);
+        topShooter.absoluteFeedback();
+        topShooter.reverseSensor(true); 
 		
-        subShooter.configNominalOutputVoltage(0.0, 0.0);
-        subShooter.configPeakOutputVoltage(12.0, 0.0);
+        topShooter.configNominalOutputVoltage(0.0, 0.0);
+        topShooter.configPeakOutputVoltage(12.0, 0.0);
         
-        subShooter.setProfile(0);
+        topShooter.setP(0.03);
+        topShooter.setI(0.000006);
+        topShooter.setD(1.0);
+        topShooter.setF(0.025);
+        topShooter.setProfile(0);
+        
+        bottomShooter = new OurCANTalon(BOTTOM_SHOOTER_CHANNEL);
+        bottomShooter.absoluteFeedback();
+        bottomShooter.reverseSensor(true); 
+		
+        bottomShooter.configNominalOutputVoltage(0.0, 0.0);
+        bottomShooter.configPeakOutputVoltage(12.0, 0.0);
+        
+        bottomShooter.setP(0.03);
+        bottomShooter.setI(0.000006);
+        bottomShooter.setD(1.0);
+        bottomShooter.setF(0.025);
+        bottomShooter.setProfile(0);
         
         ahrs = new OurAHRS();
         gyro = new OurADXRS450_Gyro();
-        opponentGyro = new AnalogGyro(40);
+        //opponentGyro = new AnalogGyro(40);
         
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
@@ -228,7 +250,7 @@ public class Robot extends IterativeRobot {
         
         try{
         	gyro.reset();
-        	opponentGyro.reset();
+        	//opponentGyro.reset();
         }catch(Exception e) {
         	System.out.println("Gyro not work");
         }
@@ -296,7 +318,7 @@ public class Robot extends IterativeRobot {
 		rControl.disable();
 		
 		robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
-		opponentDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
+		//opponentDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
 	}
 	
 	//PID along a straight line to the given x and y values

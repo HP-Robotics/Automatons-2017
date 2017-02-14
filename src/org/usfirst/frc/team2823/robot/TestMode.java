@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -76,10 +77,10 @@ public class TestMode {
 	
 	public void testPeriodic(){
 		
-		robot.subShooter.setP(SmartDashboard.getNumber("P", 0.0));
-		robot.subShooter.setI(SmartDashboard.getNumber("I", 0.0));
-		robot.subShooter.setD(SmartDashboard.getNumber("D", 0.0));
-		robot.subShooter.setF(SmartDashboard.getNumber("F", 0.0));
+		robot.topShooter.setP(SmartDashboard.getNumber("P", 0.0));
+		robot.topShooter.setI(SmartDashboard.getNumber("I", 0.0));
+		robot.topShooter.setD(SmartDashboard.getNumber("D", 0.0));
+		robot.topShooter.setF(SmartDashboard.getNumber("F", 0.0));
 		
 		robot.intakeState.update(robot.operatorStick.getRawButton(1));
     	robot.shooterState.update(robot.operatorStick.getRawButton(2));
@@ -97,14 +98,14 @@ public class TestMode {
     		}
 
     		if(robot.shooterState.on()){
-	    		robot.subShooter.speedMode();
-	    		robot.subShooter.set(SmartDashboard.getNumber("Setpoint", 0.0));
+	    		robot.topShooter.speedMode();
+	    		robot.topShooter.set(SmartDashboard.getNumber("Setpoint", 0.0));
 	    		System.out.println("Shooting");
 	    		enableLog("Shooter.csv");
 	    		if(m_logEnabled) {
 	    	    	  try{
-	    	    		  m_bw.write(Timer.getFPGATimestamp() + ", " + robot.subShooter.getSpeed() +  ", " + robot.subShooter.getSetpoint() +", ");
-	    	    		  m_bw.write((robot.subShooter.getClosedLoopError()/(4096.0/600.0))+ ", "+robot.subShooter.getOutputVoltage()+"\n");
+	    	    		  m_bw.write(Timer.getFPGATimestamp() + ", " + robot.topShooter.getSpeed() +  ", " + robot.topShooter.getSetpoint() +", ");
+	    	    		  m_bw.write((robot.topShooter.getClosedLoopError()/(4096.0/600.0))+ ", "+robot.topShooter.getOutputVoltage()+"\n");
 	    	    	  } catch(IOException e) {
 	    	    		  System.out.println("PID logging died on us");
 	    	    		  m_logEnabled = false;
@@ -112,11 +113,11 @@ public class TestMode {
 	    	      }
 
     			}else{
-        		robot.subShooter.normalMode();
-        		robot.subShooter.set(SmartDashboard.getNumber("Shooter",0.0));
+        		robot.topShooter.normalMode();
+        		robot.topShooter.set(SmartDashboard.getNumber("Shooter",0.0));
         		closeLog();
         	}
-    		System.out.println("Speed: "+ robot.subShooter.getSpeed() + ", Division: "+ robot.subShooter.getOutputVoltage()/robot.subShooter.getBusVoltage());
+    		System.out.println("Speed: "+ robot.topShooter.getSpeed() + ", Division: "+ robot.topShooter.getOutputVoltage()/robot.topShooter.getBusVoltage());
     	
 	}
 }
