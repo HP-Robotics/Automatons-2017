@@ -8,7 +8,7 @@ public class ShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {60.0, 60.0};
+		double[] timeouts = {60.0, 3.0, 60.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -27,7 +27,11 @@ public class ShootAutonomous extends Autonomous {
 			break;
 		
 		case 1:
-			driveSideways();
+			driveToHopper();
+			break;
+		
+		case 2:
+			driveToShootPosition();
 			break;
 		}
 		
@@ -47,7 +51,7 @@ public class ShootAutonomous extends Autonomous {
 			
 			stageData[stage].entered = true;
 		}
-		System.out.println(robot.encoderThread.getX() + " " + robot.encoderThread.getY());
+		//System.out.println(robot.encoderThread.getX() + " " + robot.vControl.getError());// + robot.encoderThread.getY());
 		
 		//move on once the robot is acceptably close to the target
 		if(Math.abs(robot.vControl.getError()) < 0.1) {
@@ -55,17 +59,35 @@ public class ShootAutonomous extends Autonomous {
 		}
 	}
 	
-	private void driveSideways() {
+	private void driveToHopper() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.driveTo(2.017, -1);
+			robot.driveTo(2.017, -1.0);
 			robot.vControl.enable();
 			
 			stageData[stage].entered = true;
 		}
 		
 		//move on once the robot is acceptably close to the target
-		if(Math.abs(robot.vControl.getError()) < 50) {
+		if(Math.abs(robot.vControl.getError()) < 0.1) {
+			nextStage();
+		}
+	}
+	
+	private void driveToShootPosition() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.driveTo(1.609, -1.0);
+			robot.rControl.setSetpoint(3.14);
+			
+			robot.vControl.enable();
+			robot.rControl.enable();
+			
+			stageData[stage].entered = true;
+		}
+		
+		//move on once the robot is acceptably close to the target
+		if(Math.abs(robot.vControl.getError()) < 0.1) {
 			nextStage();
 		}
 	}
