@@ -187,6 +187,7 @@ public class Robot extends IterativeRobot {
         
 		encoderThread = new EncoderThread(this);
 		encoderThread.start();
+		encoderThread.reset();
 		
 		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
@@ -199,7 +200,7 @@ public class Robot extends IterativeRobot {
 		rOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.R);
 		
 		//old 0.0045, 0.000001, 0.35
-		vControl = new AdvancedPIDController(0.006, 0.000001, 0.2, vSource, vOutput, 0.01);
+		vControl = new AdvancedPIDController(0.3, 0.0001, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.004, 0.0001, 0.4, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);

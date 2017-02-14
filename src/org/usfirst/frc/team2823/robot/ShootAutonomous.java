@@ -42,14 +42,15 @@ public class ShootAutonomous extends Autonomous {
 	private void driveForward() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.driveTo(1000, 0);
+			robot.driveTo(2.017, 0);
 			robot.vControl.enable();
 			
 			stageData[stage].entered = true;
 		}
+		System.out.println(robot.encoderThread.getX() + " " + robot.encoderThread.getY());
 		
 		//move on once the robot is acceptably close to the target
-		if(Math.abs(robot.vControl.getError()) < 50) {
+		if(Math.abs(robot.vControl.getError()) < 0.1) {
 			nextStage();
 		}
 	}
@@ -57,7 +58,7 @@ public class ShootAutonomous extends Autonomous {
 	private void driveSideways() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.driveTo(2000, -1000);
+			robot.driveTo(2.017, -1);
 			robot.vControl.enable();
 			
 			stageData[stage].entered = true;

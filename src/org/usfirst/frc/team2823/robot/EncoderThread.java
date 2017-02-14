@@ -36,13 +36,19 @@ public class EncoderThread extends Thread {
 	public void run() {
 		while(running) {
 			try {
-				//get encoder travel distances (forward, sideways, and rotation)
-				double f = (rEncoder.getDistance() + lEncoder.getDistance()) / 2;
-				double s = cEncoder.getDistance();
-				r = (rEncoder.getDistance() - lEncoder.getDistance()) / robot.kEncoderWheelDistance;
+				double f;
+				double s;
+				double t;
 				
-				//get current time
-				double t = Timer.getFPGATimestamp();
+				synchronized(this) {
+					//get encoder travel distances (forward, sideways, and rotation)
+					f = (rEncoder.getDistance() + lEncoder.getDistance()) / 2;
+					s = cEncoder.getDistance();
+					r = (rEncoder.getDistance() - lEncoder.getDistance()) / robot.kEncoderWheelDistance;
+					
+					//get current time
+					t = Timer.getFPGATimestamp();
+				}
 				
 				//in case the simulated FPGA timestamp is the same as last iteration
 				if(t == lt) {
@@ -50,13 +56,15 @@ public class EncoderThread extends Thread {
 					continue;
 				}
 				
-				//get forward and side travel distances
-				double df = (f - lf) / (t - lt);
-				double ds = (s - ls) / (t - lt);
+				//get forward and sideways travel distances
+				double df = (f - lf);
+				double ds = (s - ls);
 				
-				//convert encoder travel distances to field position
-				y += (df * Math.cos(r)) - (ds * Math.sin(r));
-				x += (ds * Math.cos(r)) + (df * Math.sin(r));
+				synchronized(this) {
+					//convert encoder travel distances to field position
+					y += (df * Math.cos(r)) - (ds * Math.sin(r));
+					x += (ds * Math.cos(r)) + (df * Math.sin(r));
+				}
 				
 				//store values for next iteration
 				lf = f;
