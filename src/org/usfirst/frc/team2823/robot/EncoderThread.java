@@ -61,8 +61,8 @@ public class EncoderThread extends Thread {
 				
 				synchronized(this) {
 					//convert encoder travel distances to field position
-					y += (df * Math.cos(r)) - (ds * Math.sin(r));
-					x += (ds * Math.cos(r)) + (df * Math.sin(r));
+					x += (df * Math.cos(r)) - (ds * Math.sin(r));
+					y += (ds * Math.cos(r)) + (df * Math.sin(r));
 				}
 				
 				//store values for next iteration
