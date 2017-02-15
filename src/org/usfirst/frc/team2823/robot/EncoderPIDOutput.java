@@ -34,10 +34,10 @@ public class EncoderPIDOutput implements PIDOutput {
 				robot.setDriveX(output);
 				break;
 			case Y:
-				robot.setDriveY(output);
+				robot.setDriveY(-output);
 				break;
 			case R:
-				robot.setDriveR(output);
+				robot.setDriveR(-output);
 				break;
 		}
 	}

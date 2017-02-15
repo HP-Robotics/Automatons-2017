@@ -30,7 +30,7 @@ public class EncoderPIDSource implements PIDSource {
 		case Y:
 			return e.getY();
 		case R:
-			return -e.getR();
+			return e.getR();
 		default:
 			return 0.0;
 		}
