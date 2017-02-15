@@ -10,18 +10,17 @@ package org.usfirst.frc.team2823.robot;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
 public class OurAHRS extends AHRS {
-	final float kFieldRotation = 90;
 
 	public OurAHRS() {
 		super(I2C.Port.kOnboard);
 	}
 	
 	public float getFusedHeading() {
-		return super.getFusedHeading() - kFieldRotation;
+		return super.getFusedHeading();
 	}
 	
 	public float getCompassHeading() {
-		return super.getCompassHeading() - kFieldRotation;
+		return super.getCompassHeading();
 	}
 	
 }
@@ -32,7 +31,6 @@ public class OurAHRS extends AHRS {
 import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class OurAHRS {
-	final double kFieldRotation = 90;
 	AnalogGyro gyro;
 	
 	public OurAHRS() {
@@ -44,7 +42,7 @@ public class OurAHRS {
 
 	public double getFusedHeading() {
 		// TODO Auto-generated method stub
-		return gyro.getAngle() - kFieldRotation;
+		return gyro.getAngle();
 	}
 
 	public double getCompassHeading() {

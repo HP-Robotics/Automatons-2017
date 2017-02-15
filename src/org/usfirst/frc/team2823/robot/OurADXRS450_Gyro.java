@@ -12,14 +12,13 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI.Port;
 
 public class OurADXRS450_Gyro extends ADXRS450_Gyro {
-	final double kFieldRotation = 90;
 	
 	public OurADXRS450_Gyro() {
 		super(Port.kOnboardCS0);
 	}
 	
 	public double getAngle() {
-		return super.getAngle() - kFieldRotation;
+		return super.getAngle();
 	}
 }
 
@@ -29,7 +28,6 @@ public class OurADXRS450_Gyro extends ADXRS450_Gyro {
 import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class OurADXRS450_Gyro {
-	final double kFieldRotation = 90;
 	AnalogGyro gyro;
 	
 	public OurADXRS450_Gyro() {
@@ -41,7 +39,7 @@ public class OurADXRS450_Gyro {
 
 	public double getAngle() {
 		// TODO Auto-generated method stub
-		return gyro.getAngle() - kFieldRotation;
+		return gyro.getAngle();
 	}
 
 	public void reset() {
