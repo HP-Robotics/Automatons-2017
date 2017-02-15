@@ -121,6 +121,19 @@ public class Robot extends IterativeRobot {
 	final int JOYSTICK2_CHANNEL = 1;
 	final int JOYSTICKOPP_CHANNEL = 2;
 	
+	//motion profiling constants
+	final double MAX_FORWARD_VEL = 4.8;
+	final double MAX_FORWARD_ACCEL = 19.0;
+	
+	final double MAX_SIDE_VEL = 1.8;
+	final double MAX_SIDE_ACCEL = 9.0;
+	
+	final double FORWARD_KA = 0.0526;
+	final double FORWARD_KV = 0.2083;
+	
+	final double SIDE_KA = 0.1111;
+	final double SIDE_KV = 0.5556;
+	
 	//declare variables
 	//drive values
 	double driveX;
@@ -209,8 +222,8 @@ public class Robot extends IterativeRobot {
         //opponentGyro = new AnalogGyro(40);
         
 		encoderThread = new EncoderThread(this);
-		encoderThread.start();
 		encoderThread.reset();
+		encoderThread.start();
 		
 		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
@@ -223,11 +236,11 @@ public class Robot extends IterativeRobot {
 		rOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.R);
 		
 		//old 0.0045, 0.000001, 0.35
-		vControl = new AdvancedPIDController(1.0, 0.0006, 0.1, vSource, vOutput, 0.01);
+		vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.004, 0.0001, 0.4, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
-        
+		
         SmartDashboard.putNumber("Shooter", 0.0);
         SmartDashboard.putNumber("Intake", 0.0);
         SmartDashboard.putNumber("Uptake", 0.0);
@@ -312,6 +325,8 @@ public class Robot extends IterativeRobot {
     
     @Override
 	public void disabledInit() {
+    	log.close();
+    	
 		vControl.disable();
 		xControl.disable();
 		yControl.disable();
@@ -327,11 +342,13 @@ public class Robot extends IterativeRobot {
 		double dy = y - encoderThread.getY();
 		
 		double dp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-		double t = Math.atan(dx / dy);
 		
-		vSource.setTarget(x, y);
-		vOutput.setTarget(x, y);
-		vControl.setSetpoint(0);
+		//vSource.setTarget(x, y);
+		//vOutput.setTarget(x, y);
+		//vControl.configureGoal(0, MAX_FORWARD_VEL, MAX_FORWARD_ACCEL);
+		//vControl.setSetpoint(0);
+		xControl.setSetpoint(x);
+		yControl.setSetpoint(y);
 	}
 	
 	//get drive values for use in autonomous and teleop
