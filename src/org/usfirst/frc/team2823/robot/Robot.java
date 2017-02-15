@@ -237,8 +237,8 @@ public class Robot extends IterativeRobot {
 		
 		//old 0.0045, 0.000001, 0.35
 		vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
-		xControl = new AdvancedPIDController(0.004, 0.000001, 0.4, xSource, xOutput, 0.01);
-		yControl = new AdvancedPIDController(0.004, 0.0001, 0.4, ySource, yOutput, 0.01);
+		xControl = new AdvancedPIDController(1.0, 0.001, 0.1, xSource, xOutput, 0.01);
+		yControl = new AdvancedPIDController(1.0, 0.001, 0.1, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
 		
         SmartDashboard.putNumber("Shooter", 0.0);

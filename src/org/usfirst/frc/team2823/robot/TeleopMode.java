@@ -70,7 +70,7 @@ public class TeleopMode {
 		/** CHANGE NAME? GOOD ENOUGH?**/
 		setDrivePIDs();
 		
-		//System.out.println("x: " + robot.encoderThread.getX() + "y: " + robot.encoderThread.getY());
+		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 		
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
