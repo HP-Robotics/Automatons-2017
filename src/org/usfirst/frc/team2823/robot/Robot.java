@@ -337,18 +337,30 @@ public class Robot extends IterativeRobot {
 	}
 	
 	//PID along a straight line to the given x and y values
-	public void driveTo(double x, double y) {
+	public void driveTo_Vector(double x, double y) {
 		double dx = x - encoderThread.getX();
 		double dy = y - encoderThread.getY();
-		
 		double dp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		
-		//vSource.setTarget(x, y);
-		//vOutput.setTarget(x, y);
+		vSource.setTarget(x, y);
+		vOutput.setTarget(x, y);
+		
 		//vControl.configureGoal(0, MAX_FORWARD_VEL, MAX_FORWARD_ACCEL);
-		//vControl.setSetpoint(0);
+		vControl.setSetpoint(0);
+		vControl.enableLog("vControlPID.csv");
+		vControl.enable();
+	}
+	
+	//PID to the given x and y values using two separate PIDs
+	public void driveTo_Cartesian(double x, double y) {
 		xControl.setSetpoint(x);
 		yControl.setSetpoint(y);
+		
+		xControl.enableLog("xControlPID.csv");
+		yControl.enableLog("yControlPID.csv");
+		
+		xControl.enable();
+		yControl.enable();
 	}
 	
 	//get drive values for use in autonomous and teleop

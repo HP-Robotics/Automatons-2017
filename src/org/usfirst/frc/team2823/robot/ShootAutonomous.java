@@ -46,7 +46,7 @@ public class ShootAutonomous extends Autonomous {
 	private void driveForward() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.driveTo(2.017, 0);
+			robot.driveTo_Cartesian(2.017, 0);
 			robot.vControl.enable();
 			
 			stageData[stage].entered = true;
@@ -62,7 +62,7 @@ public class ShootAutonomous extends Autonomous {
 	private void driveToHopper() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.driveTo(2.017, -1.0);
+			robot.driveTo_Cartesian(2.017, -1.0);
 			robot.vControl.enable();
 			
 			stageData[stage].entered = true;
@@ -77,7 +77,7 @@ public class ShootAutonomous extends Autonomous {
 	private void driveToShootPosition() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.driveTo(1.609, -1.0);
+			robot.driveTo_Cartesian(1.609, -1.0);
 			robot.rControl.setSetpoint(3.14);
 			
 			robot.vControl.enable();

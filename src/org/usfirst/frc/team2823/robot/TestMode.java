@@ -25,27 +25,32 @@ public class TestMode {
 	public void testPeriodic(){
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		
-		robot.xControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-		robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		//robot.xControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		//robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 		
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
 				System.out.println("on");
-				robot.driveTo(2, 0);
-				robot.xControl.enable();
-				robot.xControl.enableLog("Xtestpid.csv");
 				
-				robot.yControl.enable();
-				robot.yControl.enableLog("Ytestpid.csv");
+				robot.driveTo_Cartesian(2, 2);
+				robot.rControl.setSetpoint(0);
+				robot.rControl.enable();
 				
+				//robot.driveTo(2, 0);
 				//robot.vControl.enable();
 				//robot.vControl.enableLog("testPID.csv");
 			} else {
-				robot.xControl.disable();
-				robot.xControl.closeLog();
+				System.out.println("off");
 				
+				robot.xControl.disable();
 				robot.yControl.disable();
+				robot.rControl.disable();
+				
+				robot.xControl.closeLog();
 				robot.yControl.closeLog();
+				//robot.rControl.closeLog();
+				
 				//robot.vControl.disable();
 				//robot.vControl.closeLog();
 			}
