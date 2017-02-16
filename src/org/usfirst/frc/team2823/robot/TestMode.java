@@ -19,7 +19,7 @@ public class TestMode {
     		robot.operatorStick = robot.stick1;
     	}
     	
-    	//robot.log.open("kA_kV.csv", "Time:,Y:,Vy:,Ay:\n");
+    	robot.log.open("kA_kV.csv", "Time:,X:,Y:,Vx:,Vy:,Ax:,Ay:\n");
 	}
 	
 	public void testPeriodic(){
@@ -33,7 +33,13 @@ public class TestMode {
 			if(robot.robotButton.on()) {
 				System.out.println("on");
 				
-				robot.driveTo_Cartesian(2, 2);
+				//robot.driveTo_Cartesian(2, 2);
+				//robot.xControl.configureGoal(2, robot.MAX_SIDE_VEL, robot.MAX_SIDE_ACCEL);
+				robot.yControl.configureGoal(2, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL);
+				
+				//robot.xControl.enable();
+				robot.yControl.enable();
+				
 				robot.rControl.setSetpoint(0);
 				robot.rControl.enable();
 				
@@ -56,8 +62,10 @@ public class TestMode {
 			}
 		}
 		
+		robot.log.write(Timer.getFPGATimestamp() + "," + robot.encoderThread.getX() + "," + robot.encoderThread.getY() + "\n");
+		
 		robot.setDriveT(-robot.gyro.getAngle());
-		//robot.robotDrive.mecanumDrive_Cartesian(0.1, 0, 0, robot.getDriveT());
+		//robot.robotDrive.mecanumDrive_Cartesian(1, 1, 0, robot.getDriveT());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
 }

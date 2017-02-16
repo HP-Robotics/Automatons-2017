@@ -125,11 +125,17 @@ public class Robot extends IterativeRobot {
 	final double MAX_FORWARD_VEL = 4.8;
 	final double MAX_FORWARD_ACCEL = 19.0;
 	
+	final double MAX_DIAGONAL_VEL = 3.5;	//4.6669?
+	final double MAX_DIAGONAL_ACCEL = 19.8;	//0.1071?
+	
 	final double MAX_SIDE_VEL = 1.8;
 	final double MAX_SIDE_ACCEL = 9.0;
 	
 	final double FORWARD_KA = 0.0526;
 	final double FORWARD_KV = 0.2083;
+	
+	final double DIAGONAL_KA = 0.0505;
+	final double DIAGONAL_KV = 0.2823;
 	
 	final double SIDE_KA = 0.1111;
 	final double SIDE_KV = 0.5556;
@@ -240,6 +246,10 @@ public class Robot extends IterativeRobot {
 		xControl = new AdvancedPIDController(1.0, 0.001, 0.1, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(1.0, 0.001, 0.1, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
+		
+		//these should be calculated per-move based on robot rotation
+		xControl.setKaKv(SIDE_KA, SIDE_KV);
+		yControl.setKaKv(FORWARD_KA, FORWARD_KV);
 		
         SmartDashboard.putNumber("Shooter", 0.0);
         SmartDashboard.putNumber("Intake", 0.0);
