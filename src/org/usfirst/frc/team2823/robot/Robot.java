@@ -141,6 +141,9 @@ public class Robot extends IterativeRobot {
 	final double SIDE_KA = 0.1111;
 	final double SIDE_KV = 0.5556;
 	
+	final double DEG_TO_RAD = (Math.PI)/180;
+	final double RAD_TO_DEG = 180/(Math.PI);
+	
 	//declare variables
 	//drive values
 	double driveX;
