@@ -378,6 +378,7 @@ public class Robot extends IterativeRobot {
 		yControl.enable();
 	}
 	
+	//PID to the given theta (in radians) using a single rotation PID
 	public void rotateTo(double t) {
 		rControl.setSetpoint(t);
 		rControl.enableLog("rControlPID.csv");
