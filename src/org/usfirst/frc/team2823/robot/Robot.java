@@ -46,7 +46,6 @@ public class Robot extends IterativeRobot {
 	Button climbButton;
 	
 	TeleopMode teleopMode;
-	ShootAutonomous autonomous;
 	TestMode testMode;
 	
 	RobotDrive robotDrive;
@@ -84,6 +83,8 @@ public class Robot extends IterativeRobot {
 	ToggleSwitch shooterState;
 	
 	CSVLogger log;
+	
+	SendableChooser autonomousChooser;
 	
 	//declare constants
 	//simulator wheel PWM channels
@@ -176,9 +177,13 @@ public class Robot extends IterativeRobot {
         shooterState = new ToggleSwitch();
 		
 		teleopMode = new TeleopMode(this);
-		autonomous = new ShootAutonomous(this);
         testMode = new TestMode(this);
         SmartDashboard.putBoolean("TestMode", false);
+        
+		autonomousChooser = new SendableChooser();
+		autonomousChooser.addDefault("Cross Baseline", new DriveForwardAutonomous(this));
+		autonomousChooser.addObject("Shoot w/o Gear", new ShootAutonomous(this));
+		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
 		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
@@ -292,14 +297,14 @@ public class Robot extends IterativeRobot {
 	 * If using the SendableChooser make sure to add them to the chooser code above as well.
 	 */
     public void autonomousInit() {
-    	autonomous.init();
+    	((Autonomous) autonomousChooser.getSelected()).init();
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	autonomous.periodic();
+    	((Autonomous) autonomousChooser.getSelected()).periodic();
     }
 
     /**
@@ -371,6 +376,12 @@ public class Robot extends IterativeRobot {
 		
 		xControl.enable();
 		yControl.enable();
+	}
+	
+	public void rotateTo(double t) {
+		rControl.setSetpoint(t);
+		rControl.enableLog("rControlPID.csv");
+		rControl.enable();
 	}
 	
 	//get drive values for use in autonomous and teleop
