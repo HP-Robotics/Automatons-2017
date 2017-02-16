@@ -47,6 +47,7 @@ public class Robot extends IterativeRobot {
 	
 	TeleopMode teleopMode;
 	TestMode testMode;
+	SendableChooser autonomousChooser;
 	
 	RobotDrive robotDrive;
 	//RobotDrive opponentDrive;
@@ -83,8 +84,6 @@ public class Robot extends IterativeRobot {
 	ToggleSwitch shooterState;
 	
 	CSVLogger log;
-	
-	SendableChooser autonomousChooser;
 	
 	//declare constants
 	//simulator wheel PWM channels
@@ -184,8 +183,10 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("TestMode", false);
         
 		autonomousChooser = new SendableChooser();
-		autonomousChooser.addDefault("Cross Baseline", new DriveForwardAutonomous(this));
+		autonomousChooser.addDefault("Empty: Do Nothing", new EmptyAutonomous(this));
+		autonomousChooser.addObject("Cross Baseline", new DriveForwardAutonomous(this));
 		autonomousChooser.addObject("Shoot w/o Gear", new ShootAutonomous(this));
+		autonomousChooser.addObject("Place Gear", new GearAutonomous(this));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
