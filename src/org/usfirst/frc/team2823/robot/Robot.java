@@ -140,8 +140,18 @@ public class Robot extends IterativeRobot {
 	final double SIDE_KA = 0.1111;
 	final double SIDE_KV = 0.5556;
 	
-	final double DEG_TO_RAD = (Math.PI)/180;
-	final double RAD_TO_DEG = 180/(Math.PI);
+	//unit conversion constants
+	final double DEG_TO_RAD = Math.PI / 180.0;
+	final double RAD_TO_DEG = 180.0 / Math.PI;
+	
+	final double WHEEL_RADIUS_IN = 2.975;
+	final double WHEEL_RADIUS_M = 0.0756;
+	
+	final double ENC_TO_IN = (2.0 * WHEEL_RADIUS_IN * Math.PI) / 2048.0;
+	final double IN_TO_ENC = 2048.0 / (2.0 * WHEEL_RADIUS_IN * Math.PI);
+	
+	final double ENC_TO_M = (2.0 * WHEEL_RADIUS_M * Math.PI) / 2048.0;
+	final double M_TO_ENC = 2048.0 / (2.0 * WHEEL_RADIUS_M * Math.PI);
 	
 	//declare variables
 	//drive values
