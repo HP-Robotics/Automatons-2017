@@ -216,6 +216,9 @@ public class Robot extends IterativeRobot {
         climbMotor1 = new OurCANTalon(CLIMB1_CHANNEL);
         climbMotor2 = new OurCANTalon(CLIMB2_CHANNEL);
         
+        climbMotor1.enableBrakeMode(true);
+        climbMotor2.enableBrakeMode(true);
+        
         topShooter = new OurCANTalon(TOP_SHOOTER_CHANNEL);
         topShooter.absoluteFeedback();
         topShooter.reverseSensor(true); 
