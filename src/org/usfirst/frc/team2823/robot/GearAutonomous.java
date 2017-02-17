@@ -52,6 +52,7 @@ public class GearAutonomous extends Autonomous {
 	public void driveToLift(){
 		if(!stageData[stage].entered) {
 			robot.driveTo_Cartesian(1, 2.724);
+			robot.rotateTo(30 * robot.DEG_TO_RAD);
 			stageData[stage].entered = true;
 		}
 		if(Math.abs(robot.yControl.getError()) < 0.1 && Math.abs(robot.xControl.getError()) < 1.0){
