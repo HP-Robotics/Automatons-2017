@@ -146,8 +146,8 @@ public class Robot extends IterativeRobot {
 	final double DEG_TO_RAD = Math.PI / 180.0;
 	final double RAD_TO_DEG = 180.0 / Math.PI;
 	
-	final double WHEEL_RADIUS_IN = 2.975;
-	final double WHEEL_RADIUS_M = 0.0756;
+	final double WHEEL_RADIUS_IN = 1.181;
+	final double WHEEL_RADIUS_M = 0.03;
 	
 	final double ENC_TO_IN = (2.0 * WHEEL_RADIUS_IN * Math.PI) / 2048.0;
 	final double IN_TO_ENC = 2048.0 / (2.0 * WHEEL_RADIUS_IN * Math.PI);

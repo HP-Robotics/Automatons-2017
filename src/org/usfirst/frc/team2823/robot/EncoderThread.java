@@ -65,8 +65,6 @@ public class EncoderThread extends Thread {
 					y += (df * Math.cos(r)) - (ds * Math.sin(r));
 				}
 				
-				System.out.println("l: " + lEncoder.getDistance() + " r: " + rEncoder.getDistance() + " c: " + cEncoder.getDistance());
-				
 				//store values for next iteration
 				lf = f;
 				ls = s;
