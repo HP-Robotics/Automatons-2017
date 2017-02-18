@@ -65,6 +65,8 @@ public class EncoderThread extends Thread {
 					y += (df * Math.cos(r)) - (ds * Math.sin(r));
 				}
 				
+				System.out.println("l: " + lEncoder.getDistance() + " r: " + rEncoder.getDistance() + " c: " + cEncoder.getDistance());
+				
 				//store values for next iteration
 				lf = f;
 				ls = s;
@@ -88,19 +90,19 @@ public class EncoderThread extends Thread {
 	
 	public double getX() {
 		synchronized(this) {
-			return -x;
+			return -x * robot.ENC_TO_IN;
 		}
 	}
 	
 	public double getY() {
 		synchronized(this) {
-			return y;
+			return y * robot.ENC_TO_IN;
 		}
 	}
 	
 	public double getR() {
 		synchronized(this) {
-			return r;
+			return r * robot.ENC_TO_IN;
 		}
 	}
 }

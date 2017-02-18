@@ -44,15 +44,15 @@ public class TeleopMode {
 		
 		try{
 			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
-			robot.climbButton.update(robot.operatorStick.getRawButton(2));
+			robot.climbButton.update(robot.operatorStick.getRawButton(4));
 			robot.intakeState.update(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225);
 		}catch (Exception e){
 			
 		}
 		//prevent joysticks from driving robot when within a threshold value of zero
-		double x = Math.abs(robot.driverStick.getX()) < robot.STICKTHRESHOLD ? 0.0 : robot.driverStick.getX();
-		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : robot.driverStick.getY();
-		double r = Math.abs(robot.driverStick.getZ()) < robot.STICKTHRESHOLD ? 0.0 : robot.driverStick.getZ();
+		double x = Math.abs(robot.driverStick.getX()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getX(), 3);
+		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
+		double r = Math.abs(robot.driverStick.getZ()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getZ(), 3);
 		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
 		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
@@ -97,7 +97,7 @@ public class TeleopMode {
 		
 		if(robot.shooterWheelsButton.on()){
 			robot.topShooter.speedMode();
-			robot.topShooter.set(4500);
+			robot.topShooter.set(-4500);
 			robot.bottomShooter.speedMode();
 			robot.bottomShooter.set(4500);
 		} else{
@@ -108,14 +108,14 @@ public class TeleopMode {
 		}
 		
 		if(robot.intakeState.on()){
-			robot.intake.set(1.0);
+			robot.beltFeed.set(-1.0);
 		}else{
-			robot.intake.set(0.0);
+			robot.beltFeed.set(0.0);
 		}
 		
 		if(robot.climbButton.on()){
-			robot.climbMotor1.set(0.8);//not production values
-			robot.climbMotor2.set(0.8);
+			robot.climbMotor1.set(-1.0);//not production values
+			robot.climbMotor2.set(-1.0);
 		} else {
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);

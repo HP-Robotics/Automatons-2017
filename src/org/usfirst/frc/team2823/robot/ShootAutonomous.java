@@ -117,7 +117,7 @@ public class ShootAutonomous extends Autonomous {
 	private void startShooting() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.intake.set(1.0);
+			robot.beltFeed.set(1.0);
 			robot.uptake.set(1.0);
 		}
 	}

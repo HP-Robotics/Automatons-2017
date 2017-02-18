@@ -52,6 +52,7 @@ public class Robot extends IterativeRobot {
 	RobotDrive robotDrive;
 	//RobotDrive opponentDrive;
     OurCANTalon bottomShooter;
+	OurCANTalon beltFeed;
 	OurCANTalon intake;
 	OurCANTalon uptake;
 	
@@ -97,12 +98,13 @@ public class Robot extends IterativeRobot {
 	//final int kOppFrontRightChannel = 42;
 	//final int kOppRearRightChannel = 43;
 	
-	final int TOP_SHOOTER_CHANNEL = 0;
-	final int BOTTOM_SHOOTER_CHANNEL = 1;
+	final int TOP_SHOOTER_CHANNEL = 11;
+	final int BOTTOM_SHOOTER_CHANNEL = 12;
+	final int BELT_FEED_CHANNEL = 1;
 	final int CLIMB1_CHANNEL = 2;
 	final int CLIMB2_CHANNEL = 3;
 	final int INTAKE_CHANNEL = 4;
-	final int UPTAKE_CHANNEL = 5;
+	final int UPTAKE_CHANNEL = 13;
 	
 	//joystick zero-sensitivity threshold
 	final double STICKTHRESHOLD = 0.15;
@@ -210,8 +212,9 @@ public class Robot extends IterativeRobot {
 		//opponentDrive.setExpiration(0.1);
 		
        
-        intake = new OurCANTalon(INTAKE_CHANNEL);
+        beltFeed = new OurCANTalon(BELT_FEED_CHANNEL);
         uptake = new OurCANTalon(UPTAKE_CHANNEL);
+        intake = new OurCANTalon(INTAKE_CHANNEL);
         
         climbMotor1 = new OurCANTalon(CLIMB1_CHANNEL);
         climbMotor2 = new OurCANTalon(CLIMB2_CHANNEL);
@@ -224,7 +227,7 @@ public class Robot extends IterativeRobot {
         topShooter.reverseSensor(true); 
 		
         topShooter.configNominalOutputVoltage(0.0, 0.0);
-        topShooter.configPeakOutputVoltage(12.0, 0.0);
+        topShooter.configPeakOutputVoltage(0.0, -12.0);
         
         topShooter.setP(0.03);
         topShooter.setI(0.000006);
