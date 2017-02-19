@@ -11,6 +11,8 @@ public class TestMode {
 	}
 	
 	public void testInit(){
+		robot.ahrs.reset();
+		
     	if(robot.stick1.getName().contains("3D") || robot.stick1.getName().isEmpty()){
     		robot.driverStick = robot.stick1;
     		robot.operatorStick = robot.stick2;
@@ -25,23 +27,36 @@ public class TestMode {
 	public void testPeriodic(){
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		
+		if(robot.robotButton.on()){
+			System.out.println(robot.rControl.getError());
+		}
+		
 		//robot.xControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		//robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-		System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+		robot.rControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		
+		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+		//robot.log.write(Timer.getFPGATimestamp() + "," + robot.encoderThread.getX() + "," + robot.encoderThread.getY() + "\n");
+				
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
 				System.out.println("on");
 				
 				//robot.driveTo_Cartesian(2, 2);
 				//robot.xControl.configureGoal(2, robot.MAX_SIDE_VEL, robot.MAX_SIDE_ACCEL);
-				robot.yControl.configureGoal(2, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL);
-				
-				//robot.xControl.enable();
+				//robot.yControl.configureGoal(2, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL);
+				robot.yControl.setSetpoint(((robot.encoderThread.getLDistance() + robot.encoderThread.getRDistance()) / 2) + 24);
+				robot.yControl.enableLog("yControl.csv");
 				robot.yControl.enable();
 				
-				robot.rControl.setSetpoint(0);
-				robot.rControl.enable();
+				//robot.xControl.enable();
+				//robot.yControl.enable();
+				
+				//robot.rControl.setSetpoint(0);
+				//robot.rControl.enable();
+
+				//System.out.println(robot.ahrs.getAngle());
+				//robot.rotateTo(robot.ahrs.getAngle() + 90.0);
 				
 				//robot.driveTo(2, 0);
 				//robot.vControl.enable();
@@ -53,7 +68,7 @@ public class TestMode {
 				robot.yControl.disable();
 				robot.rControl.disable();
 				
-				robot.xControl.closeLog();
+				//robot.xControl.closeLog();
 				robot.yControl.closeLog();
 				//robot.rControl.closeLog();
 				
@@ -61,8 +76,6 @@ public class TestMode {
 				//robot.vControl.closeLog();
 			}
 		}
-		
-		robot.log.write(Timer.getFPGATimestamp() + "," + robot.encoderThread.getX() + "," + robot.encoderThread.getY() + "\n");
 		
 		robot.setDriveT(-robot.ahrs.getAngle());
 		//robot.robotDrive.mecanumDrive_Cartesian(1, 1, 0, robot.getDriveT());
