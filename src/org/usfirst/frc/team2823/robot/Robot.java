@@ -41,6 +41,8 @@ public class Robot extends IterativeRobot {
 	Button gearInButton;
 	Button shootTrigger;
 	Button shooterWheelsButton;
+	Button gyroResetButton1;
+	Button gyroResetButton2;
 	
 	Button xButton;
 	Button climbButton;
@@ -170,6 +172,8 @@ public class Robot extends IterativeRobot {
 	double navx2Origin;
 	double gyroOrigin;
 	
+	boolean resettingGyro = false;
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -185,7 +189,9 @@ public class Robot extends IterativeRobot {
 		gearOutButton = new Button();
 		gearInButton = new Button();
 		shootTrigger = new Button();
-    	
+    	gyroResetButton1 = new Button();
+    	gyroResetButton2 = new Button();
+		
 		shooterWheelsButton = new Button();
 		climbButton = new Button();
         intakeState = new ToggleSwitch();

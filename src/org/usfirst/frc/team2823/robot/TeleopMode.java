@@ -45,6 +45,8 @@ public class TeleopMode {
 		robot.gearOutButton.update(robot.driverStick.getRawButton(6));
 		robot.gearInButton.update(robot.driverStick.getRawButton(4));
 		robot.shootTrigger.update(robot.driverStick.getRawButton(1));
+		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
+		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
 		try{
 			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
@@ -132,6 +134,16 @@ public class TeleopMode {
 		} else {
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);
+		}
+		
+		if(robot.gyroResetButton1.held() && robot.gyroResetButton2.held()) {
+			if(!robot.resettingGyro) {
+				robot.resettingGyro = true;
+				
+				robot.ahrs.reset();
+			}
+		} else {
+			robot.resettingGyro = false;
 		}
 		
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
