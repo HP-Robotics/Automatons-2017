@@ -23,7 +23,7 @@ public class GyroPIDSource implements PIDSource {
 		if(isGyro) {
 			return g.getAngle();
 		} else {
-			return a.getFusedHeading();
+			return a.getAngle();
 		}
 	}
 

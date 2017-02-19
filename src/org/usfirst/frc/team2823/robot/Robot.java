@@ -71,12 +71,12 @@ public class Robot extends IterativeRobot {
 	EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
-	EncoderPIDSource rSource;
+	GyroPIDSource rSource;
 	
 	EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
 	EncoderPIDOutput yOutput;
-	EncoderPIDOutput rOutput;
+	GyroPIDOutput rOutput;
 	
 	AdvancedPIDController vControl;
 	AdvancedPIDController xControl;
@@ -269,18 +269,18 @@ public class Robot extends IterativeRobot {
 		vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		rSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.R);
+		rSource = new GyroPIDSource(ahrs);
 		
 		vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
 		xOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.X);
 		yOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.Y);
-		rOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.R);
+		rOutput = new GyroPIDOutput(this);
 		
 		//old 0.0045, 0.000001, 0.35
 		vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(1.0, 0.001, 0.1, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(1.0, 0.001, 0.1, ySource, yOutput, 0.01);
-		rControl = new AdvancedPIDController(1.0, 0.0001, 0.4, rSource, rOutput, 0.01);
+		rControl = new AdvancedPIDController(0.025, 0.0, 0.3, rSource, rOutput, 0.01);
 		
 		//these should be calculated per-move based on robot rotation
 		xControl.setKaKv(SIDE_KA, SIDE_KV);
@@ -292,10 +292,10 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Climb 1", 0.0);
         SmartDashboard.putNumber("Climb 2", 0.0);
         
-        SmartDashboard.putNumber("P", 0.03);
-        SmartDashboard.putNumber("I", 0.000006);
-        SmartDashboard.putNumber("D", 1.0);
-        SmartDashboard.putNumber("F", 0.025);
+        SmartDashboard.putNumber("P", 0.025);
+        SmartDashboard.putNumber("I", 0.0);
+        SmartDashboard.putNumber("D", 0.3);
+        SmartDashboard.putNumber("F", 0.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
         
         //compressor = new Compressor(0);
