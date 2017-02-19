@@ -14,6 +14,8 @@ public class TeleopMode {
 	double px;
 	double py;
 	
+	double prevTime = Timer.getFPGATimestamp();
+	
 	private enum DriveMode {
 		ROBOT, FIELD, INTAKE, GEAR_IN, GEAR_OUT
 	}
@@ -30,6 +32,8 @@ public class TeleopMode {
     		robot.driverStick = robot.stick2;
     		robot.operatorStick = robot.stick1;
     	}
+    	
+    	robot.log.open("gyro_comparison.csv", "ADXR,navX,encR\n");
     	
 	}
 	
@@ -63,14 +67,21 @@ public class TeleopMode {
 		double t = -robot.gyro.getAngle();
 		//double opt = -(robot.opponentGyro.getAngle() + 90);
 		
+		robot.log.write(-robot.gyro.getAngle() + "," + -robot.ahrs.getAngle() + "," + robot.encoderThread.getR() + "\n");
+		System.out.println(-robot.gyro.getAngle() + " " + -robot.ahrs.getAngle() + " " + robot.encoderThread.getR());
+		
 		//update which drive mode the robot is in
 		mode = setDriveMode();
 		
 		//update whether rotation PID is enabled
 		/** CHANGE NAME? GOOD ENOUGH?**/
 		setDrivePIDs();
-		
-		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+				
+		if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
+			//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			prevTime = Timer.getFPGATimestamp();
+		}
 		
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
@@ -91,8 +102,10 @@ public class TeleopMode {
 		
 		if(robot.shootTrigger.held()){
 			robot.uptake.set(1.0);
+			robot.beltFeed.set(-1.0);
 		} else{
 			robot.uptake.set(0.0);
+			robot.beltFeed.set(0.0);
 		}
 		
 		if(robot.shooterWheelsButton.on()){
@@ -107,11 +120,11 @@ public class TeleopMode {
 			robot.bottomShooter.set(0.0);
 		}
 		
-		if(robot.intakeState.on()){
+		/*if(robot.intakeState.on()){
 			robot.beltFeed.set(-1.0);
 		}else{
 			robot.beltFeed.set(0.0);
-		}
+		}*/
 		
 		if(robot.climbButton.on()){
 			robot.climbMotor1.set(-1.0);//not production values
