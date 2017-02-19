@@ -112,7 +112,7 @@ public class EncoderThread extends Thread {
 	
 	public double getY() {
 		synchronized(this) {
-			return -y * robot.ENC_TO_IN;
+			return -y * robot.ENC_TO_IN / robot.FORWARD_FUDGE_FACTOR;
 		}
 	}
 	

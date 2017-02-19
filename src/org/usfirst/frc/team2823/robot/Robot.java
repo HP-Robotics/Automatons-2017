@@ -102,10 +102,10 @@ public class Robot extends IterativeRobot {
 	
 	final int TOP_SHOOTER_CHANNEL = 11;
 	final int BOTTOM_SHOOTER_CHANNEL = 12;
-	final int BELT_FEED_CHANNEL = 1;
+	final int INTAKE_CHANNEL = 1;
 	final int CLIMB1_CHANNEL = 2;
 	final int CLIMB2_CHANNEL = 3;
-	final int INTAKE_CHANNEL = 4;
+	final int BELT_FEED_CHANNEL = 4;
 	final int UPTAKE_CHANNEL = 13;
 	
 	//joystick zero-sensitivity threshold
@@ -117,6 +117,9 @@ public class Robot extends IterativeRobot {
 	//distance between left and right encoder wheels
 	//final double ENCODER_WHEEL_DISTANCE = 0.4;	//simulator value in meters
 	final double ENCODER_WHEEL_DISTANCE = 21.53125;	//real value in inches
+	
+	//fudge factors to account for encoder imprecisions
+	final double FORWARD_FUDGE_FACTOR = 1.03471;
 	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;

@@ -44,11 +44,11 @@ public class TeleopMode {
 		robot.intakeButton.update(robot.driverStick.getRawButton(3));
 		robot.gearOutButton.update(robot.driverStick.getRawButton(6));
 		robot.gearInButton.update(robot.driverStick.getRawButton(4));
-		robot.shootTrigger.update(robot.driverStick.getRawButton(1));
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
 		try{
+			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
 			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
 			robot.intakeState.update(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225);
@@ -58,7 +58,7 @@ public class TeleopMode {
 		//prevent joysticks from driving robot when within a threshold value of zero
 		double x = Math.abs(robot.driverStick.getX()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getX(), 3);
 		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
-		double r = Math.abs(robot.driverStick.getZ()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getZ(), 3);
+		double r = Math.abs(robot.driverStick.getZ()) < robot.STICKTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
 		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
 		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
