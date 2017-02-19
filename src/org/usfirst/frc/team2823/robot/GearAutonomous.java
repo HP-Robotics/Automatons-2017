@@ -33,7 +33,7 @@ public class GearAutonomous extends Autonomous {
 			break;
 		}
 		
-		robot.setDriveT(-robot.gyro.getAngle());
+		robot.setDriveT(-robot.ahrs.getAngle());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
 	

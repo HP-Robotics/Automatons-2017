@@ -64,11 +64,11 @@ public class TeleopMode {
 		
 		
 		//get gyro angle
-		double t = -robot.gyro.getAngle();
+		double t = -robot.ahrs.getAngle();
 		//double opt = -(robot.opponentGyro.getAngle() + 90);
 		
-		robot.log.write(-robot.gyro.getAngle() + "," + -robot.ahrs.getAngle() + "," + robot.encoderThread.getR() + "\n");
-		System.out.println(-robot.gyro.getAngle() + " " + -robot.ahrs.getAngle() + " " + robot.encoderThread.getR());
+		//robot.log.write(-robot.gyro.getAngle() + "," + -robot.ahrs.getAngle() + "," + robot.encoderThread.getR() + "\n");
+		//System.out.println(-robot.gyro.getAngle() + " " + -robot.ahrs.getAngle() + " " + robot.encoderThread.getR());
 		
 		//update which drive mode the robot is in
 		mode = setDriveMode();

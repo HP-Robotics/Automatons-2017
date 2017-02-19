@@ -64,7 +64,7 @@ public class TestMode {
 		
 		robot.log.write(Timer.getFPGATimestamp() + "," + robot.encoderThread.getX() + "," + robot.encoderThread.getY() + "\n");
 		
-		robot.setDriveT(-robot.gyro.getAngle());
+		robot.setDriveT(-robot.ahrs.getAngle());
 		//robot.robotDrive.mecanumDrive_Cartesian(1, 1, 0, robot.getDriveT());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
