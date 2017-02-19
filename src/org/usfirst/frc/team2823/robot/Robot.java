@@ -113,7 +113,8 @@ public class Robot extends IterativeRobot {
 	final double INTAKE_ROTATION_THRESHOLD = 1.0;
 	
 	//distance between left and right encoder wheels
-	final double ENCODER_WHEEL_DISTANCE = 0.4;
+	//final double ENCODER_WHEEL_DISTANCE = 0.4;	//simulator value in meters
+	final double ENCODER_WHEEL_DISTANCE = 21.53125;	//real value in inches
 	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;
@@ -294,7 +295,8 @@ public class Robot extends IterativeRobot {
         //solenoid1 = new DoubleSolenoid(0,1);
         
         //use System.getProperty("user.home") to get path to home directory
-        log = new CSVLogger("/tmp");
+        //log = new CSVLogger("/tmp");
+        log = new CSVLogger("/home/lvuser");
         
         try{
         	gyro.reset();

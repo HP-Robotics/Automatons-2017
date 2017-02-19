@@ -43,7 +43,7 @@ public class EncoderThread extends Thread {
 					//get encoder travel distances (forward, sideways, and rotation)
 					f = (rEncoder.getDistance() + lEncoder.getDistance()) / 2;
 					s = cEncoder.getDistance();
-					r = (rEncoder.getDistance() - lEncoder.getDistance()) / robot.ENCODER_WHEEL_DISTANCE;
+					r = (rEncoder.getDistance() - lEncoder.getDistance()) / (robot.ENCODER_WHEEL_DISTANCE * robot.IN_TO_ENC);
 					
 					//get current time
 					t = Timer.getFPGATimestamp();
@@ -86,6 +86,24 @@ public class EncoderThread extends Thread {
 		cEncoder.reset();
 	}
 	
+	public double getLDistance() {
+		synchronized(this) {
+			return lEncoder.getDistance() * robot.ENC_TO_IN;
+		}
+	}
+	
+	public double getRDistance() {
+		synchronized(this) {
+			return rEncoder.getDistance() * robot.ENC_TO_IN;
+		}
+	}
+	
+	public double getCDistance() {
+		synchronized(this) {
+			return cEncoder.getDistance() * robot.ENC_TO_IN;
+		}
+	}
+	
 	public double getX() {
 		synchronized(this) {
 			return -x * robot.ENC_TO_IN;
@@ -94,13 +112,13 @@ public class EncoderThread extends Thread {
 	
 	public double getY() {
 		synchronized(this) {
-			return y * robot.ENC_TO_IN;
+			return -y * robot.ENC_TO_IN;
 		}
 	}
 	
 	public double getR() {
 		synchronized(this) {
-			return r * robot.ENC_TO_IN;
+			return -r * robot.RAD_TO_DEG;
 		}
 	}
 }
