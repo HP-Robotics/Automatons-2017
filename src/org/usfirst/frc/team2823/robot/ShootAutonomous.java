@@ -118,7 +118,7 @@ public class ShootAutonomous extends Autonomous {
 			robot.ahrs.reset();
 			
 			robot.rControl.reset();
-			
+			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
 			robot.rControl.setSetpoint(10);
 			
 			robot.rControl.enable();
@@ -131,6 +131,7 @@ public class ShootAutonomous extends Autonomous {
 		//move on to the next stage once plan is complete
 		if(Math.abs(robot.rControl.getError()) < 0.5) {
 			robot.rControl.reset();
+			robot.rControl.setPID(robot.rControl.getP(), 0.0, robot.rControl.getD());
 			
 			nextStage();
 		}

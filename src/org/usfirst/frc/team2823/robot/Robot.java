@@ -294,7 +294,7 @@ public class Robot extends IterativeRobot {
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		//xControl = new AdvancedPIDController(1.0, 0.001, 0.1, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
-		rControl = new AdvancedPIDController(0.025, 0.0, 0.3, rSource, rOutput, 0.01);
+		rControl = new AdvancedPIDController(0.025, 0.0, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
 		
 		//these should be calculated per-move based on robot rotation
 		//xControl.setKaKv(SIDE_KA, SIDE_KV);
