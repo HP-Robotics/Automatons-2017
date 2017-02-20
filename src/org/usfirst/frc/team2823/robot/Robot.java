@@ -217,7 +217,7 @@ public class Robot extends IterativeRobot {
 		autonomousChooser = new SendableChooser();
 		autonomousChooser.addDefault("Empty: Do Nothing", new EmptyAutonomous(this));
 		//autonomousChooser.addObject("Cross Baseline", new DriveForwardAutonomous(this));
-		//autonomousChooser.addObject("Shoot w/o Gear", new ShootAutonomous(this));
+		autonomousChooser.addObject("Shoot w/o Gear", new ShootAutonomous(this));
 		//autonomousChooser.addObject("Place Gear", new GearAutonomous(this));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
@@ -298,7 +298,7 @@ public class Robot extends IterativeRobot {
 		
 		//these should be calculated per-move based on robot rotation
 		//xControl.setKaKv(SIDE_KA, SIDE_KV);
-		yControl.setKaKv(FORWARD_KA * 2, FORWARD_KV);
+		yControl.setKaKv(FORWARD_KA, FORWARD_KV);
 		
         SmartDashboard.putNumber("Shooter", 0.0);
         SmartDashboard.putNumber("Intake", 0.0);
