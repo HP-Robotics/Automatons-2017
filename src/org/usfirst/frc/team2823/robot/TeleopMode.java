@@ -81,7 +81,7 @@ public class TeleopMode {
 				
 		if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
 			//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
-			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			prevTime = Timer.getFPGATimestamp();
 		}
 		
@@ -270,7 +270,8 @@ public class TeleopMode {
 			break;
 		
 		case INTAKE:
-			robot.rControl.setSetpoint(getTrajectoryAngle());
+			robot.rControl.setSetpoint(0);	//temporary, should calculate trajectory eventually
+			//robot.rControl.setSetpoint(getTrajectoryAngle());
 			
 			robot.setDriveX(x);
 			robot.setDriveY(y);
@@ -296,7 +297,7 @@ public class TeleopMode {
 	}
 	
 	//calculate the current trajectory angle of the robot
-	public double getTrajectoryAngle() {
+	/*public double getTrajectoryAngle() {
 		double x = robot.encoderThread.getX();
 		double y = robot.encoderThread.getY();
 		
@@ -315,5 +316,5 @@ public class TeleopMode {
 		}
 		
 		return t;
-	}
+	}*/
 }
