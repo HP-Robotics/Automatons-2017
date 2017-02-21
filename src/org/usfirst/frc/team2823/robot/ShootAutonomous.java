@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2823.robot;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class ShootAutonomous extends Autonomous {
 	
 	public ShootAutonomous(Robot robot) {
@@ -8,7 +10,7 @@ public class ShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 0.4, 2.0, 0.1};
+		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 0.4, 2.0, 0.1, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -47,6 +49,14 @@ public class ShootAutonomous extends Autonomous {
 		
 		case 6:
 			startBeltFeeder();
+			break;
+			
+		case 7:
+			stopBeltFeeder();
+			break;
+		
+		case 8:
+			stopUptake();
 			break;
 		}
 		//at time 14.25 turn off belt feeder
@@ -176,6 +186,20 @@ public class ShootAutonomous extends Autonomous {
 			
 			stageData[stage].entered = true;
 			
+			nextStage();
+		}
+	}
+	
+	private void stopBeltFeeder(){
+		if(Timer.getFPGATimestamp() - initTime >= 14.25){
+			robot.beltFeed.set(0.0);
+			nextStage();
+		}
+	}
+	
+	private void stopUptake(){
+		if(Timer.getFPGATimestamp() - initTime >= 14.75){
+			robot.uptake.set(0.0);
 			nextStage();
 		}
 	}
