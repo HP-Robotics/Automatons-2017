@@ -63,27 +63,30 @@ public class Robot extends IterativeRobot {
 	
 	OurCANTalon topShooter;
 	
-	Encoder lEncoder;
-	Encoder rEncoder;
-	AverageEncoder aEncoder;
-	//EncoderThread encoderThread;
+	//Encoder lEncoder;
+	//Encoder rEncoder;
+	//Encoder cEncoder;
+	//AverageEncoder aEncoder;
+	EncoderThread encoderThread;
 	
 	OurAHRS ahrs;
 	OurADXRS450_Gyro gyro;
 	//AnalogGyro opponentGyro;
 	
 	//EncoderPIDSource vSource;
-	//EncoderPIDSource xSource;
-	AverageEncoderSource ySource;
+	EncoderPIDSource xSource;
+	EncoderPIDSource ySource;
+	//AverageEncoderSource ySource;
 	GyroPIDSource rSource;
 	
 	//EncoderPIDOutput vOutput;
-	//EncoderPIDOutput xOutput;
-	AverageEncoderOutput yOutput;
+	EncoderPIDOutput xOutput;
+	EncoderPIDOutput yOutput;
+	//AverageEncoderOutput yOutput;
 	GyroPIDOutput rOutput;
 	
 	//AdvancedPIDController vControl;
-	//AdvancedPIDController xControl;
+	AdvancedPIDController xControl;
 	AdvancedPIDController yControl;
 	AdvancedPIDController rControl;
 	
@@ -116,14 +119,14 @@ public class Robot extends IterativeRobot {
 	final double STICKTHRESHOLD = 0.15;
 	
 	//intake rotation-sensitivity threshold
-	final double INTAKE_ROTATION_THRESHOLD = 1.0;
+	final double INTAKE_ROTATION_THRESHOLD = 0.5;
 	
 	//distance between left and right encoder wheels
 	//final double ENCODER_WHEEL_DISTANCE = 0.4;	//simulator value in meters
 	final double ENCODER_WHEEL_DISTANCE = 21.53125;	//real value in inches
 	
-	//fudge factors to account for encoder imprecisions
-	final double FORWARD_FUDGE_FACTOR = 1.03471;
+	//fudge factors to account for encoder imprecisions, this might not be needed for good carpet
+	//final double FORWARD_FUDGE_FACTOR = 1.03471;
 	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;
@@ -170,6 +173,10 @@ public class Robot extends IterativeRobot {
 	
 	final double ENC_TO_M = (2.0 * WHEEL_RADIUS_M * Math.PI) / 2048.0;
 	final double M_TO_ENC = 2048.0 / (2.0 * WHEEL_RADIUS_M * Math.PI);
+	
+	final double RIGHT_LIFT_ANGLE = -120;
+	final double MIDDLE_LIFT_ANGLE = -90;
+	final double LEFT_LIFT_ANGLE = -60;
 	
 	//declare variables
 	//drive values
@@ -268,36 +275,39 @@ public class Robot extends IterativeRobot {
         bottomShooter.setF(0.025);
         bottomShooter.setProfile(0);
         
-		lEncoder = new Encoder(0, 1, false, EncodingType.k4X);
-		rEncoder = new Encoder(2, 3, false, EncodingType.k4X);
-		aEncoder = new AverageEncoder(this, lEncoder, rEncoder);
+		//lEncoder = new Encoder(0, 1, false, EncodingType.k4X);
+		//rEncoder = new Encoder(2, 3, false, EncodingType.k4X);
+		//cEncoder = new Encoder(4, 5, false, EncodingType.k4X);
+		//aEncoder = new AverageEncoder(this, lEncoder, rEncoder);
         
         ahrs = new OurAHRS();
         gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
         
-		//encoderThread = new EncoderThread(this);
-		//encoderThread.reset();
-		//encoderThread.start();
+		encoderThread = new EncoderThread(this);
+		encoderThread.reset();
+		encoderThread.start();
 		
 		//vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
-		//xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
-		ySource = new AverageEncoderSource(aEncoder);
+		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
+		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
+		//ySource = new AverageEncoderSource(aEncoder);
 		rSource = new GyroPIDSource(ahrs);
 		
 		//vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
-		//xOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.X);
-		yOutput = new AverageEncoderOutput(this);
+		xOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.X);
+		yOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.Y);
+		//yOutput = new AverageEncoderOutput(this);
 		rOutput = new GyroPIDOutput(this);
 		
 		//old 0.0045, 0.000001, 0.35
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
-		//xControl = new AdvancedPIDController(1.0, 0.001, 0.1, xSource, xOutput, 0.01);
+		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(0.025, 0.0, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
 		
 		//these should be calculated per-move based on robot rotation
-		//xControl.setKaKv(SIDE_KA, SIDE_KV);
+		xControl.setKaKv(FORWARD_KA, FORWARD_KV);
 		yControl.setKaKv(FORWARD_KA, FORWARD_KV);
 		
         SmartDashboard.putNumber("Shooter", 0.0);
@@ -390,7 +400,7 @@ public class Robot extends IterativeRobot {
     	log.close();
     	
 		//vControl.disable();
-		//xControl.disable();
+		xControl.disable();
 		yControl.disable();
 		rControl.disable();
 		
@@ -414,16 +424,21 @@ public class Robot extends IterativeRobot {
 	}*/
 	
 	//PID to the given x and y values using two separate PIDs
-	/*public void driveTo_Cartesian(double x, double y) {
-		xControl.setSetpoint(x);
-		yControl.setSetpoint(y);
+	public void driveTo_Cartesian(double x, double y) {
+		//xControl.setSetpoint(x);
+		//yControl.setSetpoint(y);
+		xSource.reset();
+		ySource.reset();
+		
+		xControl.configureGoal(x, MAX_FORWARD_VEL * 0.6, MAX_FORWARD_ACCEL * 0.8 * 0.6);
+		yControl.configureGoal(y, MAX_FORWARD_VEL * 0.6, MAX_FORWARD_ACCEL * 0.8 * 0.6);
 		
 		xControl.enableLog("xControlPID.csv");
 		yControl.enableLog("yControlPID.csv");
 		
 		xControl.enable();
 		yControl.enable();
-	}*/
+	}
 	
 	//PID to the given theta (in radians) using a single rotation PID
 	public void rotateTo(double t) {

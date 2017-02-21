@@ -10,9 +10,8 @@ public class TeleopMode {
 	DriveMode mode = defaultMode;
 	DriveMode prevMode = defaultMode;
 	
-	//previous position data, used for calculation direction of travel
-	double px;
-	double py;
+	double angle;
+	double prevAngle = 0;
 	
 	double prevTime = Timer.getFPGATimestamp();
 	
@@ -22,6 +21,8 @@ public class TeleopMode {
 	
 	public TeleopMode(Robot robot) {
 		this.robot = robot;
+		
+		angle = robot.MIDDLE_LIFT_ANGLE;
 	}
 	
 	public void teleopInit() {
@@ -34,7 +35,7 @@ public class TeleopMode {
     	}
     	
     	robot.log.open("gyro_comparison.csv", "ADXR,navX,encR\n");
-    	
+    	robot.ahrs.reset();
 	}
 	
 	public void teleopPeriodic() {
@@ -64,9 +65,8 @@ public class TeleopMode {
 		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
 		//double opr = Math.abs(robot.opponentStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getZ();
 		
-		
 		//get gyro angle
-		double t = -robot.ahrs.getAngle();
+		double t = robot.ahrs.getAngle();
 		//double opt = -(robot.opponentGyro.getAngle() + 90);
 		
 		//robot.log.write(-robot.gyro.getAngle() + "," + -robot.ahrs.getAngle() + "," + robot.encoderThread.getR() + "\n");
@@ -75,15 +75,19 @@ public class TeleopMode {
 		//update which drive mode the robot is in
 		mode = setDriveMode();
 		
+		//System.out.println(robot.ahrs.getAngle());
+		
 		//update whether rotation PID is enabled
 		/** CHANGE NAME? GOOD ENOUGH?**/
+		setGearAngle();
 		setDrivePIDs();
 				
-		if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
-			//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
-			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+		/*if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
+			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			prevTime = Timer.getFPGATimestamp();
-		}
+		}*/
 		
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
@@ -104,7 +108,7 @@ public class TeleopMode {
 		
 		if(robot.shootTrigger.held()){
 			robot.uptake.set(1.0);
-			robot.beltFeed.set(-1.0);
+			robot.beltFeed.set(-0.5);
 		} else{
 			robot.uptake.set(0.0);
 			robot.beltFeed.set(0.0);
@@ -112,9 +116,9 @@ public class TeleopMode {
 		
 		if(robot.shooterWheelsButton.on()){
 			robot.topShooter.speedMode();
-			robot.topShooter.set(-4500);
+			robot.topShooter.set(-4300);
 			robot.bottomShooter.speedMode();
-			robot.bottomShooter.set(4500);
+			robot.bottomShooter.set(4300);
 		} else{
 			robot.topShooter.normalMode();
 			robot.topShooter.set(0.0);
@@ -122,11 +126,11 @@ public class TeleopMode {
 			robot.bottomShooter.set(0.0);
 		}
 		
-		/*if(robot.intakeState.on()){
-			robot.beltFeed.set(-1.0);
+		if(robot.intakeState.on()){
+			robot.intake.set(1.0);
 		}else{
-			robot.beltFeed.set(0.0);
-		}*/
+			robot.intake.set(0.0);
+		}
 		
 		if(robot.climbButton.on()){
 			robot.climbMotor1.set(-1.0);//not production values
@@ -238,6 +242,11 @@ public class TeleopMode {
 				robot.rControl.enable();
 				robot.rControl.enableLog("gearout.csv");
 				System.out.println("GearOut");
+				
+			}
+			if(angle != prevAngle) {
+				robot.rControl.setSetpoint(angle);
+				prevAngle = angle;
 			}
  			break;
  		
@@ -270,8 +279,8 @@ public class TeleopMode {
 			break;
 		
 		case INTAKE:
-			robot.rControl.setSetpoint(0);	//temporary, should calculate trajectory eventually
-			//robot.rControl.setSetpoint(getTrajectoryAngle());
+			//robot.rControl.setSetpoint(0);	//temporary, should calculate trajectory eventually
+			robot.rControl.setSetpoint(getTrajectoryAngle(x, y));
 			
 			robot.setDriveX(x);
 			robot.setDriveY(y);
@@ -296,25 +305,30 @@ public class TeleopMode {
 		}
 	}
 	
-	//calculate the current trajectory angle of the robot
-	/*public double getTrajectoryAngle() {
-		double x = robot.encoderThread.getX();
-		double y = robot.encoderThread.getY();
-		
-		double dx = x - px;
-		double dy = y - py;
-		
-		double dp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-		double t = Math.atan(dx / dy);
-		
-		px = x;
-		py = y;
-		
-		//if the output is not defined or the change in position is very small (standing still), PID to the current rotation
-		if(Double.isNaN(t) || Math.abs(dp) < robot.INTAKE_ROTATION_THRESHOLD) {
-			return robot.encoderThread.getR();
+	public void setGearAngle(){
+		if(robot.operatorStick.getPOV() >= 0 && robot.operatorStick.getPOV() <= 45 || robot.operatorStick.getPOV()>=315) {
+			angle = robot.MIDDLE_LIFT_ANGLE;
+			
+		} else if(robot.operatorStick.getPOV() == 90) {
+			angle = robot.LEFT_LIFT_ANGLE;
+			
+		} else if(robot.operatorStick.getPOV() == 270) {
+			angle = robot.RIGHT_LIFT_ANGLE;
 		}
 		
-		return t;
-	}*/
+	}
+	
+	//calculate the current trajectory angle of the robot
+	public double getTrajectoryAngle(double x, double y) {
+		double p = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		double t = Math.atan2(x, -y);
+		
+		//if the output is not defined or the change in position is very small (standing still), PID to the current rotation
+		if(Double.isNaN(t) || Math.abs(p) < robot.INTAKE_ROTATION_THRESHOLD) {
+			return robot.ahrs.getAngle();
+		}
+		
+		System.out.println("p: " + p + " t: " + t * robot.RAD_TO_DEG);
+		return t * robot.RAD_TO_DEG;
+	}
 }
