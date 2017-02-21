@@ -446,6 +446,23 @@ public class Robot extends IterativeRobot {
 		rControl.enable();
 	}
 	
+	public double getCousin(double current, double target){
+		double c = current % 360;
+		double t = (target + 360) % 360;
+		double adjust = t-c;
+		
+		if(Math.abs(adjust) > 180){
+			if(adjust > 0){
+				adjust -= 360;
+			} else{
+				adjust += 360;
+			}
+		}
+		
+		return current + adjust;
+		
+	}
+	
 	//get drive values for use in autonomous and teleop
 	public double getDriveX() {
 		return driveX;
