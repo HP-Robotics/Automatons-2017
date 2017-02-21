@@ -8,6 +8,8 @@ public class EncoderPIDSource implements PIDSource {
 	private Axis a;
 	private double x;
 	private double y;
+	private double xZero = 0;
+	private double yZero = 0;
 	
 	public enum Axis {
 		V, X, Y, R
@@ -16,6 +18,8 @@ public class EncoderPIDSource implements PIDSource {
 	public EncoderPIDSource(EncoderThread e, Axis a) {
 		this.e = e;
 		this.a = a;
+		
+		reset();
 	}
 	
 	@Override
@@ -26,14 +30,19 @@ public class EncoderPIDSource implements PIDSource {
 			double dy = y - e.getY();
 			return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		case X:
-			return e.getX();
+			return e.getX() - xZero;
 		case Y:
-			return e.getY();
+			return e.getY() - yZero;
 		case R:
 			return e.getR();
 		default:
 			return 0.0;
 		}
+	}
+	
+	public void reset() {
+		xZero = e.getX();
+		yZero = e.getY();
 	}
 	
 	public void setTarget(double x, double y) {

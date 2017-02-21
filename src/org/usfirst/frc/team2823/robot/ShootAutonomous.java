@@ -8,11 +8,8 @@ public class ShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {5.0, 2.0, 0.25, 2.0};
+		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 0.4, 2.0, 0.1};
 		setStageTimeouts(timeouts);
-		
-		robot.ahrs.reset();
-		robot.aEncoder.reset();
 		
 		start();
 	}
@@ -25,34 +22,61 @@ public class ShootAutonomous extends Autonomous {
 		
 		switch(stage) {
 		case 0:
+			startShooterWheels();
+			break;
+			
+		case 1:
 			driveForward();
 			break;
 		
-		case 1:
+		case 2:
 			turnRight();
 			break;
 		
-		case 2:
+		case 3:
+			startUptake();
+			break;
+		
+		case 4:
 			driveIntoHopper();
 			break;
 		
-		case 3:
+		case 5:
 			turnToShoot();
 			break;
+		
+		case 6:
+			startBeltFeeder();
+			break;
 		}
+		//at time 14.25 turn off belt feeder
+		//at time 14.75 turn off uptake
 		
 		//update drive motors regardless of stage
-		robot.setDriveT(-robot.ahrs.getAngle());
+		robot.setDriveT(robot.ahrs.getAngle());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
+	}
+	
+	//start the shooter wheel PIDs, relying on fast timeout to continue
+	private void startShooterWheels() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.topShooter.speedMode();
+			robot.topShooter.set(-4300);
+			
+			robot.bottomShooter.speedMode();
+			robot.bottomShooter.set(4300);
+			
+			stageData[stage].entered = true;
+			
+			nextStage();
+		}
 	}
 	
 	//drive next to the hopper
 	private void driveForward() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.aEncoder.reset();
-			robot.ahrs.reset();
-			
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
@@ -82,8 +106,6 @@ public class ShootAutonomous extends Autonomous {
 	private void turnRight() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.ahrs.reset();
-			
 			robot.rControl.reset();
 			robot.rControl.setSetpoint(90);
 			robot.rControl.enable();
@@ -93,7 +115,17 @@ public class ShootAutonomous extends Autonomous {
 		
 		//move on to the next stage once plan is complete
 		if(Math.abs(robot.rControl.getError()) < 2) {
-			robot.rControl.reset();
+			nextStage();
+		}
+	}
+	
+	//start the uptake early
+	private void startUptake() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.uptake.set(1.0);
+			
+			stageData[stage].entered = true;
 			
 			nextStage();
 		}
@@ -103,7 +135,9 @@ public class ShootAutonomous extends Autonomous {
 	private void driveIntoHopper() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.setDriveY(1.0);
+			robot.rControl.reset();
+			
+			robot.setDriveX(-1.0);
 			
 			stageData[stage].entered = true;
 		}
@@ -113,13 +147,11 @@ public class ShootAutonomous extends Autonomous {
 	private void turnToShoot() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.setDriveY(0.0);
-			
-			robot.ahrs.reset();
+			robot.setDriveX(0.0);
 			
 			robot.rControl.reset();
 			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
-			robot.rControl.setSetpoint(10);
+			robot.rControl.setSetpoint(robot.ahrs.getAngle() + 10);
 			
 			robot.rControl.enable();
 			
@@ -132,6 +164,17 @@ public class ShootAutonomous extends Autonomous {
 		if(Math.abs(robot.rControl.getError()) < 0.5) {
 			robot.rControl.reset();
 			robot.rControl.setPID(robot.rControl.getP(), 0.0, robot.rControl.getD());
+			
+			nextStage();
+		}
+	}
+	
+	private void startBeltFeeder() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.beltFeed.set(-0.5);
+			
+			stageData[stage].entered = true;
 			
 			nextStage();
 		}

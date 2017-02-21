@@ -14,7 +14,7 @@ public class AverageEncoder {
 	}
 	
 	public double getDistance() {
-		return (l.getDistance() + r.getDistance()) / 2.0 * robot.ENC_TO_IN / robot.FORWARD_FUDGE_FACTOR;
+		return (l.getDistance() + r.getDistance()) / 2.0 * robot.ENC_TO_IN;
 	}
 	
 	public void reset() {

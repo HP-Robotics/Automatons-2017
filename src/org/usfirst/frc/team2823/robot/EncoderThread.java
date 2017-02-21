@@ -20,6 +20,8 @@ public class EncoderThread extends Thread {
 	double y = 0;
 	double r = 0;
 	
+	double prevTime = Timer.getFPGATimestamp();
+	
 	public EncoderThread(Robot robot) {
 		this.robot = robot;
 		
@@ -64,6 +66,11 @@ public class EncoderThread extends Thread {
 					x += (ds * Math.cos(r)) + (df * Math.sin(r));
 					y += (df * Math.cos(r)) - (ds * Math.sin(r));
 				}
+				
+				/*if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
+					System.out.println(" x: " + getX() + " y: " + getY() + " r: " + getR());
+					prevTime = Timer.getFPGATimestamp();
+				}*/
 				
 				//store values for next iteration
 				lf = f;
@@ -112,7 +119,7 @@ public class EncoderThread extends Thread {
 	
 	public double getY() {
 		synchronized(this) {
-			return -y * robot.ENC_TO_IN / robot.FORWARD_FUDGE_FACTOR;
+			return -y * robot.ENC_TO_IN;
 		}
 	}
 	

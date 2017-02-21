@@ -42,8 +42,11 @@ public class Autonomous {
 	}
 	
 	public boolean checkStageTimeout() {
-		if (stage < 0 || stage >= stageData.length)
+		if (stage < 0 || stage >= stageData.length) {
+			robot.robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
+			
 			return true;
+		}
 	
 		if (timer.get() > stageData[stage].timeout) {
 
@@ -68,8 +71,10 @@ public class Autonomous {
 		System.out.println("-----");
 		System.out.printf("Auto Finished:\tTotal Time: %f\n",Timer.getFPGATimestamp() - initTime);
 		
-		//robot.vControl.disable();
-		robot.rControl.disable();
+		//robot.vControl.reset();
+		robot.xControl.reset();
+		robot.yControl.reset();
+		robot.rControl.reset();
 		
 		robot.robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
 	}
