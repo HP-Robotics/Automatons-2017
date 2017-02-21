@@ -283,7 +283,7 @@ public class TeleopMode {
 			angle = robot.RIGHT_LIFT_ANGLE;
 			
 		} else if(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225){
-			angle = robot.GEAR_IN_ANGLE;
+			angle = robot.GEAR_IN_ANGLE * robot.allianceMult;
 		}
 		
 	}

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -93,6 +94,8 @@ public class Robot extends IterativeRobot {
 	ToggleSwitch shooterState;
 	
 	CSVLogger log;
+	
+	DriverStation driverStation;
 	
 	//declare constants
 	//simulator wheel PWM channels
@@ -187,6 +190,8 @@ public class Robot extends IterativeRobot {
 	
 	double initTime;
 	
+	double allianceMult = 1;
+	
 	//gyro values
 	double navxOrigin;
 	double navx2Origin;
@@ -199,6 +204,11 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+        driverStation = DriverStation.getInstance();
+    	if(driverStation.getAlliance() == DriverStation.Alliance.Red){
+    		allianceMult = -1;
+    	}
+        
     	driverStick = stick1 = new Joystick(JOYSTICK1_CHANNEL);
     	operatorStick = stick2 = new Joystick(JOYSTICK2_CHANNEL);
     	//opponentStick = new Joystick(kJoystickOppChannel);
@@ -215,7 +225,7 @@ public class Robot extends IterativeRobot {
 		climbButton = new Button();
         intakeState = new ToggleSwitch();
         shooterState = new ToggleSwitch();
-		
+	     
 		teleopMode = new TeleopMode(this);
         testMode = new TestMode(this);
         SmartDashboard.putBoolean("TestMode", false);

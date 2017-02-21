@@ -74,7 +74,7 @@ public class GearAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(-60);
+			robot.rotateTo(-60 * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 		}
@@ -96,8 +96,8 @@ public class GearAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(45, 45);
-			robot.rotateTo(-60);
+			robot.driveTo_Cartesian(45 * robot.allianceMult, 45);
+			robot.rotateTo(-60 * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 		}

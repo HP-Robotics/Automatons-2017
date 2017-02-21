@@ -137,7 +137,7 @@ public class ShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.setDriveX(-1.0);
+			robot.setDriveX(-1.0 * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 		}
@@ -151,7 +151,7 @@ public class ShootAutonomous extends Autonomous {
 			
 			robot.rControl.reset();
 			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
-			robot.rControl.setSetpoint(robot.ahrs.getAngle() + 10);
+			robot.rControl.setSetpoint((robot.ahrs.getAngle() + 10) * robot.allianceMult);
 			
 			robot.rControl.enable();
 			
