@@ -256,7 +256,7 @@ public class TeleopMode {
 		
 		case INTAKE:
 			//robot.rControl.setSetpoint(0);	//temporary, should calculate trajectory eventually
-			robot.rControl.setSetpoint(getTrajectoryAngle(x, y));
+			robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), getTrajectoryAngle(x, y)));
 			
 			robot.setDriveX(x);
 			robot.setDriveY(y);
@@ -264,7 +264,7 @@ public class TeleopMode {
 			break;
 		
 		case GEAR:
-			robot.rControl.setSetpoint(angle);
+			robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), angle));
 			robot.setDriveX(x);
 			robot.setDriveY(y);
 			robot.setDriveT(t);
