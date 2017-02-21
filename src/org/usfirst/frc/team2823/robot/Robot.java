@@ -225,7 +225,7 @@ public class Robot extends IterativeRobot {
 		autonomousChooser.addDefault("Empty: Do Nothing", new EmptyAutonomous(this));
 		//autonomousChooser.addObject("Cross Baseline", new DriveForwardAutonomous(this));
 		autonomousChooser.addObject("Shoot w/o Gear", new ShootAutonomous(this));
-		//autonomousChooser.addObject("Place Gear", new GearAutonomous(this));
+		autonomousChooser.addObject("Place Gear", new GearAutonomous(this));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
@@ -440,7 +440,7 @@ public class Robot extends IterativeRobot {
 		yControl.enable();
 	}
 	
-	//PID to the given theta (in radians) using a single rotation PID
+	//PID to the given theta (in degrees) using a single rotation PID
 	public void rotateTo(double t) {
 		rControl.setSetpoint(t);
 		rControl.enableLog("rControlPID.csv");
