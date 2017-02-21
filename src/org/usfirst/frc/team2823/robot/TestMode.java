@@ -30,14 +30,13 @@ public class TestMode {
 		
 		if(robot.robotButton.on()){
 			//System.out.println("l: " + robot.lEncoder.getDistance() + " r: " + robot.rEncoder.getDistance() + " a: " + robot.aEncoder.getDistance());
-			System.out.print(robot.xControl.getError());
-			System.out.println(" " + robot.yControl.getError());
+			System.out.println(robot.xControl.getError() + " " + robot.yControl.getError());
 		}
 		
 		//System.out.println(robot.rControl.getError());
 		
 		//robot.xControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-		//robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		//robot.rControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		
 		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
@@ -53,8 +52,13 @@ public class TestMode {
 				//robot.xControl.configureGoal(2, robot.MAX_SIDE_VEL, robot.MAX_SIDE_ACCEL);
 				
 				//robot.aEncoder.reset();
-				//robot.yControl.reset();
-				//robot.yControl.setKaKv(robot.FORWARD_KA * SmartDashboard.getNumber("KaMult", 2.0), robot.FORWARD_KV * SmartDashboard.getNumber("KvMult", 1.0));
+				robot.ySource.reset();
+				robot.yControl.reset();
+				robot.yControl.setKaKv(SmartDashboard.getNumber("Ka", robot.FORWARD_KA) * SmartDashboard.getNumber("KaMult", 2.0), SmartDashboard.getNumber("Kv", robot.FORWARD_KV) * SmartDashboard.getNumber("KvMult", 1.0));
+				robot.yControl.configureGoal(SmartDashboard.getNumber("Setpoint", 48), SmartDashboard.getNumber("Max a", robot.MAX_FORWARD_VEL), SmartDashboard.getNumber("Max v", robot.MAX_FORWARD_ACCEL * 0.8));
+				robot.yControl.enableLog("yControlTest.csv");
+				robot.yControl.enable();
+				
 				//robot.xSource.reset();
 				//robot.xControl.configureGoal(SmartDashboard.getNumber("Setpoint", 48), robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
 				//robot.xControl.enable();

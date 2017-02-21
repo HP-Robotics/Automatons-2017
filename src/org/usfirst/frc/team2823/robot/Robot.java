@@ -319,6 +319,11 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("I", 0.000001);
         SmartDashboard.putNumber("D", 1.0);
         SmartDashboard.putNumber("F", 0.0);
+        
+        SmartDashboard.putNumber("Ka", FORWARD_KA);
+        SmartDashboard.putNumber("Kv", FORWARD_KV);
+        SmartDashboard.putNumber("Max a", MAX_FORWARD_ACCEL * 0.8);
+        SmartDashboard.putNumber("Max v", MAX_FORWARD_VEL);
         SmartDashboard.putNumber("KaMult", 0.7);
         SmartDashboard.putNumber("KvMult", 1.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
