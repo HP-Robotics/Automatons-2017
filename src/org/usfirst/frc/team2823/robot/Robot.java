@@ -37,8 +37,7 @@ public class Robot extends IterativeRobot {
 	Button robotButton;
 	Button fieldButton;
 	Button intakeButton;
-	Button gearOutButton;
-	Button gearInButton;
+	Button gearButton;
 	Button shootTrigger;
 	Button shooterWheelsButton;
 	Button gyroResetButton1;
@@ -177,6 +176,7 @@ public class Robot extends IterativeRobot {
 	final double RIGHT_LIFT_ANGLE = -120;
 	final double MIDDLE_LIFT_ANGLE = -90;
 	final double LEFT_LIFT_ANGLE = -60;
+	final double GEAR_IN_ANGLE = -30;
 	
 	//declare variables
 	//drive values
@@ -206,8 +206,7 @@ public class Robot extends IterativeRobot {
 		robotButton = new Button();
 		fieldButton = new Button();
 		intakeButton = new Button();
-		gearOutButton = new Button();
-		gearInButton = new Button();
+		gearButton = new Button();
 		shootTrigger = new Button();
     	gyroResetButton1 = new Button();
     	gyroResetButton2 = new Button();

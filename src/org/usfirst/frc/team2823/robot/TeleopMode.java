@@ -11,12 +11,11 @@ public class TeleopMode {
 	DriveMode prevMode = defaultMode;
 	
 	double angle;
-	double prevAngle = 0;
 	
 	double prevTime = Timer.getFPGATimestamp();
 	
 	private enum DriveMode {
-		ROBOT, FIELD, INTAKE, GEAR_IN, GEAR_OUT
+		ROBOT, FIELD, INTAKE, GEAR
 	}
 	
 	public TeleopMode(Robot robot) {
@@ -43,8 +42,7 @@ public class TeleopMode {
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
 		robot.intakeButton.update(robot.driverStick.getRawButton(3));
-		robot.gearOutButton.update(robot.driverStick.getRawButton(6));
-		robot.gearInButton.update(robot.driverStick.getRawButton(4));
+		robot.gearButton.update(robot.driverStick.getRawButton(6));
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
@@ -188,18 +186,9 @@ public class TeleopMode {
 		}
 		
 		//GEAR_OUT mode, is toggle, reverts to the default drive mode when released
-		if(robot.gearOutButton.changed()) {
-			if(robot.gearOutButton.on()) {
-				return DriveMode.GEAR_OUT;
-			} else {
-				return defaultMode;
-			}
-		}
-		
-		//GEAR_IN mode, is toggle, reverts to the default drive mode when released
-		if(robot.gearInButton.changed()) {
-			if(robot.gearInButton.on()) {
-				return DriveMode.GEAR_IN;
+		if(robot.gearButton.changed()) {
+			if(robot.gearButton.on()) {
+				return DriveMode.GEAR;
 			} else {
 				return defaultMode;
 			}
@@ -237,25 +226,12 @@ public class TeleopMode {
 			}
  			break;
  		
- 		case GEAR_OUT:	//GEAR_OUT mode, PIDing to the nearest airship lift
+ 		case GEAR:	//GEAR_OUT mode, PIDing to the nearest airship lift
 			if (!robot.rControl.isEnabled()) {
 				robot.rControl.enable();
 				robot.rControl.enableLog("gearout.csv");
 				System.out.println("GearOut");
 				
-			}
-			if(angle != prevAngle) {
-				robot.rControl.setSetpoint(angle);
-				prevAngle = angle;
-			}
- 			break;
- 		
- 		case GEAR_IN:	//GEAR_IN mode, PIDing to the feeder station
-			if (!robot.rControl.isEnabled()) {
-				robot.rControl.setSetpoint(1.5707);
-				robot.rControl.enable();
-				robot.rControl.enableLog("gearin.csv");
-				System.out.println("GearIn");
 			}
  			break;
  		}
@@ -287,17 +263,8 @@ public class TeleopMode {
 			robot.setDriveT(t);
 			break;
 		
-		case GEAR_IN:
-			//robot.rControl.setSetpoint(/*some calculated angle based on field position*/);
-			
-			robot.setDriveX(x);
-			robot.setDriveY(y);
-			robot.setDriveT(t);
-			break;
-		
-		case GEAR_OUT:
-			//robot.rControl.setSetpoint(/*some precalculated angle to the feeder station*/);
-			
+		case GEAR:
+			robot.rControl.setSetpoint(angle);
 			robot.setDriveX(x);
 			robot.setDriveY(y);
 			robot.setDriveT(t);
@@ -314,6 +281,9 @@ public class TeleopMode {
 			
 		} else if(robot.operatorStick.getPOV() == 270) {
 			angle = robot.RIGHT_LIFT_ANGLE;
+			
+		} else if(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225){
+			angle = robot.GEAR_IN_ANGLE;
 		}
 		
 	}
