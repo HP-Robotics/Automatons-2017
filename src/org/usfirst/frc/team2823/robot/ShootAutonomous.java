@@ -10,7 +10,7 @@ public class ShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 0.4, 2.0, 0.1, 15.0, 15.0};
+		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 2.0, 0.1, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -44,23 +44,25 @@ public class ShootAutonomous extends Autonomous {
 			break;
 		
 		case 5:
-			turnToShoot();
+			waitForBalls();
 			break;
 		
 		case 6:
+			turnToShoot();
+			break;
+		
+		case 7:
 			startBeltFeeder();
 			break;
 			
-		case 7:
+		case 8:
 			stopBeltFeeder();
 			break;
 		
-		case 8:
+		case 9:
 			stopUptake();
 			break;
 		}
-		//at time 14.25 turn off belt feeder
-		//at time 14.75 turn off uptake
 		
 		//update drive motors regardless of stage
 		robot.setDriveT(robot.ahrs.getAngle());
@@ -72,10 +74,10 @@ public class ShootAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.topShooter.speedMode();
-			robot.topShooter.set(-4300);
+			robot.topShooter.set(-robot.FAR_SHOT_SPEED);
 			
 			robot.bottomShooter.speedMode();
-			robot.bottomShooter.set(4300);
+			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
 			
 			stageData[stage].entered = true;
 			
@@ -87,24 +89,31 @@ public class ShootAutonomous extends Autonomous {
 	private void driveForward() {
 		//run entry code
 		if(!stageData[stage].entered) {
+			robot.xControl.reset();
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.yControl.configureGoal(70.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
-			robot.yControl.enableLog("yControl.csv");
+			robot.driveTo_Cartesian(0, 71);
+			robot.rotateTo(0);
 			
-			robot.rControl.setSetpoint(0);
+			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
+			//robot.yControl.enableLog("yControl.csv");
 			
-			robot.yControl.enable();
-			robot.rControl.enable();
+			//robot.rControl.setSetpoint(0);
+			
+			//robot.yControl.enable();
+			//robot.rControl.enable();
 			
 			stageData[stage].entered = true;
 		}
 		
 		//move on to the next stage once plan is complete
 		if(robot.yControl.isPlanFinished()) {
+			robot.xControl.closeLog();
 			robot.yControl.closeLog();
+			robot.rControl.closeLog();
 			
+			robot.xControl.reset();
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
@@ -117,8 +126,9 @@ public class ShootAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
-			robot.rControl.setSetpoint(90);
-			robot.rControl.enable();
+			robot.rControl.setPID(robot.rControl.getP(), 0.0, robot.rControl.getD());
+			
+			robot.rotateTo(90);
 			
 			stageData[stage].entered = true;
 		}
@@ -146,24 +156,39 @@ public class ShootAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
+			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
 			
-			robot.setDriveX(-1.0 * robot.allianceMult);
+			robot.driveTo_Cartesian(-42, 0);
+			robot.rotateTo(90);
 			
 			stageData[stage].entered = true;
 		}
+		
+		if(robot.xControl.isPlanFinished()) {
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			robot.xControl.closeLog();
+			robot.yControl.closeLog();
+			robot.rControl.closeLog();
+			
+			nextStage();
+		}
+	}
+	
+	//wait for the balls to fall into the robot
+	private void waitForBalls() {
+		//do nothing, wait for stage to time out
 	}
 	
 	//turn to the right shooting angle
 	private void turnToShoot() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.setDriveX(0.0);
-			
 			robot.rControl.reset();
-			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
-			robot.rControl.setSetpoint((robot.ahrs.getAngle() + 10) * robot.allianceMult);
 			
-			robot.rControl.enable();
+			robot.rotateTo((robot.ahrs.getAngle() + 12) * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 		}
@@ -173,7 +198,6 @@ public class ShootAutonomous extends Autonomous {
 		//move on to the next stage once plan is complete
 		if(Math.abs(robot.rControl.getError()) < 0.5) {
 			robot.rControl.reset();
-			robot.rControl.setPID(robot.rControl.getP(), 0.0, robot.rControl.getD());
 			
 			nextStage();
 		}
@@ -190,6 +214,7 @@ public class ShootAutonomous extends Autonomous {
 		}
 	}
 	
+	//turn off belt feeder at time 14.25 seconds
 	private void stopBeltFeeder(){
 		if(Timer.getFPGATimestamp() - initTime >= 14.25){
 			robot.beltFeed.set(0.0);
@@ -197,6 +222,7 @@ public class ShootAutonomous extends Autonomous {
 		}
 	}
 	
+	//turn off uptake at time 14.75 seconds
 	private void stopUptake(){
 		if(Timer.getFPGATimestamp() - initTime >= 14.75){
 			robot.uptake.set(0.0);

@@ -33,6 +33,7 @@ public class Autonomous {
 	public void start() {
 		robot.ahrs.reset();
 		
+		
 		stage = 0;
 		initTime = Timer.getFPGATimestamp();
 		

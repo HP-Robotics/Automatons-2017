@@ -537,7 +537,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
     		  m_POutput = m_P * m_error;
     		  m_IOutput = m_I * m_totalError;
 
-		  if (m_safeArm) {
+		  if (!m_safeArm) {
 			  m_filteredDifference = (m_A * m_filteredDifference) + ((1 - m_A) * (m_error - m_prevError));
 			  m_DOutput = m_D * m_filteredDifference;
 		  } else {

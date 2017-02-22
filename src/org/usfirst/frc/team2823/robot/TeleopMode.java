@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TeleopMode {
 	Robot robot;
@@ -34,14 +35,12 @@ public class TeleopMode {
     	}
     	
     	robot.log.open("gyro_comparison.csv", "ADXR,navX,encR\n");
-    	robot.ahrs.reset();
 	}
 	
 	public void teleopPeriodic() {
 		//update buttons
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
-		robot.intakeButton.update(robot.driverStick.getRawButton(3));
 		robot.gearButton.update(robot.driverStick.getRawButton(6));
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
@@ -51,13 +50,15 @@ public class TeleopMode {
 			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
 			robot.intakeState.update(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225);
+			robot.intakeButton.update(robot.operatorStick.getRawButton(7));
+			
 		}catch (Exception e){
 			
 		}
 		//prevent joysticks from driving robot when within a threshold value of zero
 		double x = Math.abs(robot.driverStick.getX()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getX(), 3);
 		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
-		double r = Math.abs(robot.driverStick.getZ()) < robot.STICKTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
+		double r = Math.abs(robot.driverStick.getZ()) < robot.ROTATIONTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
 		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
 		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
@@ -80,12 +81,13 @@ public class TeleopMode {
 		setGearAngle();
 		setDrivePIDs();
 				
-		/*if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
+		if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
 			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			System.out.println(robot.ahrs.getAngle());
 			prevTime = Timer.getFPGATimestamp();
-		}*/
+		}
 		
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
@@ -114,9 +116,9 @@ public class TeleopMode {
 		
 		if(robot.shooterWheelsButton.on()){
 			robot.topShooter.speedMode();
-			robot.topShooter.set(-4300);
+			robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
 			robot.bottomShooter.speedMode();
-			robot.bottomShooter.set(4300);
+			robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
 		} else{
 			robot.topShooter.normalMode();
 			robot.topShooter.set(0.0);

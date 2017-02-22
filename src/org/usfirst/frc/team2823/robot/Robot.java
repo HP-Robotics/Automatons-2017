@@ -119,6 +119,7 @@ public class Robot extends IterativeRobot {
 	
 	//joystick zero-sensitivity threshold
 	final double STICKTHRESHOLD = 0.15;
+	final double ROTATIONTHRESHOLD = 0.25;
 	
 	//intake rotation-sensitivity threshold
 	final double INTAKE_ROTATION_THRESHOLD = 0.5;
@@ -129,6 +130,10 @@ public class Robot extends IterativeRobot {
 	
 	//fudge factors to account for encoder imprecisions, this might not be needed for good carpet
 	//final double FORWARD_FUDGE_FACTOR = 1.03471;
+	
+	//shooter speeds
+	final double CLOSE_SHOT_SPEED = 3650;
+	final double FAR_SHOT_SPEED = 4125;
 	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;
@@ -151,6 +156,9 @@ public class Robot extends IterativeRobot {
 	//final double MAX_SIDE_VEL = 1.8;
 	//final double MAX_SIDE_ACCEL = 9.0;
 	
+	final double MAX_ROTATIONAL_VEL = 270;
+	final double MAX_ROTATIONAL_ACCEL = 1337;
+	
 	//final double FORWARD_KA = 0.0526;		//simulator
 	//final double FORWARD_KV = 0.2083;		//simulator
 	
@@ -162,6 +170,9 @@ public class Robot extends IterativeRobot {
 	
 	//final double SIDE_KA = 0.1111;
 	//final double SIDE_KV = 0.5556;
+	
+	final double ROTATIONAL_KA = 1337;
+	final double ROTATIONAL_KV = 0.0037037;
 	
 	//unit conversion constants
 	final double DEG_TO_RAD = Math.PI / 180.0;
@@ -325,9 +336,9 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Climb 1", 0.0);
         SmartDashboard.putNumber("Climb 2", 0.0);
         
-        SmartDashboard.putNumber("P", 0.02);
-        SmartDashboard.putNumber("I", 0.000001);
-        SmartDashboard.putNumber("D", 1.0);
+        SmartDashboard.putNumber("P", 0.025);		//0.02
+        SmartDashboard.putNumber("I", 0.0025);	//0.000001
+        SmartDashboard.putNumber("D", 0.3);			//1.0
         SmartDashboard.putNumber("F", 0.0);
         
         SmartDashboard.putNumber("Ka", FORWARD_KA);
