@@ -449,20 +449,25 @@ public class Robot extends IterativeRobot {
 	}*/
 	
 	//PID to the given x and y values using two separate PIDs
-	public void driveTo_Cartesian(double x, double y) {
+	public void driveTo_Cartesian(double x, double y, double vm, double am) {
 		//xControl.setSetpoint(x);
 		//yControl.setSetpoint(y);
 		xSource.reset();
 		ySource.reset();
 		
-		xControl.configureGoal(x, MAX_FORWARD_VEL * 0.6, MAX_FORWARD_ACCEL * 0.8 * 0.6);
-		yControl.configureGoal(y, MAX_FORWARD_VEL * 0.6, MAX_FORWARD_ACCEL * 0.8 * 0.6);
+		xControl.configureGoal(x, MAX_FORWARD_VEL * vm, MAX_FORWARD_ACCEL * 0.8 * am);
+		yControl.configureGoal(y, MAX_FORWARD_VEL * vm, MAX_FORWARD_ACCEL * 0.8 * am);
 		
 		xControl.enableLog("xControlPID.csv");
 		yControl.enableLog("yControlPID.csv");
 		
 		xControl.enable();
 		yControl.enable();
+	}
+	
+	//drive to the given x and y values without applying a constant multiplier
+	public void driveTo_Cartesian(double x, double y) {
+		driveTo_Cartesian(x, y, 1, 1);
 	}
 	
 	//PID to the given theta (in degrees) using a single rotation PID
