@@ -48,7 +48,6 @@ public class TeleopMode {
 		
 		try{
 			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
-			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
 			robot.intakeState.update(robot.operatorStick.getRawButton(7));
 			
@@ -99,7 +98,7 @@ public class TeleopMode {
         SmartDashboard.putNumber("L Distance: ", robot.encoderThread.getLDistance());
         SmartDashboard.putNumber("R Distance: ", robot.encoderThread.getRDistance());
         SmartDashboard.putNumber("C Distance: ", robot.encoderThread.getCDistance());
-        SmartDashboard.putBoolean("Robot Oriented", mode == DriveMode.ROBOT);
+        SmartDashboard.putBoolean("Robot Mode", mode == DriveMode.ROBOT);
         SmartDashboard.putBoolean("Intake Mode", mode == DriveMode.INTAKE);
         SmartDashboard.putBoolean("Field Mode", mode == DriveMode.FIELD);
         SmartDashboard.putBoolean("Gear Mode", mode == DriveMode.GEAR);
@@ -121,21 +120,19 @@ public class TeleopMode {
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
 		
 		if(robot.shootTrigger.held()){
-			robot.uptake.set(1.0);
-			robot.beltFeed.set(-0.5);
-		} else{
-			robot.uptake.set(0.0);
-			robot.beltFeed.set(0.0);
-		}
-		
-		if(robot.shooterWheelsButton.on()){
 			robot.topShooter.speedMode();
 			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
 			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
 			robot.bottomShooter.speedMode();
 			//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
 			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+			robot.uptake.set(1.0);
+			robot.beltFeed.set(-0.5);
+			robot.climbMotor1.set(-1.0);
+			robot.climbMotor2.set(-1.0);
 		} else{
+			robot.uptake.set(0.0);
+			robot.beltFeed.set(0.0);
 			robot.topShooter.normalMode();
 			robot.topShooter.set(0.0);
 			robot.bottomShooter.normalMode();
@@ -148,10 +145,10 @@ public class TeleopMode {
 			robot.intake.set(0.0);
 		}
 		
-		if(robot.climbButton.on()){
+		if(robot.climbButton.on() && !robot.shootTrigger.held()){
 			robot.climbMotor1.set(-1.0);//not production values
 			robot.climbMotor2.set(-1.0);
-		} else {
+		} else if(!robot.climbButton.on() && !robot.shootTrigger.held()) {
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);
 		}

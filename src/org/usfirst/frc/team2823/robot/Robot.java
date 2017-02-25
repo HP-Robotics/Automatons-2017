@@ -40,7 +40,6 @@ public class Robot extends IterativeRobot {
 	Button intakeButton;
 	Button gearButton;
 	Button shootTrigger;
-	Button shooterWheelsButton;
 	Button gyroResetButton1;
 	Button gyroResetButton2;
 	
@@ -232,7 +231,6 @@ public class Robot extends IterativeRobot {
     	gyroResetButton1 = new Button();
     	gyroResetButton2 = new Button();
 		
-		shooterWheelsButton = new Button();
 		climbButton = new Button();
         intakeState = new ToggleSwitch();
         shooterState = new ToggleSwitch();
