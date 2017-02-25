@@ -153,7 +153,7 @@ public class Robot extends IterativeRobot {
 	//final double MAX_SIDE_ACCEL = 9.0;
 	
 	final double MAX_ROTATIONAL_VEL = 270;
-	final double MAX_ROTATIONAL_ACCEL = 1337;
+	final double MAX_ROTATIONAL_ACCEL = 1450;
 	
 	//final double FORWARD_KA = 0.0526;		//simulator
 	//final double FORWARD_KV = 0.2083;		//simulator
@@ -167,7 +167,7 @@ public class Robot extends IterativeRobot {
 	//final double SIDE_KA = 0.1111;
 	//final double SIDE_KV = 0.5556;
 	
-	final double ROTATIONAL_KA = 1337;
+	final double ROTATIONAL_KA = 0.00068966;
 	final double ROTATIONAL_KV = 0.0037037;
 	
 	//unit conversion constants
@@ -325,6 +325,7 @@ public class Robot extends IterativeRobot {
 		//these should be calculated per-move based on robot rotation
 		xControl.setKaKv(FORWARD_KA, FORWARD_KV);
 		yControl.setKaKv(FORWARD_KA, FORWARD_KV);
+		rControl.setKaKv(ROTATIONAL_KA, ROTATIONAL_KV);
 		
         SmartDashboard.putNumber("Shooter", 0.0);
         SmartDashboard.putNumber("Intake", 0.0);
@@ -469,16 +470,23 @@ public class Robot extends IterativeRobot {
 		yControl.enable();
 	}
 	
-	//drive to the given x and y values without applying a constant multiplier
+	//PID to the given x and y values without applying a constant multiplier
 	public void driveTo_Cartesian(double x, double y) {
 		driveTo_Cartesian(x, y, 1, 1);
 	}
 	
 	//PID to the given theta (in degrees) using a single rotation PID
-	public void rotateTo(double t) {
-		rControl.setSetpoint(t);
+	public void rotateTo(double t, double vm, double am) {
+		//rControl.setSetpoint(t);
+		rControl.reset();
+		rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
 		rControl.enableLog("rControlPID.csv");
 		rControl.enable();
+	}
+	
+	//PID to the given theta without applying a constant multiplier
+	public void rotateTo(double t) {
+		rotateTo(t, 1, 1);
 	}
 	
 	//find the closest equivalent angle
