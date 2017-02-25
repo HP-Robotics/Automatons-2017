@@ -133,7 +133,7 @@ public class Robot extends IterativeRobot {
 	
 	//shooter speeds
 	final double CLOSE_SHOT_SPEED = 3650;
-	final double FAR_SHOT_SPEED = 4125;
+	final double FAR_SHOT_SPEED = 4175;
 	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;

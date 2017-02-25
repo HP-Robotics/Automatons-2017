@@ -10,7 +10,7 @@ public class ShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 2.0, 0.1, 15.0, 15.0};
+		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 1.75, 0.1, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -79,6 +79,9 @@ public class ShootAutonomous extends Autonomous {
 			robot.bottomShooter.speedMode();
 			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
 			
+			robot.climbMotor1.set(-1.0);
+			robot.climbMotor2.set(-1.0); //make dif stage for these
+			
 			stageData[stage].entered = true;
 			
 			nextStage();
@@ -134,7 +137,7 @@ public class ShootAutonomous extends Autonomous {
 		}
 		
 		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 2) {
+		if(Math.abs(robot.rControl.getError()) < 10) {
 			nextStage();
 		}
 	}
@@ -188,7 +191,7 @@ public class ShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo((robot.ahrs.getAngle() + 12) * robot.allianceMult);
+			robot.rotateTo((robot.ahrs.getAngle() + 10) * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 		}
@@ -226,6 +229,8 @@ public class ShootAutonomous extends Autonomous {
 	private void stopUptake(){
 		if(Timer.getFPGATimestamp() - initTime >= 14.75){
 			robot.uptake.set(0.0);
+			robot.climbMotor1.set(0.0);
+			robot.climbMotor2.set(0.0);
 			nextStage();
 		}
 	}

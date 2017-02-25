@@ -42,6 +42,7 @@ public class TeleopMode {
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
 		robot.gearButton.update(robot.driverStick.getRawButton(6));
+		robot.intakeButton.update(robot.driverStick.getRawButton(3));
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
@@ -49,8 +50,8 @@ public class TeleopMode {
 			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
 			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
-			robot.intakeState.update(robot.operatorStick.getPOV() >= 135 && robot.operatorStick.getPOV()<= 225);
-			robot.intakeButton.update(robot.operatorStick.getRawButton(7));
+			robot.intakeState.update(robot.operatorStick.getRawButton(7));
+			
 			
 		}catch (Exception e){
 			
@@ -116,9 +117,11 @@ public class TeleopMode {
 		
 		if(robot.shooterWheelsButton.on()){
 			robot.topShooter.speedMode();
-			robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
+			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
+			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
 			robot.bottomShooter.speedMode();
-			robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
+			//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
+			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
 		} else{
 			robot.topShooter.normalMode();
 			robot.topShooter.set(0.0);

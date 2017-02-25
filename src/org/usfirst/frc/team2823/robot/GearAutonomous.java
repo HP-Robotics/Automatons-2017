@@ -81,7 +81,7 @@ public class GearAutonomous extends Autonomous {
 		}
 		
 		//move on to the next stage once sufficiently close to target
-		if(Math.abs(robot.rControl.getError()) < 0.5) {
+		if(Math.abs(robot.rControl.getError()) < 5) {
 			robot.rControl.closeLog();
 			robot.rControl.reset();
 			
