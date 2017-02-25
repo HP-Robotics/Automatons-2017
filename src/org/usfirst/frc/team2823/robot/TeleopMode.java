@@ -95,6 +95,19 @@ public class TeleopMode {
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
 		
+		SmartDashboard.putNumber("X: ", robot.encoderThread.getX());
+        SmartDashboard.putNumber("Y: ", robot.encoderThread.getY());
+        SmartDashboard.putNumber("R: ", robot.encoderThread.getR());
+        SmartDashboard.putNumber("L Distance: ", robot.encoderThread.getLDistance());
+        SmartDashboard.putNumber("R Distance: ", robot.encoderThread.getRDistance());
+        SmartDashboard.putNumber("C Distance: ", robot.encoderThread.getCDistance());
+        SmartDashboard.putBoolean("Robot Oriented", mode == DriveMode.ROBOT);
+        SmartDashboard.putBoolean("Intake Mode", mode == DriveMode.INTAKE);
+        SmartDashboard.putBoolean("Field Mode", mode == DriveMode.FIELD);
+        SmartDashboard.putBoolean("Gear Mode", mode == DriveMode.GEAR);
+        SmartDashboard.putBoolean("Climber", robot.climbButton.on());
+        SmartDashboard.putBoolean("Intake", robot.intakeState.on());
+		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
