@@ -349,6 +349,21 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("KvMult", 1.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
         
+        //production smartdashboard things
+        SmartDashboard.putBoolean("Robot Mode", false);
+        SmartDashboard.putBoolean("Intake Mode", false);
+        SmartDashboard.putBoolean("Field Mode", false);
+        SmartDashboard.putBoolean("Gear Mode", false);
+        SmartDashboard.putBoolean("Climber", false);
+        SmartDashboard.putBoolean("Intake", false);
+        SmartDashboard.putNumber("Trim: ", 0.0);
+        SmartDashboard.putNumber("X: ", 0.0);
+        SmartDashboard.putNumber("Y: ", 0.0);
+        SmartDashboard.putNumber("Y: ", 0.0);
+        SmartDashboard.putNumber("L Distance: ", 0.0);
+        SmartDashboard.putNumber("R Distance: ", 0.0);
+        SmartDashboard.putNumber("C Distance: ", 0.0);
+        
         //compressor = new Compressor(0);
         //compressor.setClosedLoopControl(true);
         
