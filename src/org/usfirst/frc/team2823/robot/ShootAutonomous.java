@@ -10,7 +10,7 @@ public class ShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 1.75, 0.1, 15.0, 15.0};
+		double[] timeouts = {0.1, 0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 0.1, 0.1, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -26,40 +26,44 @@ public class ShootAutonomous extends Autonomous {
 		case 0:
 			startShooterWheels();
 			break;
-			
+		
 		case 1:
-			driveForward();
+			startAgitators();
 			break;
 		
 		case 2:
-			turnRight();
+			driveForward();
 			break;
 		
 		case 3:
-			startUptake();
+			turnRight();
 			break;
 		
 		case 4:
-			driveIntoHopper();
+			startUptake();
 			break;
 		
 		case 5:
-			waitForBalls();
+			driveIntoHopper();
 			break;
 		
 		case 6:
-			turnToShoot();
+			waitForBalls();
 			break;
 		
 		case 7:
+			turnToShoot();
+			break;
+		
+		case 8:
 			startBeltFeeder();
 			break;
 			
-		case 8:
+		case 9:
 			stopBeltFeeder();
 			break;
 		
-		case 9:
+		case 10:
 			stopUptake();
 			break;
 		}
@@ -79,8 +83,20 @@ public class ShootAutonomous extends Autonomous {
 			robot.bottomShooter.speedMode();
 			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
 			
+			stageData[stage].entered = true;
+			
+			nextStage();
+		}
+	}
+	
+	//start the agitation mechanisms to prime the balls for shooting
+	private void startAgitators() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.intake.set(1.0);
+			
 			robot.climbMotor1.set(-1.0);
-			robot.climbMotor2.set(-1.0); //make dif stage for these
+			robot.climbMotor2.set(-1.0);
 			
 			stageData[stage].entered = true;
 			
@@ -185,7 +201,7 @@ public class ShootAutonomous extends Autonomous {
 		//do nothing, wait for stage to time out
 	}
 	
-	//turn to the right shooting angle
+	//turn rotation PID on, turn to the right shooting angle while shooting
 	private void turnToShoot() {
 		//run entry code
 		if(!stageData[stage].entered) {
@@ -194,18 +210,12 @@ public class ShootAutonomous extends Autonomous {
 			robot.rotateTo((robot.ahrs.getAngle() + 10) * robot.allianceMult);
 			
 			stageData[stage].entered = true;
-		}
-		
-		System.out.println(robot.rControl.getError());
-		
-		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 0.5) {
-			robot.rControl.reset();
 			
 			nextStage();
 		}
 	}
 	
+	//start belt feeder and begin shooting
 	private void startBeltFeeder() {
 		//run entry code
 		if(!stageData[stage].entered) {
