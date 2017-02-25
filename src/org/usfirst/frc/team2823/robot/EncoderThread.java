@@ -49,33 +49,29 @@ public class EncoderThread extends Thread {
 					
 					//get current time
 					t = Timer.getFPGATimestamp();
-				}
-				
-				//in case the simulated FPGA timestamp is the same as last iteration
-				if(t == lt) {
-					Timer.delay(0.001);
-					continue;
-				}
-				
-				//get forward and sideways travel distances
-				double df = (f - lf);
-				double ds = (s - ls);
-				
-				synchronized(this) {
-					//convert encoder travel distances to field position
-					x += (ds * Math.cos(r)) + (df * Math.sin(r));
-					y += (df * Math.cos(r)) - (ds * Math.sin(r));
+					
+					//skip calculation if the simulated FPGA timestamp is the same as last iteration
+					if(t != lt) {
+						
+						//get forward and sideways travel distances
+						double df = (f - lf);
+						double ds = (s - ls);
+						
+						//convert encoder travel distances to field position
+						x += (ds * Math.cos(r)) + (df * Math.sin(r));
+						y += (df * Math.cos(r)) - (ds * Math.sin(r));
+						
+						//store values for next iteration
+						lf = f;
+						ls = s;
+						lt = t;
+					}
 				}
 				
 				/*if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
-					System.out.println(" x: " + getX() + " y: " + getY() + " r: " + getR());
-					prevTime = Timer.getFPGATimestamp();
+				System.out.println(" x: " + getX() + " y: " + getY() + " r: " + getR());
+				prevTime = Timer.getFPGATimestamp();
 				}*/
-				
-				//store values for next iteration
-				lf = f;
-				ls = s;
-				lt = t;
 				
 				//wait 1 ms
 				Timer.delay(0.001);
@@ -87,10 +83,22 @@ public class EncoderThread extends Thread {
 		}
 	}
 	
+	//reset encoder and position variables
 	public void reset() {
-		lEncoder.reset();
-		rEncoder.reset();
-		cEncoder.reset();
+		synchronized(this) {
+			lf = 0;
+			ls = 0;
+			lt = Timer.getFPGATimestamp();
+			
+			x = 0;
+			y = 0;
+			r = 0;
+			
+			
+			lEncoder.reset();
+			rEncoder.reset();
+			cEncoder.reset();
+		}
 	}
 	
 	public double getLDistance() {
