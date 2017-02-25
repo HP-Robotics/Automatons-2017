@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TeleopMode {
@@ -49,8 +50,9 @@ public class TeleopMode {
 		try{
 			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
-			robot.intakeState.update(robot.operatorStick.getRawButton(7));
-			
+			robot.farShotButton.update(robot.operatorStick.getRawButton(7));
+			robot.nearShotButton.update(robot.operatorStick.getRawButton(5));
+			robot.intakeState.update(robot.operatorStick.getRawButton(8));
 			
 		}catch (Exception e){
 			
@@ -105,19 +107,17 @@ public class TeleopMode {
         SmartDashboard.putBoolean("Climber", robot.climbButton.on());
         SmartDashboard.putBoolean("Intake", robot.intakeState.on());
 		
-		/*if(robot.xButton.changed()) {
-			if(robot.xButton.on()) {
-				robot.xControl.setSetpoint(1000 * -27);
-				robot.xControl.enableLog("zanzibar_spumoni.csv");
-				robot.xControl.enable();
-			} else {
-				robot.xControl.disable();
-				robot.xControl.closeLog();
-			}
-		}*/
-		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
+		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
+		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
+		
+
+		if(robot.farShotButton.changed()) {
+			robot.shooterSolenoid.set(Value.kForward);
+		} else if(robot.nearShotButton.changed()) {
+			robot.shooterSolenoid.set(Value.kReverse);
+		}
 		
 		if(robot.shootTrigger.held()){
 			robot.topShooter.speedMode();
@@ -162,16 +162,13 @@ public class TeleopMode {
 		} else {
 			robot.resettingGyro = false;
 		}
-		
-		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
-		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
-		//System.out.println(opx + " " + opy + " " + opr + " " + opt);
 	}
 	
 	//select a drive mode based on button input
 	public DriveMode setDriveMode() {
 		
 		//ROBOT mode, is press-hold, has priority over other modes but reverts to previous mode when released
+		// is not field-oriented, gear catcher is forward in this mode
 		if(robot.robotButton.held()) {
 			if(mode != DriveMode.ROBOT) {
 				prevMode = mode;		//if switching to ROBOT mode, store the previous drive mode
@@ -256,8 +253,8 @@ public class TeleopMode {
 	public void setDriveOutputs(double x, double y, double r, double t) {
 		switch(mode) {
 		case ROBOT:
-			robot.setDriveX(x);
-			robot.setDriveY(y);
+			robot.setDriveX(-y);	//switch x and y to make gear catcher forward
+			robot.setDriveY(x);
 			robot.setDriveR(r);
 			robot.setDriveT(0);
 			break;

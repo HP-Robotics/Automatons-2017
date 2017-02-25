@@ -42,9 +42,9 @@ public class Robot extends IterativeRobot {
 	Button shootTrigger;
 	Button gyroResetButton1;
 	Button gyroResetButton2;
-	
-	Button xButton;
 	Button climbButton;
+	Button farShotButton;
+	Button nearShotButton;
 	
 	TeleopMode teleopMode;
 	TestMode testMode;
@@ -62,10 +62,9 @@ public class Robot extends IterativeRobot {
 	
 	OurCANTalon topShooter;
 	
-	//Encoder lEncoder;
-	//Encoder rEncoder;
-	//Encoder cEncoder;
-	//AverageEncoder aEncoder;
+	//Compressor compressor;
+	DoubleSolenoid shooterSolenoid;
+	
 	EncoderThread encoderThread;
 	
 	OurAHRS ahrs;
@@ -75,13 +74,11 @@ public class Robot extends IterativeRobot {
 	//EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
-	//AverageEncoderSource ySource;
 	GyroPIDSource rSource;
 	
 	//EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
 	EncoderPIDOutput yOutput;
-	//AverageEncoderOutput yOutput;
 	GyroPIDOutput rOutput;
 	
 	//AdvancedPIDController vControl;
@@ -232,6 +229,8 @@ public class Robot extends IterativeRobot {
     	gyroResetButton2 = new Button();
 		
 		climbButton = new Button();
+		farShotButton = new Button();
+		nearShotButton = new Button();
         intakeState = new ToggleSwitch();
         shooterState = new ToggleSwitch();
 	     
@@ -293,10 +292,11 @@ public class Robot extends IterativeRobot {
         bottomShooter.setF(0.025);
         bottomShooter.setProfile(0);
         
-		//lEncoder = new Encoder(0, 1, false, EncodingType.k4X);
-		//rEncoder = new Encoder(2, 3, false, EncodingType.k4X);
-		//cEncoder = new Encoder(4, 5, false, EncodingType.k4X);
-		//aEncoder = new AverageEncoder(this, lEncoder, rEncoder);
+        //compressor = new Compressor(0);
+        //compressor.setClosedLoopControl(true);
+        
+        shooterSolenoid = new DoubleSolenoid(0, 1);
+        shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         
         ahrs = new OurAHRS();
         gyro = new OurADXRS450_Gyro();
@@ -309,13 +309,11 @@ public class Robot extends IterativeRobot {
 		//vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		//ySource = new AverageEncoderSource(aEncoder);
 		rSource = new GyroPIDSource(ahrs);
 		
 		//vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
 		xOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.X);
 		yOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.Y);
-		//yOutput = new AverageEncoderOutput(this);
 		rOutput = new GyroPIDOutput(this);
 		
 		//old 0.0045, 0.000001, 0.35
@@ -361,11 +359,6 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("L Distance: ", 0.0);
         SmartDashboard.putNumber("R Distance: ", 0.0);
         SmartDashboard.putNumber("C Distance: ", 0.0);
-        
-        //compressor = new Compressor(0);
-        //compressor.setClosedLoopControl(true);
-        
-        //solenoid1 = new DoubleSolenoid(0,1);
         
         //use System.getProperty("user.home") to get path to home directory
         //log = new CSVLogger("/tmp");
@@ -463,8 +456,6 @@ public class Robot extends IterativeRobot {
 	
 	//PID to the given x and y values using two separate PIDs
 	public void driveTo_Cartesian(double x, double y, double vm, double am) {
-		//xControl.setSetpoint(x);
-		//yControl.setSetpoint(y);
 		xSource.reset();
 		ySource.reset();
 		
@@ -490,6 +481,7 @@ public class Robot extends IterativeRobot {
 		rControl.enable();
 	}
 	
+	//find the closest equivalent angle
 	public double getCousin(double current, double target){
 		double c = current % 360;
 		double t = (target + 360) % 360;
