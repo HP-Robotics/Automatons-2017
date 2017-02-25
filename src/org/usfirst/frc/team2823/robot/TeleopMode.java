@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TeleopMode {
@@ -50,8 +51,9 @@ public class TeleopMode {
 			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
 			robot.shooterWheelsButton.update(robot.operatorStick.getRawButton(1));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
-			robot.intakeState.update(robot.operatorStick.getRawButton(7));
-			
+			robot.farShotButton.update(robot.operatorStick.getRawButton(7));
+			robot.nearShotButton.update(robot.operatorStick.getRawButton(5));
+			robot.intakeState.update(robot.operatorStick.getRawButton(8));
 			
 		}catch (Exception e){
 			
@@ -93,19 +95,10 @@ public class TeleopMode {
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
 		
-		/*if(robot.xButton.changed()) {
-			if(robot.xButton.on()) {
-				robot.xControl.setSetpoint(1000 * -27);
-				robot.xControl.enableLog("zanzibar_spumoni.csv");
-				robot.xControl.enable();
-			} else {
-				robot.xControl.disable();
-				robot.xControl.closeLog();
-			}
-		}*/
-		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
+		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
+		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
 		
 		if(robot.shootTrigger.held()){
 			robot.uptake.set(1.0);
@@ -113,6 +106,12 @@ public class TeleopMode {
 		} else{
 			robot.uptake.set(0.0);
 			robot.beltFeed.set(0.0);
+		}
+		
+		if(robot.farShotButton.changed()) {
+			robot.shooterSolenoid.set(Value.kForward);
+		} else if(robot.nearShotButton.changed()) {
+			robot.shooterSolenoid.set(Value.kReverse);
 		}
 		
 		if(robot.shooterWheelsButton.on()){
@@ -152,10 +151,6 @@ public class TeleopMode {
 		} else {
 			robot.resettingGyro = false;
 		}
-		
-		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
-		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
-		//System.out.println(opx + " " + opy + " " + opr + " " + opt);
 	}
 	
 	//select a drive mode based on button input
