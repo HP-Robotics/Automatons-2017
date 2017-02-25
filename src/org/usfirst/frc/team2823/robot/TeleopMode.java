@@ -170,6 +170,7 @@ public class TeleopMode {
 	public DriveMode setDriveMode() {
 		
 		//ROBOT mode, is press-hold, has priority over other modes but reverts to previous mode when released
+		// is not field-oriented, gear catcher is forward in this mode
 		if(robot.robotButton.held()) {
 			if(mode != DriveMode.ROBOT) {
 				prevMode = mode;		//if switching to ROBOT mode, store the previous drive mode
@@ -254,8 +255,8 @@ public class TeleopMode {
 	public void setDriveOutputs(double x, double y, double r, double t) {
 		switch(mode) {
 		case ROBOT:
-			robot.setDriveX(x);
-			robot.setDriveY(y);
+			robot.setDriveX(-y);	//switch x and y to make gear catcher forward
+			robot.setDriveY(x);
 			robot.setDriveR(r);
 			robot.setDriveT(0);
 			break;
