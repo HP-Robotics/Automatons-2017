@@ -262,28 +262,42 @@ public class TeleopMode {
 	
 	public void runMechanisms(){
 		if(robot.farShotButton.changed()) {
+			robot.nearShot = false;
 			robot.shooterSolenoid.set(Value.kForward);
+			
 		} else if(robot.nearShotButton.changed()) {
+			robot.nearShot = true;
 			robot.shooterSolenoid.set(Value.kReverse);
 		}
 		
 		if(robot.shootTrigger.held()){
 			robot.topShooter.speedMode();
-			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
-			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
 			robot.bottomShooter.speedMode();
+			
+			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
 			//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
-			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+			
+			if(robot.nearShot) {
+				robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
+				robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+			} else {
+				robot.topShooter.set(-robot.FAR_SHOT_SPEED);
+				robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+			}
+			
 			robot.uptake.set(1.0);
 			robot.beltFeed.set(-0.5);
+			
 			robot.climbMotor1.set(-1.0);
 			robot.climbMotor2.set(-1.0);
 		} else{
 			robot.uptake.set(0.0);
 			robot.beltFeed.set(0.0);
+			
 			robot.topShooter.normalMode();
-			robot.topShooter.set(0.0);
 			robot.bottomShooter.normalMode();
+
+			robot.topShooter.set(0.0);
 			robot.bottomShooter.set(0.0);
 		}
 		

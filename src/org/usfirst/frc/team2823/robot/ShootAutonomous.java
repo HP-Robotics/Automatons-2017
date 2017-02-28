@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class ShootAutonomous extends Autonomous {
 	
@@ -78,10 +79,12 @@ public class ShootAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.topShooter.speedMode();
-			robot.topShooter.set(-robot.FAR_SHOT_SPEED);
-			
 			robot.bottomShooter.speedMode();
+			
+			robot.topShooter.set(-robot.FAR_SHOT_SPEED);
 			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+			
+			robot.shooterSolenoid.set(Value.kForward);
 			
 			stageData[stage].entered = true;
 			

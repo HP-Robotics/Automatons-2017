@@ -205,6 +205,7 @@ public class Robot extends IterativeRobot {
 	double gyroOrigin;
 	
 	boolean resettingGyro = false;
+	boolean nearShot = false;
 	
     /**
      * This function is run when the robot is first started up and should be
