@@ -39,24 +39,9 @@ public class TeleopMode {
 	}
 	
 	public void teleopPeriodic() {
-		//update buttons
-		robot.robotButton.update(robot.driverStick.getRawButton(2));
-		robot.fieldButton.update(robot.driverStick.getRawButton(5));
-		robot.gearButton.update(robot.driverStick.getRawButton(6));
-		robot.intakeButton.update(robot.driverStick.getRawButton(3));
-		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
-		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
-		try{
-			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
-			robot.climbButton.update(robot.operatorStick.getRawButton(4));
-			robot.farShotButton.update(robot.operatorStick.getRawButton(7));
-			robot.nearShotButton.update(robot.operatorStick.getRawButton(5));
-			robot.intakeState.update(robot.operatorStick.getRawButton(8));
-			
-		}catch (Exception e){
-			
-		}
+		updateButtons();
+		
 		//prevent joysticks from driving robot when within a threshold value of zero
 		double x = Math.abs(robot.driverStick.getX()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getX(), 3);
 		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
@@ -94,73 +79,34 @@ public class TeleopMode {
 		//determine PID setpoint and drive motor outputs based on drive mode
 		setDriveOutputs(x, y, r, t);
 		
-		SmartDashboard.putNumber("X: ", robot.encoderThread.getX());
-        SmartDashboard.putNumber("Y: ", robot.encoderThread.getY());
-        SmartDashboard.putNumber("R: ", robot.encoderThread.getR());
-        SmartDashboard.putNumber("L Distance: ", robot.encoderThread.getLDistance());
-        SmartDashboard.putNumber("R Distance: ", robot.encoderThread.getRDistance());
-        SmartDashboard.putNumber("C Distance: ", robot.encoderThread.getCDistance());
-        SmartDashboard.putBoolean("Robot Mode", mode == DriveMode.ROBOT);
-        SmartDashboard.putBoolean("Intake Mode", mode == DriveMode.INTAKE);
-        SmartDashboard.putBoolean("Field Mode", mode == DriveMode.FIELD);
-        SmartDashboard.putBoolean("Gear Mode", mode == DriveMode.GEAR);
-        SmartDashboard.putBoolean("Climber", robot.climbButton.on());
-        SmartDashboard.putBoolean("Intake", robot.intakeState.on());
-		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
 		
-
-		if(robot.farShotButton.changed()) {
-			robot.shooterSolenoid.set(Value.kForward);
-		} else if(robot.nearShotButton.changed()) {
-			robot.shooterSolenoid.set(Value.kReverse);
-		}
+		runMechanisms();
+		resetGyro();
+		updateSmartDashboard();
+	}
+	
+	public void updateButtons(){
+		//update buttons
+		robot.robotButton.update(robot.driverStick.getRawButton(2));
+		robot.fieldButton.update(robot.driverStick.getRawButton(5));
+		robot.gearButton.update(robot.driverStick.getRawButton(6));
+		robot.intakeButton.update(robot.driverStick.getRawButton(3));
+		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
+		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
-		if(robot.shootTrigger.held()){
-			robot.topShooter.speedMode();
-			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
-			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
-			robot.bottomShooter.speedMode();
-			//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
-			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
-			robot.uptake.set(1.0);
-			robot.beltFeed.set(-0.5);
-			robot.climbMotor1.set(-1.0);
-			robot.climbMotor2.set(-1.0);
-		} else{
-			robot.uptake.set(0.0);
-			robot.beltFeed.set(0.0);
-			robot.topShooter.normalMode();
-			robot.topShooter.set(0.0);
-			robot.bottomShooter.normalMode();
-			robot.bottomShooter.set(0.0);
-		}
-		
-		if(robot.intakeState.on()){
-			robot.intake.set(1.0);
-		}else{
-			robot.intake.set(0.0);
-		}
-		
-		if(robot.climbButton.on() && !robot.shootTrigger.held()){
-			robot.climbMotor1.set(-1.0);//not production values
-			robot.climbMotor2.set(-1.0);
-		} else if(!robot.climbButton.on() && !robot.shootTrigger.held()) {
-			robot.climbMotor1.set(0.0);
-			robot.climbMotor2.set(0.0);
-		}
-		
-		if(robot.gyroResetButton1.held() && robot.gyroResetButton2.held()) {
-			if(!robot.resettingGyro) {
-				robot.resettingGyro = true;
-				
-				robot.ahrs.reset();
-			}
-		} else {
-			robot.resettingGyro = false;
+		try{
+			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
+			robot.climbButton.update(robot.operatorStick.getRawButton(4));
+			robot.farShotButton.update(robot.operatorStick.getRawButton(7));
+			robot.nearShotButton.update(robot.operatorStick.getRawButton(5));
+			robot.intakeState.update(robot.operatorStick.getRawButton(8));
+					
+		}catch (Exception e){
+					
 		}
 	}
 	
@@ -312,5 +258,75 @@ public class TeleopMode {
 		
 		System.out.println("p: " + p + " t: " + t * robot.RAD_TO_DEG);
 		return t * robot.RAD_TO_DEG;
+	}
+	
+	public void runMechanisms(){
+		if(robot.farShotButton.changed()) {
+			robot.shooterSolenoid.set(Value.kForward);
+		} else if(robot.nearShotButton.changed()) {
+			robot.shooterSolenoid.set(Value.kReverse);
+		}
+		
+		if(robot.shootTrigger.held()){
+			robot.topShooter.speedMode();
+			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
+			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
+			robot.bottomShooter.speedMode();
+			//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
+			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+			robot.uptake.set(1.0);
+			robot.beltFeed.set(-0.5);
+			robot.climbMotor1.set(-1.0);
+			robot.climbMotor2.set(-1.0);
+		} else{
+			robot.uptake.set(0.0);
+			robot.beltFeed.set(0.0);
+			robot.topShooter.normalMode();
+			robot.topShooter.set(0.0);
+			robot.bottomShooter.normalMode();
+			robot.bottomShooter.set(0.0);
+		}
+		
+		if(robot.intakeState.on()){
+			robot.intake.set(1.0);
+		}else{
+			robot.intake.set(0.0);
+		}
+		
+		if(robot.climbButton.on() && !robot.shootTrigger.held()){
+			robot.climbMotor1.set(-1.0);//not production values
+			robot.climbMotor2.set(-1.0);
+		} else if(!robot.climbButton.on() && !robot.shootTrigger.held()) {
+			robot.climbMotor1.set(0.0);
+			robot.climbMotor2.set(0.0);
+		}
+		
+	}
+	
+	public void resetGyro(){
+		if(robot.gyroResetButton1.held() && robot.gyroResetButton2.held()) {
+			if(!robot.resettingGyro) {
+				robot.resettingGyro = true;
+				
+				robot.ahrs.reset();
+			}
+		} else {
+			robot.resettingGyro = false;
+		}
+	}
+	
+	public void updateSmartDashboard (){
+		SmartDashboard.putNumber("X: ", robot.encoderThread.getX());
+        SmartDashboard.putNumber("Y: ", robot.encoderThread.getY());
+        SmartDashboard.putNumber("R: ", robot.encoderThread.getR());
+        SmartDashboard.putNumber("L Distance: ", robot.encoderThread.getLDistance());
+        SmartDashboard.putNumber("R Distance: ", robot.encoderThread.getRDistance());
+        SmartDashboard.putNumber("C Distance: ", robot.encoderThread.getCDistance());
+        SmartDashboard.putBoolean("Robot Mode", mode == DriveMode.ROBOT);
+        SmartDashboard.putBoolean("Intake Mode", mode == DriveMode.INTAKE);
+        SmartDashboard.putBoolean("Field Mode", mode == DriveMode.FIELD);
+        SmartDashboard.putBoolean("Gear Mode", mode == DriveMode.GEAR);
+        SmartDashboard.putBoolean("Climber", robot.climbButton.on());
+        SmartDashboard.putBoolean("Intake", robot.intakeState.on());
 	}
 }
