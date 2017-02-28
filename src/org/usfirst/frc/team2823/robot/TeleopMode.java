@@ -15,6 +15,7 @@ public class TeleopMode {
 	double angle;
 	
 	double prevTime = Timer.getFPGATimestamp();
+	double shotStartTime = Timer.getFPGATimestamp();
 	
 	private enum DriveMode {
 		ROBOT, FIELD, INTAKE, GEAR
@@ -84,6 +85,7 @@ public class TeleopMode {
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
 		
+		runShooter();
 		runMechanisms();
 		resetGyro();
 		updateSmartDashboard();
@@ -260,6 +262,71 @@ public class TeleopMode {
 		return t * robot.RAD_TO_DEG;
 	}
 	
+	//control shooter wheels, uptake, belt feed, and climber-agitator
+	public void runShooter() {
+		if(robot.shootTrigger.held()) {
+			//capture initial time
+			if(robot.shootTrigger.changed()) {
+				shotStartTime = Timer.getFPGATimestamp();
+			}
+			
+			//start shooter wheels first
+			if(Timer.getFPGATimestamp() - shotStartTime > 0.1) {
+				robot.topShooter.speedMode();
+				robot.bottomShooter.speedMode();
+				
+				//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
+				//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
+				
+				//set shot speed based on solenoid position
+				if(robot.nearShot) {
+					robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
+					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+				} else {
+					robot.topShooter.set(-robot.FAR_SHOT_SPEED);
+					robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+				}
+			}
+			
+			//start uptake next
+			if(Timer.getFPGATimestamp() - shotStartTime > 0.2) {
+				robot.uptake.set(1.0);
+			}
+			
+			//start belt feed and agitators last
+			if(Timer.getFPGATimestamp() - shotStartTime > 0.3) {
+				robot.beltFeed.set(-0.5);
+				
+				robot.climbMotor1.set(-1.0);
+				robot.climbMotor2.set(-1.0);
+			}
+		} else {
+			//capture initial time
+			if(robot.shootTrigger.changed()) {
+				shotStartTime = Timer.getFPGATimestamp();
+			}
+			
+			//stop belt feed first
+			if(Timer.getFPGATimestamp() - shotStartTime > 0.1) {
+				robot.beltFeed.set(0.0);
+			}
+			
+			//stop uptake next
+			if(Timer.getFPGATimestamp() - shotStartTime > 0.2) {
+				robot.uptake.set(0.0);
+			}
+			
+			//stop shooter wheels last, leaving a larger time interval to smooth transition
+			if(Timer.getFPGATimestamp() - shotStartTime > 0.5) {
+				robot.topShooter.normalMode();
+				robot.bottomShooter.normalMode();
+				
+				robot.topShooter.set(0.0);
+				robot.bottomShooter.set(0.0);
+			}
+		}
+	}
+	
 	public void runMechanisms(){
 		if(robot.farShotButton.changed()) {
 			robot.nearShot = false;
@@ -268,37 +335,6 @@ public class TeleopMode {
 		} else if(robot.nearShotButton.changed()) {
 			robot.nearShot = true;
 			robot.shooterSolenoid.set(Value.kReverse);
-		}
-		
-		if(robot.shootTrigger.held()){
-			robot.topShooter.speedMode();
-			robot.bottomShooter.speedMode();
-			
-			//robot.topShooter.set(-SmartDashboard.getNumber("Setpoint", 4300));
-			//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
-			
-			if(robot.nearShot) {
-				robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
-				robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
-			} else {
-				robot.topShooter.set(-robot.FAR_SHOT_SPEED);
-				robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
-			}
-			
-			robot.uptake.set(1.0);
-			robot.beltFeed.set(-0.5);
-			
-			robot.climbMotor1.set(-1.0);
-			robot.climbMotor2.set(-1.0);
-		} else{
-			robot.uptake.set(0.0);
-			robot.beltFeed.set(0.0);
-			
-			robot.topShooter.normalMode();
-			robot.bottomShooter.normalMode();
-
-			robot.topShooter.set(0.0);
-			robot.bottomShooter.set(0.0);
 		}
 		
 		if(robot.intakeState.on()){
