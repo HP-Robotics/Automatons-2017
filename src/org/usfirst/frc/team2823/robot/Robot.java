@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
@@ -131,6 +132,10 @@ public class Robot extends IterativeRobot {
 	final double CLOSE_SHOT_SPEED = 3650;
 	final double FAR_SHOT_SPEED = 4175;
 	
+	//shooter solenoid positions
+	final Value CLOSE_SOLENOID = Value.kForward;
+	final Value FAR_SOLENOID = Value.kReverse;
+	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;
 
@@ -205,7 +210,6 @@ public class Robot extends IterativeRobot {
 	double gyroOrigin;
 	
 	boolean resettingGyro = false;
-	boolean nearShot = false;
 	
     /**
      * This function is run when the robot is first started up and should be

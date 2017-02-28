@@ -279,7 +279,7 @@ public class TeleopMode {
 				//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
 				
 				//set shot speed based on solenoid position
-				if(robot.nearShot) {
+				if(robot.shooterSolenoid.get() == robot.CLOSE_SOLENOID) {
 					robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
 					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
 				} else {
@@ -329,12 +329,10 @@ public class TeleopMode {
 	
 	public void runMechanisms(){
 		if(robot.farShotButton.changed()) {
-			robot.nearShot = false;
-			robot.shooterSolenoid.set(Value.kForward);
+			robot.shooterSolenoid.set(robot.FAR_SOLENOID);
 			
 		} else if(robot.nearShotButton.changed()) {
-			robot.nearShot = true;
-			robot.shooterSolenoid.set(Value.kReverse);
+			robot.shooterSolenoid.set(robot.CLOSE_SOLENOID);
 		}
 		
 		if(robot.intakeState.on()){

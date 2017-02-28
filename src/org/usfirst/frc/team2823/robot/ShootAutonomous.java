@@ -84,7 +84,7 @@ public class ShootAutonomous extends Autonomous {
 			robot.topShooter.set(-robot.FAR_SHOT_SPEED);
 			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
 			
-			robot.shooterSolenoid.set(Value.kForward);
+			robot.shooterSolenoid.set(robot.FAR_SOLENOID);
 			
 			stageData[stage].entered = true;
 			
