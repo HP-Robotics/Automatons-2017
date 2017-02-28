@@ -73,7 +73,6 @@ public class GearAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
-			robot.rControl.setPID(robot.rControl.getP(), 0.0, robot.rControl.getD());
 			
 			robot.rotateTo(-30 * robot.allianceMult);
 			
@@ -96,7 +95,6 @@ public class GearAutonomous extends Autonomous {
 			robot.xControl.reset();
 			robot.yControl.reset();
 			robot.rControl.reset();
-			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
 			
 			robot.driveTo_Cartesian(72 * robot.allianceMult, 41, 0.6, 0.6);
 			robot.rotateTo(-30 * robot.allianceMult);

@@ -145,7 +145,6 @@ public class ShootAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
-			robot.rControl.setPID(robot.rControl.getP(), 0.0, robot.rControl.getD());
 			
 			robot.rotateTo(90);
 			
@@ -175,7 +174,6 @@ public class ShootAutonomous extends Autonomous {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
-			robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
 			
 			robot.driveTo_Cartesian(-42, 0);
 			robot.rotateTo(90);

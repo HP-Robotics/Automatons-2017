@@ -33,9 +33,7 @@ public class Autonomous {
 	public void start() {
 		robot.ahrs.reset();
 		robot.encoderThread.reset();
-		
-		robot.rControl.setPID(robot.rControl.getP(), 0.0002, robot.rControl.getD());
-		
+				
 		stage = 0;
 		initTime = Timer.getFPGATimestamp();
 		
