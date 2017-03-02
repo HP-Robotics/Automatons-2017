@@ -127,31 +127,19 @@ public class TeleopMode {
 			return prevMode;			//if switching out of ROBOT mode, revert to the previous drive mode
 		}
 		
-		//FIELD mode, is toggle, reverts to the default drive mode when released
+		//FIELD mode, is toggle
 		if(robot.fieldButton.changed()) {
-			if(robot.fieldButton.on()) {
-				return DriveMode.FIELD;
-			} else {
-				return defaultMode;
-			}
+			return DriveMode.FIELD;
 		}
 		
 		//INTAKE mode, is toggle, is the default drive mode
 		if(robot.intakeButton.changed()) {
-			if(robot.intakeButton.on()) {
-				return DriveMode.INTAKE;
-			} else {
-				return defaultMode;		//returns default drive mode for the sake of it, but since INTAKE is the default this does essentially nothing
-			}
+			return DriveMode.INTAKE;
 		}
 		
-		//GEAR_OUT mode, is toggle, reverts to the default drive mode when released
+		//GEAR_OUT mode, is toggle
 		if(robot.gearButton.changed()) {
-			if(robot.gearButton.on()) {
-				return DriveMode.GEAR;
-			} else {
-				return defaultMode;
-			}
+			return DriveMode.GEAR;
 		}
 		
 		//if nothing has changed, maintain current drive mode
