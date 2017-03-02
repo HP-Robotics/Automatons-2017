@@ -144,6 +144,8 @@ public class Robot extends IterativeRobot {
 	final int JOYSTICK2_CHANNEL = 1;
 	final int JOYSTICKOPP_CHANNEL = 2;
 	
+	final double SMALL_I = 0.0002;
+	
 	//motion profiling constants
 	//final double MAX_FORWARD_VEL = 4.8;		//simulator
 	//final double MAX_FORWARD_ACCEL = 19.0;	//simulator
@@ -248,7 +250,9 @@ public class Robot extends IterativeRobot {
 		//autonomousChooser.addObject("Cross Baseline", new DriveForwardAutonomous(this));
 		autonomousChooser.addObject("Shoot (Far)", new FarShootAutonomous(this));
 		autonomousChooser.addObject("Shoot (Close)", new CloseShootAutonomous(this));
-		autonomousChooser.addObject("Place Gear", new GearAutonomous(this));
+		autonomousChooser.addObject("Place Gear (Left)", new GearAutonomous(this, GearAutonomous.Side.LEFT));
+		autonomousChooser.addObject("Place Gear (Center)", new GearAutonomous(this, GearAutonomous.Side.CENTER));
+		autonomousChooser.addObject("Place Gear (Right)", new GearAutonomous(this, GearAutonomous.Side.RIGHT));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
@@ -485,7 +489,15 @@ public class Robot extends IterativeRobot {
 	public void rotateTo(double t, double vm, double am) {
 		//rControl.setSetpoint(t);
 		rControl.reset();
-		rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
+		//rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
+		rControl.setSetpoint(t);
+		
+		if(Math.abs(t - ahrs.getAngle()) < 30) {
+			rControl.setPID(rControl.getP(), SMALL_I, rControl.getD());
+		} else {
+			rControl.setPID(rControl.getP(), 0.0, rControl.getD());
+		}
+		
 		rControl.enableLog("rControlPID.csv");
 		rControl.enable();
 	}

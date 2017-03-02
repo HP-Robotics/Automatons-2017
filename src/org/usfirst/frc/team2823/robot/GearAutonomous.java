@@ -1,9 +1,16 @@
 package org.usfirst.frc.team2823.robot;
 
 public class GearAutonomous extends Autonomous {
-
-	public GearAutonomous(Robot robot) {
+	Side side;
+	
+	enum Side {
+		LEFT, CENTER, RIGHT
+	}
+	
+	public GearAutonomous(Robot robot, Side s) {
 		super(robot);
+		
+		side = s;
 	}
 	
 	@Override
@@ -26,11 +33,21 @@ public class GearAutonomous extends Autonomous {
 			break;
 		
 		case 1:
-			rotateToLift();
+			if(side != Side.CENTER) {
+				rotateToLift();
+			} else {
+				nextStage();
+			}
+			
 			break;
 		
 		case 2:
-			driveToLift();
+			if(side != Side.CENTER) {
+				driveToLift();
+			} else {
+				nextStage();
+			}
+			
 			break;
 		}
 		
@@ -47,7 +64,12 @@ public class GearAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, 70.4, 0.6, 0.6);
+			if(side == Side.CENTER) {
+				robot.driveTo_Cartesian(0, 93.25, 0.6, 0.6);
+			} else {
+				robot.driveTo_Cartesian(0, 70.4, 0.6, 0.6);
+			}
+			
 			robot.rotateTo(0);
 			
 			stageData[stage].entered = true;
@@ -74,7 +96,11 @@ public class GearAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(-30 * robot.allianceMult);
+			if(side == Side.LEFT) {
+				robot.rotateTo(-30/* * robot.allianceMult*/);	/** ARE THE SIDEWAYS DISTANCES THE SAME? CHECK **/
+			} else {
+				robot.rotateTo(30);
+			}
 			
 			stageData[stage].entered = true;
 		}
@@ -96,8 +122,13 @@ public class GearAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(72 * robot.allianceMult, 41, 0.6, 0.6);
-			robot.rotateTo(-30 * robot.allianceMult);
+			if(side == Side.LEFT) {
+				robot.driveTo_Cartesian(72, 41, 0.6, 0.6);
+				robot.rotateTo(-30);
+			} else {
+				robot.driveTo_Cartesian(-72, 41, 0.6, 0.6);
+				robot.rotateTo(30);
+			}
 			
 			stageData[stage].entered = true;
 		}
