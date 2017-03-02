@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot {
 	
 	TeleopMode teleopMode;
 	TestMode testMode;
-	SendableChooser autonomousChooser;
+	SendableChooser<Autonomous> autonomousChooser;
 	
 	RobotDrive robotDrive;
 	//RobotDrive opponentDrive;
@@ -129,7 +129,7 @@ public class Robot extends IterativeRobot {
 	//final double FORWARD_FUDGE_FACTOR = 1.03471;
 	
 	//shooter speeds
-	final double CLOSE_SHOT_SPEED = 3650;
+	final double CLOSE_SHOT_SPEED = 3800;	//old 3650
 	final double FAR_SHOT_SPEED = 4175;
 	
 	//shooter solenoid positions
@@ -138,6 +138,8 @@ public class Robot extends IterativeRobot {
 	
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;
+	
+	final double BELT_FEED_SPEED = -0.5;
 
 	// The channels on the driver station that the joysticks connect to
 	final int JOYSTICK1_CHANNEL = 0;
@@ -245,7 +247,7 @@ public class Robot extends IterativeRobot {
         testMode = new TestMode(this);
         SmartDashboard.putBoolean("TestMode", false);
         
-		autonomousChooser = new SendableChooser();
+		autonomousChooser = new SendableChooser<Autonomous>();
 		autonomousChooser.addDefault("Empty: Do Nothing", new EmptyAutonomous(this));
 		//autonomousChooser.addObject("Cross Baseline", new DriveForwardAutonomous(this));
 		autonomousChooser.addObject("Shoot (Far)", new FarShootAutonomous(this));

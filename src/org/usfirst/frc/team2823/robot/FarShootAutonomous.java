@@ -220,7 +220,7 @@ public class FarShootAutonomous extends Autonomous {
 	private void startBeltFeeder() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.beltFeed.set(-0.5);
+			robot.beltFeed.set(robot.BELT_FEED_SPEED);
 			
 			stageData[stage].entered = true;
 			

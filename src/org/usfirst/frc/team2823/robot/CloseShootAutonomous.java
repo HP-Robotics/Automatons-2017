@@ -238,7 +238,7 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, -71); //BAD NUMBER, MEASURE REAL
+			robot.driveTo_Cartesian(0, -36); //BAD NUMBER, MEASURE REAL
 			robot.rotateTo(0);
 			
 			stageData[stage].entered = true;
@@ -264,7 +264,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(90 - (45 * robot.allianceMult));
+			robot.rotateTo(90 + (45 * robot.allianceMult));
 			
 			stageData[stage].entered = true;
 		}
@@ -279,7 +279,7 @@ public class CloseShootAutonomous extends Autonomous {
 	private void startBeltFeeder() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.beltFeed.set(-0.5);
+			robot.beltFeed.set(robot.BELT_FEED_SPEED);
 			
 			stageData[stage].entered = true;
 			
@@ -294,7 +294,7 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.rControl.reset();
 			
 			robot.driveTo_Cartesian(-42, -42);
-			robot.rotateTo(90 - (45 * robot.allianceMult));
+			robot.rotateTo(90 + (45 * robot.allianceMult));
 			
 			stageData[stage].entered = true;
 		}

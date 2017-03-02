@@ -82,6 +82,7 @@ public class TeleopMode {
 		
 		//drive robot using calculated values
 		//robot.robotDrive.mecanumDrive_Cartesian(x, y, r, t);
+		//robot.robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 		//robot.opponentDrive.mecanumDrive_Cartesian(opx, opy, opr, opt);
 		
@@ -283,7 +284,7 @@ public class TeleopMode {
 			
 			//start belt feed and agitators last
 			if(Timer.getFPGATimestamp() - shotStartTime > 0.3) {
-				robot.beltFeed.set(-0.5);
+				robot.beltFeed.set(robot.BELT_FEED_SPEED);
 				
 				robot.climbMotor1.set(-1.0);
 				robot.climbMotor2.set(-1.0);
