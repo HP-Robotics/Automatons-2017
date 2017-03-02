@@ -190,7 +190,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(-42, 0);
+			robot.driveTo_Cartesian(-42 * robot.allianceMult, 0);
 			robot.rotateTo(90);
 			
 			stageData[stage].entered = true;
@@ -264,7 +264,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(45 * robot.allianceMult);
+			robot.rotateTo(90 - (45 * robot.allianceMult));
 			
 			stageData[stage].entered = true;
 		}
@@ -294,7 +294,7 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.rControl.reset();
 			
 			robot.driveTo_Cartesian(-42, -42);
-			robot.rotateTo(45 * robot.allianceMult);
+			robot.rotateTo(90 - (45 * robot.allianceMult));
 			
 			stageData[stage].entered = true;
 		}
@@ -314,7 +314,7 @@ public class CloseShootAutonomous extends Autonomous {
 	
 	//turn off belt feeder at time 14.25 seconds
 	private void stopBeltFeeder(){
-		if(Timer.getFPGATimestamp() - initTime >= 14.25){
+		if(Timer.getFPGATimestamp() - initTime >= 14.6){
 			robot.beltFeed.set(0.0);
 			nextStage();
 		}
@@ -322,7 +322,7 @@ public class CloseShootAutonomous extends Autonomous {
 	
 	//turn off uptake at time 14.75 seconds
 	private void stopUptake(){
-		if(Timer.getFPGATimestamp() - initTime >= 14.75){
+		if(Timer.getFPGATimestamp() - initTime >= 14.8){
 			robot.uptake.set(0.0);
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);

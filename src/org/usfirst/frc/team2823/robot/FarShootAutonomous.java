@@ -178,7 +178,7 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(-42, 0);
+			robot.driveTo_Cartesian(-42 * robot.allianceMult, 0);
 			robot.rotateTo(90);
 			
 			stageData[stage].entered = true;
