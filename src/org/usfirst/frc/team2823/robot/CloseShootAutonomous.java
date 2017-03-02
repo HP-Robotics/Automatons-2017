@@ -3,15 +3,15 @@ package org.usfirst.frc.team2823.robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
-public class ShootAutonomous extends Autonomous {
+public class CloseShootAutonomous extends Autonomous {
 	
-	public ShootAutonomous(Robot robot) {
+	public CloseShootAutonomous(Robot robot) {
 		super(robot);
 	}
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 0.1, 0.1, 15.0, 15.0};
+		double[] timeouts = {0.1, 0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 2.0, 5.0, 2.0, 0.1, 2.0, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -53,18 +53,30 @@ public class ShootAutonomous extends Autonomous {
 			break;
 		
 		case 7:
-			turnToShoot();
+			turnLeft();
 			break;
 		
 		case 8:
-			startBeltFeeder();
+			driveToBoiler();
 			break;
 			
 		case 9:
-			stopBeltFeeder();
+			turnToShoot();
 			break;
 		
 		case 10:
+			startBeltFeeder();
+			break;
+		
+		case 11:
+			driveIntoBoiler();
+			break;
+			
+		case 12:
+			stopBeltFeeder();
+			break;
+		
+		case 13:
 			stopUptake();
 			break;
 		}
@@ -81,10 +93,10 @@ public class ShootAutonomous extends Autonomous {
 			robot.topShooter.speedMode();
 			robot.bottomShooter.speedMode();
 			
-			robot.topShooter.set(-robot.FAR_SHOT_SPEED);
-			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
+			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
 			
-			robot.shooterSolenoid.set(robot.FAR_SOLENOID);
+			robot.shooterSolenoid.set(robot.CLOSE_SOLENOID);
 			
 			stageData[stage].entered = true;
 			
@@ -202,16 +214,63 @@ public class ShootAutonomous extends Autonomous {
 		//do nothing, wait for stage to time out
 	}
 	
+	private void turnLeft() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.rControl.reset();
+			
+			robot.rotateTo(0);
+			
+			stageData[stage].entered = true;
+		}
+		
+		//move on to the next stage once plan is complete
+		if(Math.abs(robot.rControl.getError()) < 10) {
+			nextStage();
+		}
+	}
+	
+	//drive next to the hopper
+	private void driveToBoiler() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			robot.driveTo_Cartesian(0, -71); //BAD NUMBER, MEASURE REAL
+			robot.rotateTo(0);
+			
+			stageData[stage].entered = true;
+		}
+		
+		//move on to the next stage once plan is complete
+		if(robot.yControl.isPlanFinished()) {
+			robot.xControl.closeLog();
+			robot.yControl.closeLog();
+			robot.rControl.closeLog();
+			
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			nextStage();
+		}
+	}
+	
 	//turn rotation PID on, turn to the right shooting angle while shooting
 	private void turnToShoot() {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo((robot.ahrs.getAngle() + 10) * robot.allianceMult);
+			robot.rotateTo(45 * robot.allianceMult);
 			
 			stageData[stage].entered = true;
-			
+		}
+		
+		//move on to the next stage once plan is complete
+		if(Math.abs(robot.rControl.getError()) < 20) {
 			nextStage();
 		}
 	}
@@ -223,6 +282,31 @@ public class ShootAutonomous extends Autonomous {
 			robot.beltFeed.set(-0.5);
 			
 			stageData[stage].entered = true;
+			
+			nextStage();
+		}
+	}
+	
+	//drive robot until stage times out
+	private void driveIntoBoiler() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.rControl.reset();
+			
+			robot.driveTo_Cartesian(-42, -42);
+			robot.rotateTo(45 * robot.allianceMult);
+			
+			stageData[stage].entered = true;
+		}
+		
+		if(robot.xControl.isPlanFinished()) {
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			robot.xControl.closeLog();
+			robot.yControl.closeLog();
+			robot.rControl.closeLog();
 			
 			nextStage();
 		}

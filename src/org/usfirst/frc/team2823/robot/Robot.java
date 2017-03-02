@@ -246,7 +246,8 @@ public class Robot extends IterativeRobot {
 		autonomousChooser = new SendableChooser();
 		autonomousChooser.addDefault("Empty: Do Nothing", new EmptyAutonomous(this));
 		//autonomousChooser.addObject("Cross Baseline", new DriveForwardAutonomous(this));
-		autonomousChooser.addObject("Shoot w/o Gear", new ShootAutonomous(this));
+		autonomousChooser.addObject("Shoot (Far)", new FarShootAutonomous(this));
+		autonomousChooser.addObject("Shoot (Close)", new CloseShootAutonomous(this));
 		autonomousChooser.addObject("Place Gear", new GearAutonomous(this));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
