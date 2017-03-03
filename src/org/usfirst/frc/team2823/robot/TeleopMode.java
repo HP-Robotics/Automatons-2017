@@ -96,7 +96,7 @@ public class TeleopMode {
 		//update buttons
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
-		robot.gearButton.update(robot.driverStick.getRawButton(6));
+		robot.gearButton.update(robot.driverStick.getRawButton(4));
 		robot.intakeButton.update(robot.driverStick.getRawButton(3));
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
@@ -237,7 +237,7 @@ public class TeleopMode {
 		
 	}
 	
-	//calculate the current trajectory angle of the robot
+	//calculate the current trajectory angle of the robot, return the angle
 	public double getTrajectoryAngle(double x, double y) {
 		double p = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		double t = Math.atan2(x, -y);

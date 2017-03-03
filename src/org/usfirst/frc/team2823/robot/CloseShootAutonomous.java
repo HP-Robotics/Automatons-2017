@@ -238,7 +238,7 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, -36); //BAD NUMBER, MEASURE REAL
+			robot.driveTo_Cartesian(0, -52); //BAD NUMBER, MEASURE REAL
 			robot.rotateTo(0);
 			
 			stageData[stage].entered = true;
