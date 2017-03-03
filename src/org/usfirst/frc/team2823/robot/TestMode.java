@@ -45,6 +45,15 @@ public class TestMode {
 		
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
+				robot.rotateTo(SmartDashboard.getNumber("Setpoint", 0.0));
+			} else {
+				robot.rControl.closeLog();
+				robot.rControl.reset();
+			}
+		}
+		
+		/*if(robot.robotButton.changed()) {
+			if(robot.robotButton.on()) {
 				System.out.println("on");
 				
 				//robot.driveTo_Cartesian(35, 70);
@@ -102,7 +111,9 @@ public class TestMode {
 				//robot.vControl.disable();
 				//robot.vControl.closeLog();
 			}
-		}
+		}*/
+		
+		System.out.println("a: " + robot.ahrs.getAngle() + " c: " + robot.getCousin(robot.ahrs.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 		
 		if(robot.xControl.isPlanFinished()) {
 			robot.xControl.reset();
