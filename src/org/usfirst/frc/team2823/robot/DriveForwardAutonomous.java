@@ -38,7 +38,7 @@ public class DriveForwardAutonomous extends Autonomous {
 			robot.xControl.reset();
 			robot.yControl.reset();
 			
-			robot.driveTo_Cartesian(0, 60, 0.6, 0.6);
+			robot.driveTo_Cartesian(0, 66, 0.6, 0.6);
 			
 			stageData[stage].entered = true;
 		}

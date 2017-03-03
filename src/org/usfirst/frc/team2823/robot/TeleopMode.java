@@ -77,7 +77,7 @@ public class TeleopMode {
 			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			System.out.println(robot.ahrs.getAngle() + " " + robot.encoderThread.getR());
+			System.out.println("a: " + robot.ahrs.getAngle() + " c: " + robot.getCousin(robot.ahrs.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 			prevTime = Timer.getFPGATimestamp();
 		}
 		
@@ -212,10 +212,16 @@ public class TeleopMode {
 			double p = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 			
 			if(Math.abs(p) > robot.INTAKE_ROTATION_THRESHOLD) {
+				if(!robot.rControl.isEnabled()) {
+					robot.rControl.enable();
+				}
+				
 				//System.out.println(robot.ahrs.getAngle() + " " + robot.getCousin(robot.ahrs.getAngle(),  getTrajectoryAngle(x, y)) + " " + getTrajectoryAngle(x, y));
 				robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), getTrajectoryAngle(x, y)));
 			} else {
-				robot.rControl.setSetpoint(robot.ahrs.getAngle());
+				if(robot.rControl.isEnabled()) {
+					robot.rControl.reset();
+				}
 			}
 			
 			robot.setDriveX(x);

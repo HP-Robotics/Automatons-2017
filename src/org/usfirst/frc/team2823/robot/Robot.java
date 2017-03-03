@@ -139,7 +139,7 @@ public class Robot extends IterativeRobot {
 	//robot initial rotation on field
 	final double FIELD_ROTATION = 90;
 	
-	final double BELT_FEED_SPEED = -0.5;
+	final double BELT_FEED_SPEED = -0.4;
 
 	// The channels on the driver station that the joysticks connect to
 	final int JOYSTICK1_CHANNEL = 0;
