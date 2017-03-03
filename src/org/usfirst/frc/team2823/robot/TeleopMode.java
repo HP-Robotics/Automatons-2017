@@ -73,7 +73,7 @@ public class TeleopMode {
 			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			System.out.println(robot.ahrs.getAngle());
+			System.out.println(robot.ahrs.getAngle() + " " + robot.encoderThread.getR());
 			prevTime = Timer.getFPGATimestamp();
 		}
 		
@@ -205,7 +205,14 @@ public class TeleopMode {
 		
 		case INTAKE:
 			//robot.rControl.setSetpoint(0);	//temporary, should calculate trajectory eventually
-			robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), getTrajectoryAngle(x, y)));
+			double p = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+			
+			if(Math.abs(p) > robot.INTAKE_ROTATION_THRESHOLD) {
+				//System.out.println(robot.ahrs.getAngle() + " " + robot.getCousin(robot.ahrs.getAngle(),  getTrajectoryAngle(x, y)) + " " + getTrajectoryAngle(x, y));
+				robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), getTrajectoryAngle(x, y)));
+			} else {
+				robot.rControl.setSetpoint(robot.ahrs.getAngle());
+			}
 			
 			robot.setDriveX(x);
 			robot.setDriveY(y);
@@ -247,7 +254,7 @@ public class TeleopMode {
 			return robot.ahrs.getAngle();
 		}
 		
-		System.out.println("p: " + p + " t: " + t * robot.RAD_TO_DEG);
+		//System.out.println("p: " + p + " t: " + t * robot.RAD_TO_DEG);
 		return t * robot.RAD_TO_DEG;
 	}
 	

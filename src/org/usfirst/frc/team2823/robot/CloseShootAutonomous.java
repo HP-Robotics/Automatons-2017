@@ -127,7 +127,7 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, 71);
+		robot.driveTo_Cartesian(0, 71);
 			robot.rotateTo(0);
 			
 			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
@@ -293,7 +293,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(-42, -42);
+			robot.driveTo_Cartesian(-5, -26);
 			robot.rotateTo(90 + (45 * robot.allianceMult));
 			
 			stageData[stage].entered = true;

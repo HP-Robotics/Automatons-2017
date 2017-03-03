@@ -49,6 +49,7 @@ public class Robot extends IterativeRobot {
 	
 	TeleopMode teleopMode;
 	TestMode testMode;
+	SendableChooser<String> allianceChooser;
 	SendableChooser<Autonomous> autonomousChooser;
 	
 	RobotDrive robotDrive;
@@ -68,8 +69,9 @@ public class Robot extends IterativeRobot {
 	
 	EncoderThread encoderThread;
 	
-	OurAHRS ahrs;
-	OurADXRS450_Gyro gyro;
+	//OurAHRS ahrs;
+	OurADXRS450_Gyro ahrs;
+	//OurADXRS450_Gyro gyro;
 	//AnalogGyro opponentGyro;
 	
 	//EncoderPIDSource vSource;
@@ -91,8 +93,6 @@ public class Robot extends IterativeRobot {
 	ToggleSwitch shooterState;
 	
 	CSVLogger log;
-	
-	DriverStation driverStation;
 	
 	//declare constants
 	//simulator wheel PWM channels
@@ -220,10 +220,10 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-        driverStation = DriverStation.getInstance();
-    	if(driverStation.getAlliance() == DriverStation.Alliance.Red){
-    		allianceMult = -1;
-    	}
+        allianceChooser = new SendableChooser<String>();
+        allianceChooser.addObject("Blue", "1.0");
+        allianceChooser.addObject("Red", "-1.0");
+        SmartDashboard.putData("AllianceString", allianceChooser);
         
     	driverStick = stick1 = new Joystick(JOYSTICK1_CHANNEL);
     	operatorStick = stick2 = new Joystick(JOYSTICK2_CHANNEL);
@@ -310,8 +310,9 @@ public class Robot extends IterativeRobot {
         shooterSolenoid = new DoubleSolenoid(0, 1);
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         
-        ahrs = new OurAHRS();
-        gyro = new OurADXRS450_Gyro();
+        //ahrs = new OurAHRS();
+        ahrs = new OurADXRS450_Gyro();
+        //gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
         
 		encoderThread = new EncoderThread(this);
@@ -378,14 +379,15 @@ public class Robot extends IterativeRobot {
         log = new CSVLogger("/home/lvuser");
         
         try{
-        	gyro.reset();
+        	ahrs.reset();
+        	//gyro.reset();
         	//opponentGyro.reset();
         }catch(Exception e) {
         	System.out.println("Gyro not work");
         }
-        navxOrigin = ahrs.getFusedHeading();
-        navx2Origin = ahrs.getCompassHeading();
-        gyroOrigin = gyro.getAngle();
+        //navxOrigin = ahrs.getFusedHeading();
+        //navx2Origin = ahrs.getCompassHeading();
+        //gyroOrigin = gyro.getAngle();
     }
     
 	/**

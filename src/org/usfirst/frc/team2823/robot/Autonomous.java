@@ -33,6 +33,14 @@ public class Autonomous {
 	public void start() {
 		robot.ahrs.reset();
 		robot.encoderThread.reset();
+		
+        if(robot.allianceChooser.getSelected().equals("-1.0")) {
+        	robot.allianceMult = -1.0;
+        } else {
+        	robot.allianceMult = 1.0;
+        }
+        
+        System.out.println(robot.allianceMult);
 				
 		stage = 0;
 		initTime = Timer.getFPGATimestamp();
