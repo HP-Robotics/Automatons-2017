@@ -55,7 +55,7 @@ public class GearAutonomous extends Autonomous {
 			robot.rControl.reset();
 			
 			if(side == Side.CENTER) {
-				robot.driveTo_Cartesian(0, 20, 0.6, 0.6);
+				robot.driveTo_Cartesian(0, 73.25, 0.6, 0.6);
 			} else {
 				robot.driveTo_Cartesian(0, 70.4, 0.6, 0.6);
 			}
@@ -121,7 +121,7 @@ public class GearAutonomous extends Autonomous {
 				robot.driveTo_Cartesian(-72, 41, 0.6, 0.6);
 				robot.rotateTo(30);
 			} else{
-				robot.driveTo_Cartesian(73.25, 0, 0.6, 0.6);
+				robot.driveTo_Cartesian(0, 20, 0.6, 0.6);
 				robot.rotateTo(90);
 			}
 			
