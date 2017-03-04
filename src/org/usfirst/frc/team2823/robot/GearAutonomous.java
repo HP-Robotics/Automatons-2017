@@ -55,7 +55,7 @@ public class GearAutonomous extends Autonomous {
 			robot.rControl.reset();
 			
 			if(side == Side.CENTER) {
-				robot.driveTo_Cartesian(0, 73.25, 0.6, 0.6);
+				robot.driveTo_Cartesian(0, 63.25, 0.6, 0.6);
 			} else {
 				robot.driveTo_Cartesian(0, 70.4, 0.6, 0.6);
 			}
@@ -91,18 +91,10 @@ public class GearAutonomous extends Autonomous {
 			} else if(side == Side.RIGHT) {
 				robot.rotateTo(30);
 			} else {
-				robot.rotateTo(90);
+				robot.rotateTo(-90);
 			}
 			
 			stageData[stage].entered = true;
-		}
-		
-		//move on to the next stage once sufficiently close to target
-		if(Math.abs(robot.rControl.getError()) < 5) {
-			robot.rControl.closeLog();
-			robot.rControl.reset();
-			
-			nextStage();
 		}
 	}
 	
@@ -121,8 +113,8 @@ public class GearAutonomous extends Autonomous {
 				robot.driveTo_Cartesian(-72, 41, 0.6, 0.6);
 				robot.rotateTo(30);
 			} else{
-				robot.driveTo_Cartesian(0, 20, 0.6, 0.6);
-				robot.rotateTo(90);
+				robot.driveTo_Cartesian(4, 36, 0.6, 0.6);
+				robot.rotateTo(-90);
 			}
 			
 			stageData[stage].entered = true;

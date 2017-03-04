@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2823.robot;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -260,6 +261,9 @@ public class Robot extends IterativeRobot {
 		autonomousChooser.addObject("Place Gear (Right)", new GearAutonomous(this, GearAutonomous.Side.RIGHT));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
+		CameraServer c = CameraServer.getInstance();
+		c.startAutomaticCapture(0);
+		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
 		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
 		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
@@ -477,27 +481,35 @@ public class Robot extends IterativeRobot {
 	}*/
 	
 	//PID to the given x and y values using two separate PIDs
-	public void driveTo_Cartesian(double x, double y, double vm, double am) {
+	public void driveTo_Cartesian(double x, double y, double vm, double am, String xfile, String yfile) {
 		xSource.reset();
 		ySource.reset();
 		
 		xControl.configureGoal(x, MAX_FORWARD_VEL * vm, MAX_FORWARD_ACCEL * 0.8 * am);
 		yControl.configureGoal(y, MAX_FORWARD_VEL * vm, MAX_FORWARD_ACCEL * 0.8 * am);
 		
-		xControl.enableLog("xControlPID.csv");
-		yControl.enableLog("yControlPID.csv");
+		xControl.enableLog(xfile);
+		yControl.enableLog(yfile);
 		
 		xControl.enable();
 		yControl.enable();
 	}
 	
 	//PID to the given x and y values without applying a constant multiplier
+	public void driveTo_Cartesian(double x, double y, String xfile, String yfile) {
+		driveTo_Cartesian(x, y, 1, 0.8, xfile, yfile);
+	}
+	
+	public void driveTo_Cartesian(double x, double y, double vm, double am) {
+		driveTo_Cartesian(x, y, vm, am, "xControlPID.csv", "yControlPID.csv");
+	}
+	
 	public void driveTo_Cartesian(double x, double y) {
-		driveTo_Cartesian(x, y, 1, 0.8);
+		driveTo_Cartesian(x, y, 1, 0.8, "xControlPID.csv", "yControlPID.csv");
 	}
 	
 	//PID to the given theta (in degrees) using a single rotation PID
-	public void rotateTo(double t, double vm, double am) {
+	public void rotateTo(double t, double vm, double am, String file) {
 		//rControl.setSetpoint(t);
 		rControl.reset();
 		//rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
@@ -509,13 +521,21 @@ public class Robot extends IterativeRobot {
 			rControl.setPID(rControl.getP(), 0.0, rControl.getD());
 		}*/
 		
-		rControl.enableLog("rControlPID.csv");
+		rControl.enableLog(file);
 		rControl.enable();
 	}
 	
 	//PID to the given theta without applying a constant multiplier
+	public void rotateTo(double t, String file) {
+		rotateTo(t, 1, 1, file);
+	}
+	
+	public void rotateTo(double t, double vm, double am) {
+		rotateTo(t, vm, am, "rControlPID.csv");
+	}
+	
 	public void rotateTo(double t) {
-		rotateTo(t, 1, 1);
+		rotateTo(t, 1, 1, "rControlPID.csv");
 	}
 	
 	//find the closest equivalent angle

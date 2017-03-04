@@ -127,8 +127,8 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-		robot.driveTo_Cartesian(0, 84);
-			robot.rotateTo(0);
+		robot.driveTo_Cartesian(0, 84, "x-" + stage + ".csv", "y-" + stage + ".csv");
+			robot.rotateTo(0, "r-" + stage + ".csv");
 			
 			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
 			//robot.yControl.enableLog("yControl.csv");
@@ -161,7 +161,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(90);
+			robot.rotateTo(90, "r-" + stage + ".csv");
 			
 			stageData[stage].entered = true;
 		}
@@ -186,8 +186,8 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(-62 * robot.allianceMult, 0);
-			robot.rotateTo(90);
+			robot.driveTo_Cartesian(-62 * robot.allianceMult, 0, "x-" + stage + ".csv", "y-" + stage + ".csv");
+			robot.rotateTo(90, "r-" + stage + ".csv");
 			
 			stageData[stage].entered = true;
 		}
@@ -215,7 +215,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(0);
+			robot.rotateTo(0, "r-" + stage + ".csv");
 			
 			stageData[stage].entered = true;
 		}
@@ -230,8 +230,8 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, -56); //BAD NUMBER, MEASURE REAL
-			robot.rotateTo(0);
+			robot.driveTo_Cartesian(0, -56, "x-" + stage + ".csv", "y-" + stage + ".csv"); //BAD NUMBER, MEASURE REAL
+			robot.rotateTo(0, "r-" + stage + ".csv");
 			
 			stageData[stage].entered = true;
 		}
@@ -256,7 +256,7 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(90 + (45 * robot.allianceMult));
+			robot.rotateTo(90 + (45 * robot.allianceMult), "r-" + stage + ".csv");
 			
 			stageData[stage].entered = true;
 		}
@@ -281,8 +281,8 @@ public class CloseShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(-10, -23);
-			robot.rotateTo(90 + (45 * robot.allianceMult));
+			robot.driveTo_Cartesian(-10, -23, "x-" + stage + ".csv", "y-" + stage + ".csv");
+			robot.rotateTo(90 + (45 * robot.allianceMult), "r-" + stage + ".csv");
 			
 			stageData[stage].entered = true;
 		}
