@@ -48,7 +48,7 @@ public class TeleopMode {
 		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
 		double r = Math.abs(robot.driverStick.getZ()) < robot.ROTATIONTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
 		
-		if(mode == DriveMode.GEAR || mode == DriveMode.ROBOT) {
+		if((mode == DriveMode.GEAR || mode == DriveMode.ROBOT) && !robot.shootTrigger.held()) {
 			if(x > -0.4 && x < 0.4) {
 				x = 0;
 			} else if(x < 0) {
@@ -56,7 +56,24 @@ public class TeleopMode {
 			} else if(x > 0) {
 				x = Math.pow(robot.driverStick.getX(), 3) - 0.4;
 			}
+		}
+		
+		if(robot.shootTrigger.held()) {
+			if(x > -0.6 && x < 0.6) {
+				x = 0;
+			} else if(x < 0) {
+				x = Math.pow(robot.driverStick.getX(), 3) + 0.6;
+			} else if(x > 0) {
+				x = Math.pow(robot.driverStick.getX(), 3) - 0.6;
+			}
 			
+			if(y > -0.6 && y < 0.6) {
+				y = 0;
+			} else if(y < 0) {
+				y = Math.pow(robot.driverStick.getY(), 3) + 0.6;
+			} else if(y > 0) {
+				y = Math.pow(robot.driverStick.getY(), 3) - 0.6;
+			}
 		}
 		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();

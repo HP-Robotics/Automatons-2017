@@ -11,7 +11,7 @@ public class CloseShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 0.1, 5.0, 2.0, 0.1, 2.0, 1.5, 2.0, 5.0, 2.0, 0.1, 2.0, 15.0, 15.0};
+		double[] timeouts = {0.1, 0.1, 5.0, 0.9, 0.1, 2.0, 1.5, 0.9, 5.0, 0.6, 0.1, 2.0, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -166,10 +166,6 @@ public class CloseShootAutonomous extends Autonomous {
 			stageData[stage].entered = true;
 		}
 		
-		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 10) {
-			nextStage();
-		}
 	}
 	
 	//start the uptake early
@@ -224,10 +220,6 @@ public class CloseShootAutonomous extends Autonomous {
 			stageData[stage].entered = true;
 		}
 		
-		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 10) {
-			nextStage();
-		}
 	}
 	
 	//drive next to the hopper
@@ -268,11 +260,7 @@ public class CloseShootAutonomous extends Autonomous {
 			
 			stageData[stage].entered = true;
 		}
-		
-		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 20) {
-			nextStage();
-		}
+	
 	}
 	
 	//start belt feeder and begin shooting

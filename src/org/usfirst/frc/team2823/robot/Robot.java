@@ -336,7 +336,7 @@ public class Robot extends IterativeRobot {
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
-		rControl = new AdvancedPIDController(0.025, 0.0002, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
+		rControl = new AdvancedPIDController(0.035, 0.0002, 0.35, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
 		
 		//these should be calculated per-move based on robot rotation
 		xControl.setKaKv(FORWARD_KA, FORWARD_KV);
@@ -349,17 +349,21 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Climb 1", 0.0);
         SmartDashboard.putNumber("Climb 2", 0.0);
         
-        SmartDashboard.putNumber("P", 0.025);		//0.02
-        SmartDashboard.putNumber("I", 0.0025);	//0.000001
-        SmartDashboard.putNumber("D", 0.3);			//1.0
+        SmartDashboard.putNumber("P", 0.02);		//0.02
+        SmartDashboard.putNumber("I", 0.000001);	//0.000001
+        SmartDashboard.putNumber("D", 1.0);			//1.0
         SmartDashboard.putNumber("F", 0.0);
         
         SmartDashboard.putNumber("Ka", FORWARD_KA);
         SmartDashboard.putNumber("Kv", FORWARD_KV);
         SmartDashboard.putNumber("Max a", MAX_FORWARD_ACCEL * 0.8);
         SmartDashboard.putNumber("Max v", MAX_FORWARD_VEL);
-        SmartDashboard.putNumber("KaMult", 0.7);
+        SmartDashboard.putNumber("KaMult", 1.0);
         SmartDashboard.putNumber("KvMult", 1.0);
+        
+        SmartDashboard.putNumber("XSetpoint", 0.0);
+        SmartDashboard.putNumber("YSetpoint", 0.0);
+        SmartDashboard.putNumber("RSetpoint", 0.0);
         SmartDashboard.putNumber("Setpoint", 0.0);
         
         //production smartdashboard things
@@ -489,7 +493,7 @@ public class Robot extends IterativeRobot {
 	
 	//PID to the given x and y values without applying a constant multiplier
 	public void driveTo_Cartesian(double x, double y) {
-		driveTo_Cartesian(x, y, 1, 1);
+		driveTo_Cartesian(x, y, 1, 0.8);
 	}
 	
 	//PID to the given theta (in degrees) using a single rotation PID
@@ -499,11 +503,11 @@ public class Robot extends IterativeRobot {
 		//rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
 		rControl.setSetpoint(t);
 		
-		if(Math.abs(t - ahrs.getAngle()) < 30) {
+		/*if(Math.abs(t - ahrs.getAngle()) < 30) {
 			rControl.setPID(rControl.getP(), SMALL_I, rControl.getD());
 		} else {
 			rControl.setPID(rControl.getP(), 0.0, rControl.getD());
-		}
+		}*/
 		
 		rControl.enableLog("rControlPID.csv");
 		rControl.enable();

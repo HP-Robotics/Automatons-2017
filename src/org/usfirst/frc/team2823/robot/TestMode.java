@@ -26,13 +26,35 @@ public class TestMode {
 	}
 	
 	public void testPeriodic(){
+		robot.shootTrigger.update(robot.driverStick.getRawButton(1));
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
+		robot.intakeButton.update(robot.driverStick.getRawButton(3));
+		robot.gearButton.update(robot.driverStick.getRawButton(4));
+		robot.fieldButton.update(robot.driverStick.getRawButton(5));
 		
-		if(robot.robotButton.on()){
-			//System.out.println("l: " + robot.lEncoder.getDistance() + " r: " + robot.rEncoder.getDistance() + " a: " + robot.aEncoder.getDistance());
-			//System.out.println(robot.xControl.getError() + " " + robot.yControl.getError());
-			System.out.println(robot.xControl.getError());
+		if(robot.gearButton.changed()) {
+			robot.rControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
 		}
+		
+		if(robot.intakeButton.changed()) {
+			robot.xControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
+		}
+		
+		if(robot.fieldButton.changed()) {
+			robot.yControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
+		}
+		
+		
+		if(robot.robotButton.on()) {
+			System.out.println("r: " + robot.ahrs.getAngle() + " re: " + robot.rControl.getError());
+		}
+		
+		if(robot.shootTrigger.on()){
+			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			System.out.println("x: " + robot.encoderThread.getX() + " xe: " + robot.xControl.getError() + " y: " + robot.encoderThread.getY() + " ye: " + robot.yControl.getError());
+		}
+		
+		//System.out.println("a: " + robot.ahrs.getAngle() + " c: " + robot.getCousin(robot.ahrs.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 		
 		//System.out.println(robot.rControl.getError());
 		
@@ -45,10 +67,22 @@ public class TestMode {
 		
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
-				robot.rotateTo(SmartDashboard.getNumber("Setpoint", 0.0));
+				robot.rotateTo(robot.ahrs.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
 			} else {
 				robot.rControl.closeLog();
 				robot.rControl.reset();
+			}
+		}
+		
+		if(robot.shootTrigger.changed()) {
+			if(robot.shootTrigger.on()) {
+				robot.driveTo_Cartesian(SmartDashboard.getNumber("XSetpoint", 0), SmartDashboard.getNumber("YSetpoint", 0), SmartDashboard.getNumber("KvMult", 1), SmartDashboard.getNumber("KaMult", 1));
+			} else {
+				robot.xControl.closeLog();
+				robot.yControl.closeLog();
+				
+				robot.xControl.reset();
+				robot.yControl.reset();
 			}
 		}
 		
@@ -113,8 +147,6 @@ public class TestMode {
 			}
 		}*/
 		
-		System.out.println("a: " + robot.ahrs.getAngle() + " c: " + robot.getCousin(robot.ahrs.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
-		
 		if(robot.xControl.isPlanFinished()) {
 			robot.xControl.reset();
 			robot.xControl.closeLog();
@@ -124,6 +156,11 @@ public class TestMode {
 			robot.yControl.reset();
 			robot.yControl.closeLog();
 		}
+		
+		/*if(Math.abs(robot.rControl.getError()) < 3 && robot.rControl.isEnabled()) {
+			robot.rControl.reset();
+			robot.rControl.closeLog();
+		}*/
 		
 		robot.setDriveT(robot.ahrs.getAngle());
 		//robot.robotDrive.mecanumDrive_Cartesian(0, -1, 0, robot.getDriveT());
