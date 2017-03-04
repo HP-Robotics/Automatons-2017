@@ -44,6 +44,7 @@ public class Robot extends IterativeRobot {
 	Button gyroResetButton1;
 	Button gyroResetButton2;
 	Button climbButton;
+	Button reverseBeltButton;
 	Button farShotButton;
 	Button nearShotButton;
 	
@@ -116,7 +117,7 @@ public class Robot extends IterativeRobot {
 	
 	//joystick zero-sensitivity threshold
 	final double STICKTHRESHOLD = 0.15;
-	final double ROTATIONTHRESHOLD = 0.25;
+	final double ROTATIONTHRESHOLD = 0.3;
 	
 	//intake rotation-sensitivity threshold
 	final double INTAKE_ROTATION_THRESHOLD = 0.5;
@@ -214,6 +215,7 @@ public class Robot extends IterativeRobot {
 	double gyroOrigin;
 	
 	boolean resettingGyro = false;
+	boolean runningFeeder = false;
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -238,6 +240,7 @@ public class Robot extends IterativeRobot {
     	gyroResetButton2 = new Button();
 		
 		climbButton = new Button();
+		reverseBeltButton = new Button();
 		farShotButton = new Button();
 		nearShotButton = new Button();
         intakeState = new ToggleSwitch();

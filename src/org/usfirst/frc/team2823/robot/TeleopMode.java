@@ -49,7 +49,14 @@ public class TeleopMode {
 		double r = Math.abs(robot.driverStick.getZ()) < robot.ROTATIONTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
 		
 		if(mode == DriveMode.GEAR || mode == DriveMode.ROBOT) {
-			x *= 0.5;
+			if(x > -0.4 && x < 0.4) {
+				x = 0;
+			} else if(x < 0) {
+				x = Math.pow(robot.driverStick.getX(), 3) + 0.4;
+			} else if(x > 0) {
+				x = Math.pow(robot.driverStick.getX(), 3) - 0.4;
+			}
+			
 		}
 		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
@@ -108,6 +115,7 @@ public class TeleopMode {
 		try{
 			robot.shootTrigger.update(robot.driverStick.getRawButton(1) || robot.operatorStick.getRawButton(2));
 			robot.climbButton.update(robot.operatorStick.getRawButton(4));
+			robot.reverseBeltButton.update(robot.operatorStick.getRawButton(3));
 			robot.farShotButton.update(robot.operatorStick.getRawButton(7));
 			robot.nearShotButton.update(robot.operatorStick.getRawButton(5));
 			robot.intakeState.update(robot.operatorStick.getRawButton(8));
@@ -301,7 +309,7 @@ public class TeleopMode {
 			
 			//start belt feed and agitators last
 			if(Timer.getFPGATimestamp() - shotStartTime > 0.3) {
-				robot.beltFeed.set(robot.BELT_FEED_SPEED);
+				robot.runningFeeder = true;
 				
 				robot.climbMotor1.set(-1.0);
 				robot.climbMotor2.set(-1.0);
@@ -314,6 +322,7 @@ public class TeleopMode {
 			
 			//stop belt feed first
 			if(Timer.getFPGATimestamp() - shotStartTime > 0.1) {
+				robot.runningFeeder = false;
 				robot.beltFeed.set(0.0);
 			}
 			
@@ -329,6 +338,15 @@ public class TeleopMode {
 				
 				robot.topShooter.set(0.0);
 				robot.bottomShooter.set(0.0);
+			}
+		}
+		
+		//operator control of reverse feeder
+		if(robot.runningFeeder) {
+			if(robot.reverseBeltButton.held()) {
+				robot.beltFeed.set(-robot.BELT_FEED_SPEED);
+			} else {
+				robot.beltFeed.set(robot.BELT_FEED_SPEED);
 			}
 		}
 	}
@@ -354,7 +372,6 @@ public class TeleopMode {
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);
 		}
-		
 	}
 	
 	public void resetGyro(){
