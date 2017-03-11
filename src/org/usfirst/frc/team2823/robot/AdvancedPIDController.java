@@ -37,10 +37,6 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
 
   public static final double kDefaultPeriod = .05;
   private static int instances = 0;
-  private static final double OUTPUT_CLAMP_UP = -0.8;
-  private static final double OUTPUT_CLAMP_DOWN = 0.6;
-  private static final double OUTPUT_CLAMP_HOLD = -0.1;
-  //private static final int OUTPUT_CLAMP_HOLD_THRESHOLD = Robot.CALIBRATIONOFFSET;
   private double m_P; // factor for "proportional" control
   private double m_I; // factor for "integral" control
   private double m_D; // factor for "derivative" control
@@ -92,8 +88,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   private double m_initMillis = 0.0;
   private double m_initTime;
   
-  private Robot robot;
-  private boolean m_safeArm = false;
+  private boolean m_filteredD = true;
   
   private MotionWayPoint m_currentWaypoint;
   private boolean m_motionPlanEnabled = false;
@@ -289,25 +284,26 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
       table.removeTableListener(listener);
   }
   
-  //QUICKCLICK safeArm
-  private double safeArm(double output){
-	  	
-		if(output > OUTPUT_CLAMP_DOWN) {
-			return OUTPUT_CLAMP_DOWN;
-		}else if (output < OUTPUT_CLAMP_UP) {
-			return OUTPUT_CLAMP_UP;
-		}
-		
-		//clamp the output at -0.1 when the arm is raised and driving up
-		/*if(robot.armEncoder.get() < OUTPUT_CLAMP_HOLD_THRESHOLD && output < OUTPUT_CLAMP_HOLD){
-			return OUTPUT_CLAMP_HOLD;
-		}*/
-		
-		return output;
+  /**
+   * Set the alpha term for D smoothing. Alpha should be a double from 0.0 to 1.0
+   * and specifies what percent of the previous D should be used when smoothing, e.g. an alpha
+   * of 0.9 takes 90% of the previous D and 10% of the newly calculated D.
+   * 
+   * Higher values of alpha make the D term less responsive to fast changes in input.
+   * 
+   * @param a
+   */
+  public void setA(double a) {
+	  m_A = a;
   }
   
-  public void setRobot (Robot robot2){
-	  robot = robot2;
+  /**
+   * Enable/disable D smoothing (default true)
+   * 
+   * @param d
+   */
+  public void filterD(boolean d) {
+	  m_filteredD = d;
   }
   
   //QUICKCLICK motion planning methods
@@ -322,11 +318,6 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
 	  } else {
 		  m_invertMultiplier = 1.0;
 	  }
-	  
-	  //TODO create a class to implement PIDOutput so this can work
-	  /*
-	  m_pidOutput.setDirection(m_invertMultiplier);
-	  */
 	  
       double midpoint = goal / 2;
       
@@ -519,25 +510,23 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
     	  }
     	  else {
     		  if (m_I != 0) {
-                          double divisor = 1.0;
-                          if (m_safeArm)
-                              divisor = 5.0;
     			  double potentialIGain = (m_totalError + m_error) * m_I;
-    			  if (potentialIGain < (m_maximumOutput / divisor)) {
-    				  if (potentialIGain > (m_minimumOutput / divisor)) {
+    			  if (potentialIGain < (m_maximumOutput)) {
+    				  if (potentialIGain > (m_minimumOutput)) {
     					  m_totalError += m_error;
     				  } else {
-    					  m_totalError = (m_minimumOutput / divisor) / m_I;
+    					  m_totalError = (m_minimumOutput) / m_I;
     				  }
     			  } else {
-    				  m_totalError = (m_maximumOutput / divisor) / m_I;
+    				  m_totalError = (m_maximumOutput) / m_I;
     			  }
     		  }
 
     		  m_POutput = m_P * m_error;
     		  m_IOutput = m_I * m_totalError;
-
-		  if (!m_safeArm) {
+    	  
+    	  //smooth the D term using an alpha filter
+		  if (m_filteredD) {
 			  m_filteredDifference = (m_A * m_filteredDifference) + ((1 - m_A) * (m_error - m_prevError));
 			  m_DOutput = m_D * m_filteredDifference;
 		  } else {
@@ -566,21 +555,11 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
     		  m_bufTotal -= m_buf.pop();
     	  }
       }
-      if (m_safeArm){
-    	  pidOutput.pidWrite(safeArm(result) * m_invertMultiplier);
-      }
-      else{
-	      pidOutput.pidWrite(result * m_invertMultiplier);
-      }
+	  pidOutput.pidWrite(result * m_invertMultiplier);
 	      
       if(m_logEnabled) {
     	  try{
-    		  double safevalue = result;
-    		  if (m_safeArm) {
-    			  safevalue = safeArm(result);
-    		  }
-    		  
-   		  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError + ", " + safevalue + 
+   		  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError + 
     				  ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + m_FOutput + ", " + result + ", " + m_setpoint + "\n");
 
     	  } catch(IOException e) {
@@ -617,11 +596,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
     	if(m_motionPlanEnabled) {
     		return (m_currentWaypoint.m_expectedAcceleration * m_kA) + (m_currentWaypoint.m_expectedVelocity * m_kV);
     	}
-    	//disabling feedforward term because of division by 0 errors (Timer may be too slow for our purposes)
-      /*double temp = m_F * getDeltaSetpoint();
-      m_prevSetpoint = m_setpoint;
-      m_setpointTimer.reset();
-      return temp;*/
+    	
     	return 0.0;
     }
   }
@@ -1062,7 +1037,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   	m_bw = new BufferedWriter(m_fw);
   	
   	try {
-  		m_bw.write("Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F: " + m_F + ", Safe Value, Setpoint\n" );
+  		m_bw.write("Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F: " + m_F + ", Setpoint\n" );
   		
   		m_logEnabled = true;
   		
