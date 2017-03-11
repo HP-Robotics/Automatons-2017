@@ -262,7 +262,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
 		CameraServer c = CameraServer.getInstance();
+		c.addAxisCamera("10.28.23.11");
 		c.startAutomaticCapture(0);
+		c.startAutomaticCapture(1);
 		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
 		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
@@ -340,7 +342,7 @@ public class Robot extends IterativeRobot {
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
-		rControl = new AdvancedPIDController(0.035, 0.0002, 0.35, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
+		rControl = new AdvancedPIDController(0.03, 0.00001, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
 		
 		//these should be calculated per-move based on robot rotation
 		xControl.setKaKv(FORWARD_KA, FORWARD_KV);
@@ -355,7 +357,7 @@ public class Robot extends IterativeRobot {
         
         SmartDashboard.putNumber("P", 0.02);		//0.02
         SmartDashboard.putNumber("I", 0.000001);	//0.000001
-        SmartDashboard.putNumber("D", 1.0);			//1.0
+        SmartDashboard.putNumber("D", 1.0);		//1.0
         SmartDashboard.putNumber("F", 0.0);
         
         SmartDashboard.putNumber("Ka", FORWARD_KA);
