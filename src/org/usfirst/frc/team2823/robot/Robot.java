@@ -97,17 +97,22 @@ public class Robot extends IterativeRobot {
 	CSVLogger log;
 	
 	//declare constants
-	//simulator wheel PWM channels
+	//wheel PWM channels
 	final int FRONT_LEFT_CHANNEL = 0;
 	final int REAR_LEFT_CHANNEL = 1;
 	final int FRONT_RIGHT_CHANNEL = 2;
 	final int REAR_RIGHT_CHANNEL = 3;
+	
+	//shooter servo PWM channels
+	final int LEFT_SERVO_CHANNEL = 4;
+	final int RIGHT_SERVO_CHANNEL = 5;
 	
 	//final int kOppFrontLeftChannel = 40;
 	//final int kOppRearLeftChannel = 41;
 	//final int kOppFrontRightChannel = 42;
 	//final int kOppRearRightChannel = 43;
 	
+	//talon CAN device IDs
 	final int TOP_SHOOTER_CHANNEL = 11;
 	final int BOTTOM_SHOOTER_CHANNEL = 12;
 	final int INTAKE_CHANNEL = 1;
@@ -194,6 +199,7 @@ public class Robot extends IterativeRobot {
 	final double ENC_TO_M = (2.0 * WHEEL_RADIUS_M * Math.PI) / 2048.0;
 	final double M_TO_ENC = 2048.0 / (2.0 * WHEEL_RADIUS_M * Math.PI);
 	
+	//gear mode rotation angles
 	final double RIGHT_LIFT_ANGLE = -120;
 	final double MIDDLE_LIFT_ANGLE = -90;
 	final double LEFT_LIFT_ANGLE = -60;
@@ -313,6 +319,12 @@ public class Robot extends IterativeRobot {
         bottomShooter.setF(0.025);
         bottomShooter.setProfile(0);
         
+        leftServo = new Servo(LEFT_SERVO_CHANNEL);
+        rightServo = new Servo(RIGHT_SERVO_CHANNEL);
+        
+        leftServo.setBounds(1.8, 0, 1.5, 0, 1.2);	//ms
+        rightServo.setBounds(1.8, 0, 1.5, 0, 1.2);	//ms
+        
         //compressor = new Compressor(0);
         //compressor.setClosedLoopControl(true);
         
@@ -320,6 +332,7 @@ public class Robot extends IterativeRobot {
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         
         //ahrs = new OurAHRS();
+        navx = new OurAHRS();
         ahrs = new OurADXRS450_Gyro();
         //gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
@@ -393,6 +406,7 @@ public class Robot extends IterativeRobot {
         
         try{
         	ahrs.reset();
+        	navx.reset();
         	//gyro.reset();
         	//opponentGyro.reset();
         }catch(Exception e) {

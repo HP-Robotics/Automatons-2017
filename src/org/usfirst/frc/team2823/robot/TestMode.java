@@ -12,6 +12,7 @@ public class TestMode {
 	
 	public void testInit(){
 		robot.ahrs.reset();
+		robot.navx.reset();
 		
     	if(robot.stick1.getName().contains("3D") || robot.stick1.getName().isEmpty()){
     		robot.driverStick = robot.stick1;
@@ -32,7 +33,7 @@ public class TestMode {
 		robot.gearButton.update(robot.driverStick.getRawButton(4));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
 		
-		if(robot.gearButton.changed()) {
+		/*if(robot.gearButton.changed()) {
 			robot.rControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
 		}
 		
@@ -52,7 +53,7 @@ public class TestMode {
 		if(robot.shootTrigger.on()){
 			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			System.out.println("x: " + robot.encoderThread.getX() + " xe: " + robot.xControl.getError() + " y: " + robot.encoderThread.getY() + " ye: " + robot.yControl.getError());
-		}
+		}*/
 		
 		//System.out.println("a: " + robot.ahrs.getAngle() + " c: " + robot.getCousin(robot.ahrs.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 		
@@ -161,6 +162,13 @@ public class TestMode {
 			robot.rControl.reset();
 			robot.rControl.closeLog();
 		}*/
+		
+		robot.leftServo.set((robot.operatorStick.getRawAxis(1) + 1) / 2);
+		robot.rightServo.set((robot.operatorStick.getRawAxis(3) + 1) / 2);
+		
+		//System.out.println(((robot.operatorStick.getRawAxis(1) + 1) / 2) + " " + ((robot.operatorStick.getRawAxis(3) + 1) / 2));
+		
+		//System.out.println("Gyro: " + robot.ahrs.getAngle() + " navX: " + robot.navx.getAngle() + " fused: " + robot.navx.getCompassHeading());
 		
 		robot.setDriveT(robot.ahrs.getAngle());
 		//robot.robotDrive.mecanumDrive_Cartesian(0, -1, 0, robot.getDriveT());

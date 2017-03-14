@@ -76,6 +76,9 @@ public class TeleopMode {
 			}
 		}
 		
+		robot.leftServo.set((robot.operatorStick.getRawAxis(1) + 1) / 2);
+		robot.rightServo.set((robot.operatorStick.getRawAxis(3) + 1) / 2);
+		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
 		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
 		//double opr = Math.abs(robot.opponentStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getZ();
