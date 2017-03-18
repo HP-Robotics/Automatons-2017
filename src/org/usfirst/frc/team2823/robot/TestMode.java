@@ -32,6 +32,7 @@ public class TestMode {
 		robot.intakeButton.update(robot.driverStick.getRawButton(3));
 		robot.gearButton.update(robot.driverStick.getRawButton(4));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
+		robot.gearKickButton.update(robot.operatorStick.getRawButton(1));
 		
 		/*if(robot.gearButton.changed()) {
 			robot.rControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
@@ -62,9 +63,21 @@ public class TestMode {
 		//robot.xControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		//robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		//robot.rControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-		
+	
 		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 		//robot.log.write(Timer.getFPGATimestamp() + "," + 0.0 + "," + robot.aEncoder.getDistance() + "\n");
+		robot.gearControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		
+		if(robot.gearKickButton.held()){
+			if(robot.gearKickButton.changed()){
+				robot.gearControl.enableLog("gearPID.csv");
+				robot.gearControl.enable();
+				robot.gearControl.setSetpoint(robot.GEAR_KICK_OUT * robot.DEG_TO_G_ENC);
+			}
+		}else{
+			robot.gearControl.enable();
+			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN * robot.DEG_TO_G_ENC);
+		}
 		
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {

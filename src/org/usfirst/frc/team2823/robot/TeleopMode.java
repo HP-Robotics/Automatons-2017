@@ -139,6 +139,7 @@ public class TeleopMode {
 			robot.farShotButton.update(robot.operatorStick.getRawButton(7));
 			robot.nearShotButton.update(robot.operatorStick.getRawButton(5));
 			robot.intakeState.update(robot.operatorStick.getRawButton(8));
+			robot.gearKickButton.update(robot.operatorStick.getRawButton(1));
 					
 		}catch (Exception e){
 					
@@ -391,6 +392,16 @@ public class TeleopMode {
 		} else if(!robot.climbButton.on() && !robot.shootTrigger.held()) {
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);
+		}
+		
+		if(robot.gearKickButton.held()){
+			if(robot.gearKickButton.changed()){
+				robot.gearControl.enable();
+				robot.gearControl.setSetpoint(robot.GEAR_KICK_OUT * robot.DEG_TO_G_ENC);
+			}
+		}else{
+			robot.gearControl.enable();
+			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN * robot.DEG_TO_G_ENC);
 		}
 	}
 	

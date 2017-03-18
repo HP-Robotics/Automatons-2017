@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
@@ -48,6 +49,7 @@ public class Robot extends IterativeRobot {
 	Button reverseBeltButton;
 	Button farShotButton;
 	Button nearShotButton;
+	Button gearKickButton;
 	
 	TeleopMode teleopMode;
 	TestMode testMode;
@@ -56,7 +58,7 @@ public class Robot extends IterativeRobot {
 	
 	RobotDrive robotDrive;
 	//RobotDrive opponentDrive;
-    OurCANTalon bottomShooter;
+	
 	OurCANTalon beltFeed;
 	OurCANTalon intake;
 	OurCANTalon uptake;
@@ -65,6 +67,12 @@ public class Robot extends IterativeRobot {
 	OurCANTalon climbMotor2;
 	
 	OurCANTalon topShooter;
+    OurCANTalon bottomShooter;
+    
+    OurVictorSP gearMotor;
+	
+	Servo leftServo;
+	Servo rightServo;
 	
 	//Compressor compressor;
 	DoubleSolenoid shooterSolenoid;
@@ -72,24 +80,29 @@ public class Robot extends IterativeRobot {
 	EncoderThread encoderThread;
 	
 	//OurAHRS ahrs;
+	OurAHRS navx;
 	OurADXRS450_Gyro ahrs;
 	//OurADXRS450_Gyro gyro;
 	//AnalogGyro opponentGyro;
+	Encoder gearEncoder;
 	
 	//EncoderPIDSource vSource;
 	EncoderPIDSource xSource;
 	EncoderPIDSource ySource;
 	GyroPIDSource rSource;
+	GearPIDSource gearSource;
 	
 	//EncoderPIDOutput vOutput;
 	EncoderPIDOutput xOutput;
 	EncoderPIDOutput yOutput;
 	GyroPIDOutput rOutput;
+	GearPIDOutput gearOutput;
 	
 	//AdvancedPIDController vControl;
 	AdvancedPIDController xControl;
 	AdvancedPIDController yControl;
 	AdvancedPIDController rControl;
+	AdvancedPIDController gearControl;
 	
 	ToggleSwitch intakeState;
 	ToggleSwitch shooterState;
@@ -107,6 +120,9 @@ public class Robot extends IterativeRobot {
 	final int LEFT_SERVO_CHANNEL = 4;
 	final int RIGHT_SERVO_CHANNEL = 5;
 	
+	//gear kicker PWM channel
+	final int GEAR_CHANNEL = 6;
+	
 	//final int kOppFrontLeftChannel = 40;
 	//final int kOppRearLeftChannel = 41;
 	//final int kOppFrontRightChannel = 42;
@@ -120,6 +136,9 @@ public class Robot extends IterativeRobot {
 	final int CLIMB2_CHANNEL = 3;
 	final int BELT_FEED_CHANNEL = 4;
 	final int UPTAKE_CHANNEL = 13;
+	
+	final int GEAR_KICK_OUT = 90;
+	final int GEAR_KICK_IN = 0;
 	
 	//joystick zero-sensitivity threshold
 	final double STICKTHRESHOLD = 0.15;
@@ -199,6 +218,9 @@ public class Robot extends IterativeRobot {
 	final double ENC_TO_M = (2.0 * WHEEL_RADIUS_M * Math.PI) / 2048.0;
 	final double M_TO_ENC = 2048.0 / (2.0 * WHEEL_RADIUS_M * Math.PI);
 	
+	final double DEG_TO_G_ENC = 280.0 / 360.0;
+	final double G_ENC_TO_DEG = 360.0 / 280.0;
+	
 	//gear mode rotation angles
 	final double RIGHT_LIFT_ANGLE = -120;
 	final double MIDDLE_LIFT_ANGLE = -90;
@@ -245,6 +267,7 @@ public class Robot extends IterativeRobot {
 		shootTrigger = new Button();
     	gyroResetButton1 = new Button();
     	gyroResetButton2 = new Button();
+    	gearKickButton = new Button();
 		
 		climbButton = new Button();
 		reverseBeltButton = new Button();
@@ -282,6 +305,7 @@ public class Robot extends IterativeRobot {
 		//opponentDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		//opponentDrive.setExpiration(0.1);
 		
+		gearMotor = new OurVictorSP(GEAR_CHANNEL);
        
         beltFeed = new OurCANTalon(BELT_FEED_CHANNEL);
         uptake = new OurCANTalon(UPTAKE_CHANNEL);
@@ -336,6 +360,7 @@ public class Robot extends IterativeRobot {
         ahrs = new OurADXRS450_Gyro();
         //gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
+        gearEncoder = new Encoder(6, 7, false, EncodingType.k4X);
         
 		encoderThread = new EncoderThread(this);
 		encoderThread.reset();
@@ -345,17 +370,20 @@ public class Robot extends IterativeRobot {
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
 		rSource = new GyroPIDSource(ahrs);
+		gearSource = new GearPIDSource(gearEncoder);
 		
 		//vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
 		xOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.X);
 		yOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.Y);
 		rOutput = new GyroPIDOutput(this);
+		gearOutput = new GearPIDOutput(gearMotor);
 		
 		//old 0.0045, 0.000001, 0.35
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(0.03, 0.00001, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
+		gearControl = new AdvancedPIDController(0.05, 0.0, 0.0, gearSource, gearOutput, 0.01);
 		
 		//these should be calculated per-move based on robot rotation
 		xControl.setKaKv(FORWARD_KA, FORWARD_KV);
