@@ -79,10 +79,8 @@ public class Robot extends IterativeRobot {
 	
 	EncoderThread encoderThread;
 	
-	//OurAHRS ahrs;
 	OurAHRS navx;
-	OurADXRS450_Gyro ahrs;
-	//OurADXRS450_Gyro gyro;
+	OurADXRS450_Gyro gyro;
 	//AnalogGyro opponentGyro;
 	Encoder gearEncoder;
 	
@@ -357,8 +355,7 @@ public class Robot extends IterativeRobot {
         
         //ahrs = new OurAHRS();
         navx = new OurAHRS();
-        ahrs = new OurADXRS450_Gyro();
-        //gyro = new OurADXRS450_Gyro();
+        gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
         gearEncoder = new Encoder(6, 7, false, EncodingType.k4X);
         
@@ -369,7 +366,7 @@ public class Robot extends IterativeRobot {
 		//vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		rSource = new GyroPIDSource(ahrs);
+		rSource = new GyroPIDSource(gyro);
 		gearSource = new GearPIDSource(gearEncoder);
 		
 		//vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
@@ -433,9 +430,8 @@ public class Robot extends IterativeRobot {
         log = new CSVLogger("/home/lvuser");
         
         try{
-        	ahrs.reset();
         	navx.reset();
-        	//gyro.reset();
+        	gyro.reset();
         	//opponentGyro.reset();
         }catch(Exception e) {
         	System.out.println("Gyro not work");

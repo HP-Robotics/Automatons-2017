@@ -84,7 +84,7 @@ public class TeleopMode {
 		//double opr = Math.abs(robot.opponentStick.getZ()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getZ();
 		
 		//get gyro angle
-		double t = robot.ahrs.getAngle();
+		double t = robot.gyro.getAngle();
 		//double opt = -(robot.opponentGyro.getAngle() + 90);
 		
 		//robot.log.write(-robot.gyro.getAngle() + "," + -robot.ahrs.getAngle() + "," + robot.encoderThread.getR() + "\n");
@@ -104,7 +104,7 @@ public class TeleopMode {
 			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			System.out.println("a: " + robot.ahrs.getAngle() + " c: " + robot.getCousin(robot.ahrs.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
+			System.out.println("a: " + robot.gyro.getAngle() + " c: " + robot.getCousin(robot.gyro.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 			prevTime = Timer.getFPGATimestamp();
 		}
 		
@@ -246,7 +246,7 @@ public class TeleopMode {
 				}
 				
 				//System.out.println(robot.ahrs.getAngle() + " " + robot.getCousin(robot.ahrs.getAngle(),  getTrajectoryAngle(x, y)) + " " + getTrajectoryAngle(x, y));
-				robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), getTrajectoryAngle(x, y)));
+				robot.rControl.setSetpoint(robot.getCousin(robot.gyro.getAngle(), getTrajectoryAngle(x, y)));
 			} else {
 				if(robot.rControl.isEnabled()) {
 					robot.rControl.reset();
@@ -259,7 +259,7 @@ public class TeleopMode {
 			break;
 		
 		case GEAR:
-			robot.rControl.setSetpoint(robot.getCousin(robot.ahrs.getAngle(), angle));
+			robot.rControl.setSetpoint(robot.getCousin(robot.gyro.getAngle(), angle));
 			robot.setDriveX(x);
 			robot.setDriveY(y);
 			robot.setDriveT(t);
@@ -290,7 +290,7 @@ public class TeleopMode {
 		
 		//if the output is not defined or the change in position is very small (standing still), PID to the current rotation
 		if(Double.isNaN(t) || Math.abs(p) < robot.INTAKE_ROTATION_THRESHOLD) {
-			return robot.ahrs.getAngle();
+			return robot.gyro.getAngle();
 		}
 		
 		//System.out.println("p: " + p + " t: " + t * robot.RAD_TO_DEG);
@@ -410,7 +410,7 @@ public class TeleopMode {
 			if(!robot.resettingGyro) {
 				robot.resettingGyro = true;
 				
-				robot.ahrs.reset();
+				robot.gyro.reset();
 			}
 		} else {
 			robot.resettingGyro = false;

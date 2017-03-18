@@ -31,7 +31,8 @@ public class Autonomous {
 	}
 	
 	public void start() {
-		robot.ahrs.reset();
+		robot.gyro.reset();
+		robot.navx.reset();
 		robot.encoderThread.reset();
 		
         if(robot.allianceChooser.getSelected().equals("-1.0")) {

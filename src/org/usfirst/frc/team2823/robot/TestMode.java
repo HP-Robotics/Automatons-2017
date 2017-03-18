@@ -11,8 +11,8 @@ public class TestMode {
 	}
 	
 	public void testInit(){
-		robot.ahrs.reset();
 		robot.navx.reset();
+		robot.gyro.reset();
 		
     	if(robot.stick1.getName().contains("3D") || robot.stick1.getName().isEmpty()){
     		robot.driverStick = robot.stick1;
@@ -81,7 +81,7 @@ public class TestMode {
 		
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
-				robot.rotateTo(robot.ahrs.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
+				robot.rotateTo(robot.gyro.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
 			} else {
 				robot.rControl.closeLog();
 				robot.rControl.reset();
@@ -183,7 +183,7 @@ public class TestMode {
 		
 		//System.out.println("Gyro: " + robot.ahrs.getAngle() + " navX: " + robot.navx.getAngle() + " fused: " + robot.navx.getCompassHeading());
 		
-		robot.setDriveT(robot.ahrs.getAngle());
+		robot.setDriveT(robot.gyro.getAngle());
 		//robot.robotDrive.mecanumDrive_Cartesian(0, -1, 0, robot.getDriveT());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}

@@ -27,7 +27,7 @@ public class DriveForwardAutonomous extends Autonomous {
 		}
 		
 		//update drive motors regardless of stage
-		robot.setDriveT(robot.ahrs.getAngle());
+		robot.setDriveT(robot.gyro.getAngle());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
 	

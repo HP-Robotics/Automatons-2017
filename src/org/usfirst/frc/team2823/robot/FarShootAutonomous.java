@@ -70,7 +70,7 @@ public class FarShootAutonomous extends Autonomous {
 		}
 		
 		//update drive motors regardless of stage
-		robot.setDriveT(robot.ahrs.getAngle());
+		robot.setDriveT(robot.gyro.getAngle());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}
 	
@@ -208,7 +208,7 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo((robot.ahrs.getAngle() + 10) * robot.allianceMult);
+			robot.rotateTo((robot.gyro.getAngle() + 10) * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 			
