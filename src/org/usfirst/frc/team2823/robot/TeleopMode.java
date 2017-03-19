@@ -82,8 +82,11 @@ public class TeleopMode {
 			}
 		}*/
 		
-		robot.leftServo.set((robot.operatorStick.getRawAxis(1) + 1) / 2);
-		robot.rightServo.set((robot.operatorStick.getRawAxis(3) + 1) / 2);
+		//robot.leftServo.set((robot.operatorStick.getRawAxis(1) + 1) / 2);
+		//robot.rightServo.set((robot.operatorStick.getRawAxis(3) + 1) / 2);
+		
+		//robot.leftServo.set(SmartDashboard.getNumber("Setpoint", 0.0));
+		//robot.rightServo.set(SmartDashboard.getNumber("Setpoint", 0.0));
 		
 		//double opx = Math.abs(robot.opponentStick.getX()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getX();
 		//double opy = Math.abs(robot.opponentStick.getY()) < robot.kStickThreshold ? 0.0 : robot.opponentStick.getY();
@@ -100,8 +103,6 @@ public class TeleopMode {
 		mode = setDriveMode();
 		
 		//System.out.println(robot.ahrs.getAngle());
-		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
-		//System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
 		
 		//update whether rotation PID is enabled
 		/** CHANGE NAME? GOOD ENOUGH?**/
@@ -109,10 +110,12 @@ public class TeleopMode {
 		setDrivePIDs();
 				
 		if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
-			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
-			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			//System.out.println("a: " + robot.gyro.getAngle() + " c: " + robot.getCousin(robot.gyro.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
+			
+			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+			System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
+			
 			prevTime = Timer.getFPGATimestamp();
 		}
 		
@@ -134,9 +137,10 @@ public class TeleopMode {
 	public void updateButtons(){
 		//update buttons
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
+		robot.robotIntakeButton.update(robot.driverStick.getRawButton(3));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
 		robot.gearButton.update(robot.driverStick.getRawButton(4));
-		robot.robotIntakeButton.update(robot.driverStick.getRawButton(3));
+		robot.intakeButton.update(robot.driverStick.getRawButton(6));	//originally be 3
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
