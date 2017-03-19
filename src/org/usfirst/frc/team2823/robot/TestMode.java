@@ -62,15 +62,15 @@ public class TestMode {
 		
 		//robot.xControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		//robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
-		//robot.rControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		robot.rMotionControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 	
 		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 		System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
 		//robot.log.write(Timer.getFPGATimestamp() + "," + 0.0 + "," + robot.aEncoder.getDistance() + "\n");
 		
-		robot.gearControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
+		//robot.gearControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		
-		if(robot.gearKickButton.held()){
+		/*if(robot.gearKickButton.held()){
 			if(robot.gearKickButton.changed()){
 				robot.gearControl.enableLog("gearPID.csv");
 				robot.gearControl.enable();
@@ -79,18 +79,19 @@ public class TestMode {
 		}else{
 			robot.gearControl.enable();
 			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN * robot.DEG_TO_G_ENC);
-		}
+		}*/
 		
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
-				robot.rotateTo(robot.gyro.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
+				robot.rotateTo_Relative(SmartDashboard.getNumber("RSetpoint", 0.0));
+				//robot.rotateTo(robot.gyro.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
 			} else {
-				robot.rControl.closeLog();
-				robot.rControl.reset();
+				robot.rMotionControl.closeLog();
+				robot.rMotionControl.reset();
 			}
 		}
 		
-		if(robot.shootTrigger.changed()) {
+		/*if(robot.shootTrigger.changed()) {
 			if(robot.shootTrigger.on()) {
 				robot.driveTo_Cartesian(SmartDashboard.getNumber("XSetpoint", 0), SmartDashboard.getNumber("YSetpoint", 0), SmartDashboard.getNumber("KvMult", 1), SmartDashboard.getNumber("KaMult", 1));
 			} else {
@@ -100,7 +101,7 @@ public class TestMode {
 				robot.xControl.reset();
 				robot.yControl.reset();
 			}
-		}
+		}*/
 		
 		/*if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
@@ -112,7 +113,7 @@ public class TestMode {
 				//robot.xControl.configureGoal(2, robot.MAX_SIDE_VEL, robot.MAX_SIDE_ACCEL);
 				
 				//robot.driveTo_Cartesian(SmartDashboard.getNumber("Setpoint", 48), 0);
-				//robot.rotateTo(SmartDashboard.getNumber("Setpoint", 180));
+				robot.rotateTo(SmartDashboard.getNumber("Setpoint", 180));
 				
 				//robot.aEncoder.reset();
 				//robot.ySource.reset();
@@ -122,25 +123,25 @@ public class TestMode {
 				//robot.yControl.enableLog("yControlTest.csv");
 				//robot.yControl.enable();
 				
-				robot.xSource.reset();
-				robot.xControl.reset();
-				robot.xControl.configureGoal(SmartDashboard.getNumber("Setpoint", 48), robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
-				robot.xControl.enable();
+				//robot.xSource.reset();
+				//robot.xControl.reset();
+				//robot.xControl.configureGoal(SmartDashboard.getNumber("Setpoint", 48), robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
+				//robot.xControl.enable();
 				//robot.yControl.setSetpoint(robot.encoderThread.getY() + 24);
 				
 				//robot.yControl.setSetpoint(24);
-				robot.xControl.enableLog("xControl.csv");
+				//robot.xControl.enableLog("xControl.csv");
 				//robot.yControl.enable();
 				
-				robot.xControl.enable();
+				//robot.xControl.enable();
 				//robot.yControl.enable();
 				
-				robot.rControl.reset();
+				//robot.rControl.reset();
 				//robot.ahrs.reset();
 				//robot.rControl.setSetpoint(SmartDashboard.getNumber("Setpoint", 0.0));
-				robot.rControl.setSetpoint(0);
-				robot.rControl.enableLog("rControl.csv");
-				robot.rControl.enable();
+				//robot.rControl.setSetpoint(0);
+				//robot.rControl.enableLog("rControl.csv");
+				//robot.rControl.enable();
 
 				//System.out.println(robot.ahrs.getAngle());
 				//robot.rotateTo(robot.ahrs.getAngle() + 90.0);
@@ -150,11 +151,11 @@ public class TestMode {
 				//robot.vControl.enableLog("testPID.csv");
 			} else {
 				System.out.println("off");
-				robot.xControl.reset();
+				//robot.xControl.reset();
 				//robot.yControl.reset();
 				robot.rControl.reset();
 				
-				robot.xControl.closeLog();
+				//robot.xControl.closeLog();
 				//robot.yControl.closeLog();
 				robot.rControl.closeLog();
 				

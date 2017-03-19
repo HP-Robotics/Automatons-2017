@@ -7,6 +7,7 @@ public class GyroPIDSource implements PIDSource {
 	private OurADXRS450_Gyro g;
 	private OurAHRS a;
 	private boolean isGyro;
+	private double zero = 0;
 	
 	public GyroPIDSource(OurADXRS450_Gyro g) {
 		this.g = g;
@@ -18,12 +19,20 @@ public class GyroPIDSource implements PIDSource {
 		this.isGyro = false;
 	}
 	
+	public void reset() {
+		if(isGyro) {
+			zero = g.getAngle();
+		} else {
+			zero = a.getAngle();
+		}
+	}
+	
 	@Override
 	public double pidGet() {
 		if(isGyro) {
-			return g.getAngle();
+			return g.getAngle() - zero;
 		} else {
-			return a.getAngle();
+			return a.getAngle() - zero;
 		}
 	}
 

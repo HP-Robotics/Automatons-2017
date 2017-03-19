@@ -560,7 +560,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
       if(m_logEnabled) {
     	  try{
    		  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError + 
-    				  ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + m_FOutput + ", " + result + ", " + m_setpoint + "\n");
+    				  ", " + result + ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + m_FOutput + ", " + m_setpoint + "\n");
 
     	  } catch(IOException e) {
     		  System.out.println("PID logging died on us");
