@@ -18,7 +18,7 @@ public class TeleopMode {
 	double shotStartTime = Timer.getFPGATimestamp();
 	
 	private enum DriveMode {
-		ROBOT, FIELD, INTAKE, GEAR
+		ROBOT_GEAR, ROBOT_INTAKE, FIELD, INTAKE, GEAR
 	}
 	
 	public TeleopMode(Robot robot) {
@@ -48,7 +48,7 @@ public class TeleopMode {
 		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
 		double r = Math.abs(robot.driverStick.getZ()) < robot.ROTATIONTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
 		
-		if(mode == DriveMode.ROBOT) {
+		if(mode == DriveMode.ROBOT_GEAR) {
 			x *= 0.35;
 			r *= 0.45;
 		}
@@ -100,6 +100,8 @@ public class TeleopMode {
 		mode = setDriveMode();
 		
 		//System.out.println(robot.ahrs.getAngle());
+		//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+		//System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
 		
 		//update whether rotation PID is enabled
 		/** CHANGE NAME? GOOD ENOUGH?**/
@@ -110,7 +112,7 @@ public class TeleopMode {
 			//System.out.print("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 			//System.out.println(" l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			System.out.println("a: " + robot.gyro.getAngle() + " c: " + robot.getCousin(robot.gyro.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
+			//System.out.println("a: " + robot.gyro.getAngle() + " c: " + robot.getCousin(robot.gyro.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 			prevTime = Timer.getFPGATimestamp();
 		}
 		
@@ -134,7 +136,7 @@ public class TeleopMode {
 		robot.robotButton.update(robot.driverStick.getRawButton(2));
 		robot.fieldButton.update(robot.driverStick.getRawButton(5));
 		robot.gearButton.update(robot.driverStick.getRawButton(4));
-		robot.intakeButton.update(robot.driverStick.getRawButton(3));
+		robot.robotIntakeButton.update(robot.driverStick.getRawButton(3));
 		robot.gyroResetButton1.update(robot.driverStick.getRawButton(11));
 		robot.gyroResetButton2.update(robot.driverStick.getRawButton(12));
 		
@@ -158,13 +160,17 @@ public class TeleopMode {
 		//ROBOT mode, is press-hold, has priority over other modes but reverts to previous mode when released
 		// is not field-oriented, gear catcher is forward in this mode
 		if(robot.robotButton.held()) {
-			if(mode != DriveMode.ROBOT) {
+			if(mode != DriveMode.ROBOT_GEAR) {
 				prevMode = mode;		//if switching to ROBOT mode, store the previous drive mode
 			}
-			return DriveMode.ROBOT;
+			return DriveMode.ROBOT_GEAR;
 			
-		} else if(mode == DriveMode.ROBOT) {
+		} else if(mode == DriveMode.ROBOT_GEAR) {
 			return prevMode;			//if switching out of ROBOT mode, revert to the previous drive mode
+		}
+		
+		if(robot.robotIntakeButton.changed()) {
+			return DriveMode.ROBOT_INTAKE;
 		}
 		
 		//FIELD mode, is toggle
@@ -190,12 +196,20 @@ public class TeleopMode {
 	/** IS THIS FINE? Can I reset() or enable() PIDs every time, or should I do this only once?**/
 	public void setDrivePIDs() {
 		switch(mode) {
- 		case ROBOT:		//ROBOT mode, no PIDs
+ 		case ROBOT_GEAR:	//ROBOT mode, no PIDs
 			if (robot.rControl.isEnabled()) {
 				robot.rControl.reset();
 				robot.rControl.closeLog();
 				System.out.println("Robot");
 			}
+ 			break;
+ 		
+ 		case ROBOT_INTAKE:
+ 			if(robot.rControl.isEnabled()) {
+ 				robot.rControl.reset();
+ 				robot.rControl.closeLog();
+ 				System.out.println("Robot-intake");
+ 			}
  			break;
  		
  		case FIELD:		//FIELD mode, no PIDs
@@ -228,9 +242,16 @@ public class TeleopMode {
 	//update PID setpoints and determine XYZ power outputs
 	public void setDriveOutputs(double x, double y, double r, double t) {
 		switch(mode) {
-		case ROBOT:
+		case ROBOT_GEAR:
 			robot.setDriveX(-y);	//switch x and y to make gear catcher forward
 			robot.setDriveY(x);
+			robot.setDriveR(r);
+			robot.setDriveT(0);
+			break;
+		
+		case ROBOT_INTAKE:
+			robot.setDriveX(x);
+			robot.setDriveY(y);
 			robot.setDriveR(r);
 			robot.setDriveT(0);
 			break;
@@ -320,12 +341,15 @@ public class TeleopMode {
 				//robot.bottomShooter.set(SmartDashboard.getNumber("Setpoint", 4300));
 				
 				//set shot speed based on solenoid position
-				if(robot.shooterSolenoid.get() == robot.CLOSE_SOLENOID) {
-					robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
-					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
-				} else {
+				//robot.topShooter.set(-SmartDashboard.getNumber("Speed", -robot.CLOSE_SHOT_SPEED));
+				//robot.bottomShooter.set(SmartDashboard.getNumber("Speed", robot.CLOSE_SHOT_SPEED));
+				
+				if(robot.farShot) {
 					robot.topShooter.set(-robot.FAR_SHOT_SPEED);
 					robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+				} else {
+					robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
+					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
 				}
 			}
 			
@@ -380,10 +404,18 @@ public class TeleopMode {
 	
 	public void runMechanisms(){
 		if(robot.farShotButton.changed()) {
-			robot.shooterSolenoid.set(robot.FAR_SOLENOID);
+			//robot.shooterSolenoid.set(robot.FAR_SOLENOID);
+			robot.farShot = true;
+			
+			robot.leftServo.set(robot.FAR_SERVO);
+			robot.rightServo.set(robot.FAR_SERVO);
 			
 		} else if(robot.nearShotButton.changed()) {
-			robot.shooterSolenoid.set(robot.CLOSE_SOLENOID);
+			//robot.shooterSolenoid.set(robot.CLOSE_SOLENOID);
+			robot.farShot = false;
+			
+			robot.leftServo.set(robot.CLOSE_SERVO);
+			robot.rightServo.set(robot.CLOSE_SERVO);
 		}
 		
 		if(robot.intakeState.on()){
@@ -430,7 +462,7 @@ public class TeleopMode {
         SmartDashboard.putNumber("L Distance: ", robot.encoderThread.getLDistance());
         SmartDashboard.putNumber("R Distance: ", robot.encoderThread.getRDistance());
         SmartDashboard.putNumber("C Distance: ", robot.encoderThread.getCDistance());
-        SmartDashboard.putBoolean("Robot Mode", mode == DriveMode.ROBOT);
+        SmartDashboard.putBoolean("Robot Mode", mode == DriveMode.ROBOT_GEAR);
         SmartDashboard.putBoolean("Intake Mode", mode == DriveMode.INTAKE);
         SmartDashboard.putBoolean("Field Mode", mode == DriveMode.FIELD);
         SmartDashboard.putBoolean("Gear Mode", mode == DriveMode.GEAR);

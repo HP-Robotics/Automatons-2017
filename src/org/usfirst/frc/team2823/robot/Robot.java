@@ -39,6 +39,7 @@ public class Robot extends IterativeRobot {
 	//Joystick opponentStick;
 	
 	Button robotButton;
+	Button robotIntakeButton;
 	Button fieldButton;
 	Button intakeButton;
 	Button gearButton;
@@ -153,8 +154,12 @@ public class Robot extends IterativeRobot {
 	//final double FORWARD_FUDGE_FACTOR = 1.03471;
 	
 	//shooter speeds
-	final double CLOSE_SHOT_SPEED = 3800;	//old 3650
-	final double FAR_SHOT_SPEED = 4175;
+	final double CLOSE_SHOT_SPEED = 3785;	//old 3800, older old 3650
+	final double FAR_SHOT_SPEED = 4480;		//old 4175, older old 4175
+	
+	//shooter servo positions
+	final double CLOSE_SERVO = 0.75;
+	final double FAR_SERVO = 0.27;
 	
 	//shooter solenoid positions
 	final Value CLOSE_SOLENOID = Value.kForward;
@@ -243,6 +248,7 @@ public class Robot extends IterativeRobot {
 	
 	boolean resettingGyro = false;
 	boolean runningFeeder = false;
+	boolean farShot = true;
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -259,6 +265,7 @@ public class Robot extends IterativeRobot {
     	//opponentStick = new Joystick(kJoystickOppChannel);
 		
 		robotButton = new Button();
+		robotIntakeButton = new Button();
 		fieldButton = new Button();
 		intakeButton = new Button();
 		gearButton = new Button();
@@ -289,9 +296,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
 		CameraServer c = CameraServer.getInstance();
-		c.addAxisCamera("10.28.23.11");
+		//c.addAxisCamera("10.28.23.11");
 		c.startAutomaticCapture(0);
-		c.startAutomaticCapture(1);
+		//c.startAutomaticCapture(1);
 		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
 		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
@@ -425,6 +432,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("R Distance: ", 0.0);
         SmartDashboard.putNumber("C Distance: ", 0.0);
         
+        SmartDashboard.putNumber("Speed", 0.0);
+        
         //use System.getProperty("user.home") to get path to home directory
         //log = new CSVLogger("/tmp");
         log = new CSVLogger("/home/lvuser");
@@ -552,8 +561,8 @@ public class Robot extends IterativeRobot {
 	public void rotateTo(double t, double vm, double am, String file) {
 		//rControl.setSetpoint(t);
 		rControl.reset();
-		//rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
-		rControl.setSetpoint(t);
+		rControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
+		//rControl.setSetpoint(t);
 		
 		/*if(Math.abs(t - ahrs.getAngle()) < 30) {
 			rControl.setPID(rControl.getP(), SMALL_I, rControl.getD());
