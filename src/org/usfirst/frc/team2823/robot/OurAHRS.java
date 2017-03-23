@@ -9,10 +9,11 @@ package org.usfirst.frc.team2823.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 public class OurAHRS extends AHRS {
 
 	public OurAHRS() {
-		super(I2C.Port.kOnboard);
+		super(Port.kUSB);
 	}
 	
 	public float getFusedHeading() {
