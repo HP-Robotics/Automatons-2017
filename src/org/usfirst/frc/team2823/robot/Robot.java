@@ -299,11 +299,6 @@ public class Robot extends IterativeRobot {
 		autonomousChooser.addObject("Place Gear (Right)", new GearAutonomous(this, GearAutonomous.Side.RIGHT));
 		SmartDashboard.putData("Autonomous Mode", autonomousChooser);
 		
-		CameraServer c = CameraServer.getInstance();
-		//c.addAxisCamera("10.28.23.11");
-		c.startAutomaticCapture(0);
-		//c.startAutomaticCapture(1);
-		
         robotDrive = new RobotDrive(FRONT_LEFT_CHANNEL, REAR_LEFT_CHANNEL, FRONT_RIGHT_CHANNEL, REAR_RIGHT_CHANNEL);
 		robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
 		robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
@@ -364,7 +359,6 @@ public class Robot extends IterativeRobot {
         shooterSolenoid = new DoubleSolenoid(0, 1);
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         
-        //ahrs = new OurAHRS();
         navx = new OurAHRS();
         gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
@@ -447,6 +441,14 @@ public class Robot extends IterativeRobot {
         //log = new CSVLogger("/tmp");
         log = new CSVLogger("/home/lvuser");
         
+        //wait up to 20 seconds for the navx to calibrate
+        double initTime = Timer.getFPGATimestamp();
+        while(navx.isCalibrating() && Math.abs(Timer.getFPGATimestamp() - initTime) <= 20)
+        	;	//do nothing
+        
+        System.out.println("calibration took: " + Math.abs(Timer.getFPGATimestamp() - initTime));
+        
+        //reset gyros
         try{
         	navx.reset();
         	gyro.reset();
@@ -454,9 +456,17 @@ public class Robot extends IterativeRobot {
         }catch(Exception e) {
         	System.out.println("Gyro not work");
         }
-        //navxOrigin = ahrs.getFusedHeading();
-        //navx2Origin = ahrs.getCompassHeading();
-        //gyroOrigin = gyro.getAngle();
+        
+        //wait one second after resetting navx to instantiate cameras
+        initTime = Timer.getFPGATimestamp();
+        while(Math.abs(Timer.getFPGATimestamp() - initTime) <= 1)
+        	;	//do nothing
+        
+        //create camera objects
+		CameraServer c = CameraServer.getInstance();
+		//c.addAxisCamera("10.28.23.11");
+		c.startAutomaticCapture(0);
+		//c.startAutomaticCapture(1);
     }
     
 	/**
