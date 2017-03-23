@@ -186,7 +186,7 @@ public class TestMode {
 		
 		//System.out.println("Gyro: " + robot.ahrs.getAngle() + " navX: " + robot.navx.getAngle() + " fused: " + robot.navx.getCompassHeading());
 		
-		robot.setDriveT(robot.gyro.getAngle());
+		robot.setDriveT(robot.navx.getAngle());
 		//robot.robotDrive.mecanumDrive_Cartesian(0, -1, 0, robot.getDriveT());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
 	}

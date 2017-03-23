@@ -377,8 +377,8 @@ public class Robot extends IterativeRobot {
 		//vSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.V);
 		xSource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.X);
 		ySource = new EncoderPIDSource(encoderThread, EncoderPIDSource.Axis.Y);
-		rSource = new GyroPIDSource(gyro);
-		rMotionSource = new GyroPIDSource(gyro);
+		rSource = new GyroPIDSource(navx);
+		rMotionSource = new GyroPIDSource(navx);
 		gearSource = new GearPIDSource(gearEncoder);
 		
 		//vOutput = new EncoderPIDOutput(this, encoderThread, EncoderPIDOutput.Axis.V);
