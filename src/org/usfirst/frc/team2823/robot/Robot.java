@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team2823.robot.OurCANTalon;
+import org.opencv.core.Size;
 import org.usfirst.frc.team2823.robot.OurADXRS450_Gyro;
 
 
@@ -139,7 +140,7 @@ public class Robot extends IterativeRobot {
 	final int BELT_FEED_CHANNEL = 4;
 	final int UPTAKE_CHANNEL = 13;
 	
-	final int GEAR_KICK_OUT = -180;
+	final int GEAR_KICK_OUT = -90;
 	final int GEAR_KICK_IN = 0;
 	
 	//joystick zero-sensitivity threshold
