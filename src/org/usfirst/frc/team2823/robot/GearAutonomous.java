@@ -15,7 +15,7 @@ public class GearAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {5.0, 2.0, 5.0};
+		double[] timeouts = {5.0, 2.0, 5.0, 0.5, 2.5, 0.1};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -39,6 +39,19 @@ public class GearAutonomous extends Autonomous {
 		case 2:
 			driveToLift();
 			break;
+		
+		case 3:
+			placeGear();
+			break;
+		
+		case 4:
+			driveBack();
+			break;
+		
+		case 5:
+			retractKicker();
+			break;
+			
 		}
 		
 		//update drive motors regardless of stage
@@ -132,4 +145,63 @@ public class GearAutonomous extends Autonomous {
 			nextStage();
 		}
 	}
+	
+	//kick the gear onto the spring
+	private void placeGear() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.gearControl.setSetpoint(robot.GEAR_KICK_OUT);
+			robot.gearControl.enable();
+			
+			stageData[stage].entered = true;
+		} 
+	}
+	
+	
+	//drive clear of the lift
+	private void driveBack() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			if(side == Side.LEFT) {
+				robot.driveTo_Cartesian(-72, -41, 0.6, 0.6);
+				robot.rotateTo(-30);
+			} else if(side == Side.RIGHT) {
+				robot.driveTo_Cartesian(72, -41, 0.6, 0.6);
+				robot.rotateTo(30);
+			} else{
+				robot.driveTo_Cartesian(-4, -36, 0.6, 0.6);
+				robot.rotateTo(-90);
+			}
+			
+			stageData[stage].entered = true;
+		}
+		
+		if(robot.yControl.isPlanFinished() && robot.xControl.isPlanFinished()) {
+			robot.xControl.closeLog();
+			robot.yControl.closeLog();
+			robot.rControl.closeLog();
+			
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			nextStage();
+		}
+	}
+	
+	//retract the gear kicker
+	private void retractKicker() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN);
+			robot.gearControl.enable();
+			
+			stageData[stage].entered = true;
+		} 
+	}
+	
 }
