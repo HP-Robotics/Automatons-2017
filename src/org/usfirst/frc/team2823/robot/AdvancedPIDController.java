@@ -560,7 +560,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
       if(m_logEnabled) {
     	  try{
    		  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError + 
-    				  ", " + result + ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + m_FOutput + ", " + m_setpoint + "\n");
+    				  ", " + result + ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + (m_currentWaypoint.m_expectedAcceleration * m_kA) + ", " + (m_currentWaypoint.m_expectedVelocity * m_kV) + ", " + m_setpoint + "\n");
 
     	  } catch(IOException e) {
     		  System.out.println("PID logging died on us");
@@ -1037,7 +1037,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   	m_bw = new BufferedWriter(m_fw);
   	
   	try {
-  		m_bw.write("Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F: " + m_F + ", Setpoint\n" );
+  		m_bw.write("Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F(kA): " + m_F + ", F(kV): " + m_F + ", Setpoint\n" );
   		
   		m_logEnabled = true;
   		

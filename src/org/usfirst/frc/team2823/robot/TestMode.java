@@ -84,10 +84,12 @@ public class TestMode {
 		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
 				robot.rotateTo_Relative(SmartDashboard.getNumber("RSetpoint", 0.0));
-				//robot.rotateTo(robot.gyro.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
+				//robot.rotateTo(robot.navx.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
 			} else {
 				robot.rMotionControl.closeLog();
 				robot.rMotionControl.reset();
+				//robot.rControl.closeLog();
+				//robot.rControl.reset();
 			}
 		}
 		

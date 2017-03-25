@@ -195,7 +195,7 @@ public class Robot extends IterativeRobot {
 	//final double MAX_SIDE_ACCEL = 9.0;
 	
 	final double MAX_ROTATIONAL_VEL = 270;
-	final double MAX_ROTATIONAL_ACCEL = 1450 / 2;	//works with the shadow, not necessarily the main
+	final double MAX_ROTATIONAL_ACCEL = (1450 / 2) * 0.75;	//works with the shadow, not necessarily the main
 	
 	//final double FORWARD_KA = 0.0526;		//simulator
 	//final double FORWARD_KV = 0.2083;		//simulator
@@ -209,8 +209,8 @@ public class Robot extends IterativeRobot {
 	//final double SIDE_KA = 0.1111;
 	//final double SIDE_KV = 0.5556;
 	
-	final double ROTATIONAL_KA = (1 / MAX_ROTATIONAL_ACCEL) * 0.7;	//works with the shadow, may not work on the main
-	final double ROTATIONAL_KV = (1 / MAX_ROTATIONAL_VEL) * 0.7;	//experimental fudge factor
+	final double ROTATIONAL_KA = /*(1 / MAX_ROTATIONAL_ACCEL) * 0.7*/ 0.0008;	//works with the shadow, may not work on the main
+	final double ROTATIONAL_KV = /*(1 / MAX_ROTATIONAL_VEL) * 0.7*/ 0.00355;	//experimental fudge factor
 	
 	//unit conversion constants
 	final double DEG_TO_RAD = Math.PI / 180.0;
@@ -386,8 +386,8 @@ public class Robot extends IterativeRobot {
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
 		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
-		rControl = new AdvancedPIDController(0.03, 0.00001, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
-		rMotionControl = new AdvancedPIDController(0.03, 0.00001, 0.3, rMotionSource, rMotionOutput, 0.01);
+		rControl = new AdvancedPIDController(0.03, 0.0002, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
+		rMotionControl = new AdvancedPIDController(0.03, 0.0002, 0.3, rMotionSource, rMotionOutput, 0.01);
 		
 		gearControl = new AdvancedPIDController(0.05, 0.0, 0.0, gearSource, gearOutput, 0.01);
 		
@@ -404,7 +404,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Climb 2", 0.0);
         
         SmartDashboard.putNumber("P", 0.03);		//0.02
-        SmartDashboard.putNumber("I", 0.00001);	//0.000001
+        SmartDashboard.putNumber("I", 0.0002);	//0.000001
         SmartDashboard.putNumber("D", 0.3);		//1.0
         SmartDashboard.putNumber("F", 0.0);
         
