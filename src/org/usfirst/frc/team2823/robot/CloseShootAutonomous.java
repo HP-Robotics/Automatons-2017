@@ -11,7 +11,7 @@ public class CloseShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {0.1, 0.1, 5.0, 0.9, 0.1, 2.0, 1.5, 0.9, 5.0, 0.6, 0.1, 2.0, 15.0, 15.0};
+		double[] timeouts = {5.0, 0.9, 2.0, 0.5, 0.5, 0.5, 0.9, 5.0, 0.6, 0.1, 2.0, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -25,58 +25,54 @@ public class CloseShootAutonomous extends Autonomous {
 		
 		switch(stage) {
 		case 0:
-			startShooterWheels();
-			break;
-		
-		case 1:
-			startAgitators();
-			break;
-		
-		case 2:
 			driveForward();
 			break;
 		
-		case 3:
+		case 1:
 			turnRight();
 			break;
 		
+		case 2:
+			driveIntoHopper();
+			break;
+			
+		case 3:
+			startShooterWheels();
+			break;
+		
 		case 4:
-			startUptake();
+			startAgitators();
 			break;
 		
 		case 5:
-			driveIntoHopper();
+			startUptake();
 			break;
 		
 		case 6:
-			waitForBalls();
-			break;
-		
-		case 7:
 			turnLeft();
 			break;
 		
-		case 8:
+		case 7:
 			driveToBoiler();
 			break;
 			
-		case 9:
+		case 8:
 			turnToShoot();
 			break;
 		
-		case 10:
+		case 9:
 			startBeltFeeder();
 			break;
 		
-		case 11:
+		case 10:
 			driveIntoBoiler();
 			break;
 			
-		case 12:
+		case 11:
 			stopBeltFeeder();
 			break;
 		
-		case 13:
+		case 12:
 			stopUptake();
 			break;
 		}
@@ -84,39 +80,6 @@ public class CloseShootAutonomous extends Autonomous {
 		//update drive motors regardless of stage
 		robot.setDriveT(robot.navx.getAngle());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
-	}
-	
-	//start the shooter wheel PIDs, relying on fast timeout to continue
-	private void startShooterWheels() {
-		//run entry code
-		if(!stageData[stage].entered) {
-			robot.topShooter.speedMode();
-			robot.bottomShooter.speedMode();
-			
-			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
-			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
-			
-			robot.shooterSolenoid.set(robot.CLOSE_SOLENOID);
-			
-			stageData[stage].entered = true;
-			
-			nextStage();
-		}
-	}
-	
-	//start the agitation mechanisms to prime the balls for shooting
-	private void startAgitators() {
-		//run entry code
-		if(!stageData[stage].entered) {
-			robot.intake.set(1.0);
-			
-			robot.climbMotor1.set(-1.0);
-			robot.climbMotor2.set(-1.0);
-			
-			stageData[stage].entered = true;
-			
-			nextStage();
-		}
 	}
 	
 	//drive next to the hopper
@@ -168,18 +131,6 @@ public class CloseShootAutonomous extends Autonomous {
 		
 	}
 	
-	//start the uptake early
-	private void startUptake() {
-		//run entry code
-		if(!stageData[stage].entered) {
-			robot.uptake.set(1.0);
-			
-			stageData[stage].entered = true;
-			
-			nextStage();
-		}
-	}
-	
 	//drive robot until stage times out
 	private void driveIntoHopper() {
 		//run entry code
@@ -202,6 +153,45 @@ public class CloseShootAutonomous extends Autonomous {
 			robot.rControl.closeLog();
 			
 			nextStage();
+		}
+	}
+	
+	//start the shooter wheel PIDs, relying on timeout to continue
+	private void startShooterWheels() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.topShooter.speedMode();
+			robot.bottomShooter.speedMode();
+			
+			robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
+			robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+			
+			robot.shooterSolenoid.set(robot.CLOSE_SOLENOID);
+			
+			stageData[stage].entered = true;
+		}
+	}
+	
+	//start the agitation mechanisms to prime the balls for shooting, relying on timeout to continue
+	private void startAgitators() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.intake.set(1.0);
+			
+			robot.climbMotor1.set(-1.0);
+			robot.climbMotor2.set(-1.0);
+			
+			stageData[stage].entered = true;
+		}
+	}
+	
+	//start the uptake, relying on timeout to continue
+	private void startUptake() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.uptake.set(1.0);
+			
+			stageData[stage].entered = true;
 		}
 	}
 	
