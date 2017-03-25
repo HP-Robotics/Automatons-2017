@@ -229,10 +229,9 @@ public class Robot extends IterativeRobot {
 	final double G_ENC_TO_DEG = 360.0 / 280.0;
 	
 	//gear mode rotation angles
-	final double RIGHT_LIFT_ANGLE = -120;
+	final double RIGHT_LIFT_ANGLE = -150;
 	final double MIDDLE_LIFT_ANGLE = -90;
-	final double LEFT_LIFT_ANGLE = -60;
-	final double GEAR_IN_ANGLE = -30;
+	final double LEFT_LIFT_ANGLE = -30;
 	
 	//declare variables
 	//drive values
