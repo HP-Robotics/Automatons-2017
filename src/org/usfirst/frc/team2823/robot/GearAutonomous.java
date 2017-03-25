@@ -100,11 +100,11 @@ public class GearAutonomous extends Autonomous {
 			robot.rControl.reset();
 			
 			if(side == Side.LEFT) {
-				robot.rotateTo(-30/* * robot.allianceMult*/);	/** ARE THE SIDEWAYS DISTANCES THE SAME? CHECK **/
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
 			} else if(side == Side.RIGHT) {
-				robot.rotateTo(30);
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
 			} else {
-				robot.rotateTo(-90);
+				robot.rotateTo(robot.MIDDLE_LIFT_ANGLE);
 			}
 			
 			stageData[stage].entered = true;
@@ -121,13 +121,13 @@ public class GearAutonomous extends Autonomous {
 			
 			if(side == Side.LEFT) {
 				robot.driveTo_Cartesian(72, 41, 0.6, 0.6);
-				robot.rotateTo(-30);
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
 			} else if(side == Side.RIGHT) {
 				robot.driveTo_Cartesian(-72, 41, 0.6, 0.6);
-				robot.rotateTo(30);
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
 			} else{
 				robot.driveTo_Cartesian(4, 36, 0.6, 0.6);
-				robot.rotateTo(-90);
+				robot.rotateTo(robot.MIDDLE_LIFT_ANGLE);
 			}
 			
 			stageData[stage].entered = true;
@@ -168,13 +168,13 @@ public class GearAutonomous extends Autonomous {
 			
 			if(side == Side.LEFT) {
 				robot.driveTo_Cartesian(-72, -41, 0.6, 0.6);
-				robot.rotateTo(-30);
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
 			} else if(side == Side.RIGHT) {
 				robot.driveTo_Cartesian(72, -41, 0.6, 0.6);
-				robot.rotateTo(30);
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
 			} else{
 				robot.driveTo_Cartesian(-4, -36, 0.6, 0.6);
-				robot.rotateTo(-90);
+				robot.rotateTo(robot.MIDDLE_LIFT_ANGLE);
 			}
 			
 			stageData[stage].entered = true;
