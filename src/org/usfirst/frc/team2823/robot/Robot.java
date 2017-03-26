@@ -384,8 +384,8 @@ public class Robot extends IterativeRobot {
 		
 		//old 0.0045, 0.000001, 0.35
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
-		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
-		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
+		xControl = new AdvancedPIDController(0.16, 0.001, 2.5, xSource, xOutput, 0.01);
+		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);	//I of 0.0001 works better for step PID, but I of 0.000001 works for motion profiling
 		rControl = new AdvancedPIDController(0.03, 0.0002, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
 		rMotionControl = new AdvancedPIDController(0.04, 0.0002, 1.2, rMotionSource, rMotionOutput, 0.01);
 		
@@ -403,9 +403,9 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Climb 1", 0.0);
         SmartDashboard.putNumber("Climb 2", 0.0);
         
-        SmartDashboard.putNumber("P", 0.03);		//0.02
-        SmartDashboard.putNumber("I", 0.0002);	//0.000001
-        SmartDashboard.putNumber("D", 0.3);		//1.0
+        SmartDashboard.putNumber("P", 0.04);		//0.02
+        SmartDashboard.putNumber("I", 0.0001);		//0.000001
+        SmartDashboard.putNumber("D", 1.0);			//1.0
         SmartDashboard.putNumber("F", 0.0);
         
         SmartDashboard.putNumber("Ka", FORWARD_KA);
