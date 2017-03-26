@@ -69,6 +69,7 @@ public class Autonomous {
 	
 	public void nextStage() {
 		System.out.printf("Stage Finished: %d\tTime: %f\tTotal Time: %f\n",stage,timer.get(),Timer.getFPGATimestamp() - initTime);
+		System.out.println("ex:" + robot.encoderThread.getX() + " ey: " + robot.encoderThread.getY() + " r: " + robot.navx.getAngle());
 		timer.reset();
 		stage++;
 		

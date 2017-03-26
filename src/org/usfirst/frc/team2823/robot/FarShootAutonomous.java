@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class FarShootAutonomous extends Autonomous {
+	double unjamInitTime;
 	
 	public FarShootAutonomous(Robot robot) {
 		super(robot);
@@ -11,7 +12,7 @@ public class FarShootAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {5.0, 2.0, 2.0, 0.5, 0.5, 0.5, 0.1, 0.1, 15.0, 15.0};
+		double[] timeouts = {0.2, 5.0, 2.0, 2.0, 0.5, 0.5, 0.5, 0.1, 0.1, 15.0, 15.0};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -25,41 +26,45 @@ public class FarShootAutonomous extends Autonomous {
 		
 		switch(stage) {
 		case 0:
-			driveForward();
+			setServoAngle();
 			break;
 		
 		case 1:
-			turnRight();
+			driveForward();
 			break;
 		
 		case 2:
-			driveIntoHopper();
+			turnRight();
 			break;
 		
 		case 3:
-			startShooterWheels();
+			driveIntoHopper();
 			break;
 		
 		case 4:
-			startAgitators();
+			startShooterWheels();
 			break;
 		
 		case 5:
-			startUptake();
+			startAgitators();
+			break;
 		
 		case 6:
+			startUptake();
+		
+		case 7:
 			turnToShoot();
 			break;
 		
-		case 7:
+		case 8:
 			startBeltFeeder();
 			break;
 			
-		case 8:
+		case 9:
 			stopBeltFeeder();
 			break;
 		
-		case 9:
+		case 10:
 			stopUptake();
 			break;
 		}
@@ -67,6 +72,19 @@ public class FarShootAutonomous extends Autonomous {
 		//update drive motors regardless of stage
 		robot.setDriveT(robot.navx.getAngle());
 		robot.robotDrive.mecanumDrive_Cartesian(robot.getDriveX(), robot.getDriveY(), robot.getDriveR(), robot.getDriveT());
+	}
+	
+	//set the shooter servos to the far shot position
+	private void setServoAngle() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			//set servos to the far position
+			robot.leftServo.set(robot.FAR_SERVO);
+			robot.rightServo.set(robot.FAR_SERVO);
+			
+			stageData[stage].entered = true;
+			nextStage();
+		}
 	}
 	
 	//drive next to the hopper
@@ -77,7 +95,7 @@ public class FarShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, 71);
+			robot.driveTo_Cartesian(0, 81);
 			robot.rotateTo(0);
 			
 			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
@@ -111,13 +129,13 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo(90);
+			robot.rotateTo_Relative(90);
 			
 			stageData[stage].entered = true;
 		}
 		
 		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 10) {
+		if(Math.abs(robot.rControl.getError()) < 2) {
 			nextStage();
 		}
 	}
@@ -128,7 +146,7 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(-42 * robot.allianceMult, 0);
+			robot.driveTo_Cartesian(-62 * robot.allianceMult, 0);
 			robot.rotateTo(90);
 			
 			stageData[stage].entered = true;
@@ -199,7 +217,7 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo((robot.navx.getAngle() + 10) * robot.allianceMult);
+			robot.rotateTo_Relative(10 * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 			
@@ -219,8 +237,26 @@ public class FarShootAutonomous extends Autonomous {
 		}
 	}
 	
+	//periodically reverse the belt feeder to keep balls from jamming while shooting
 	//turn off belt feeder at time 14.25 seconds
 	private void stopBeltFeeder(){
+		//run entry code
+		if(!stageData[stage].entered) {
+			unjamInitTime = Timer.getFPGATimestamp();
+			
+			stageData[stage].entered = true;
+		}
+		
+		if((Timer.getFPGATimestamp() - unjamInitTime) > 2.0) {
+			robot.beltFeed.set(-robot.BELT_FEED_SPEED);
+		}
+		
+		if((Timer.getFPGATimestamp() - unjamInitTime) > 2.1) {			
+			robot.beltFeed.set(robot.BELT_FEED_SPEED);
+			
+			unjamInitTime = Timer.getFPGATimestamp();
+		}
+		
 		if(Timer.getFPGATimestamp() - initTime >= 14.25){
 			robot.beltFeed.set(0.0);
 			nextStage();
