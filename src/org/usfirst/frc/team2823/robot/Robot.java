@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2823.robot;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -462,10 +463,12 @@ public class Robot extends IterativeRobot {
         	;	//do nothing
         
         //create camera objects
-		CameraServer c = CameraServer.getInstance();
+		//CameraServer c = CameraServer.getInstance();
 		//c.addAxisCamera("10.28.23.11");
-		c.startAutomaticCapture(0);
 		//c.startAutomaticCapture(1);
+        
+        UsbCamera c = CameraServer.getInstance().startAutomaticCapture();
+        c.setResolution(640, 480);
     }
     
 	/**
