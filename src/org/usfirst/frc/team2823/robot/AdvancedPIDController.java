@@ -93,6 +93,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   private MotionWayPoint m_currentWaypoint;
   private boolean m_motionPlanEnabled = false;
   private boolean m_planFinished = false;
+  private boolean m_dwell = false;
   private double m_invertMultiplier = 1.0;
   private double  m_maxVelocity;
   private double  m_maxAcceleration;
@@ -307,9 +308,10 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   }
   
   //QUICKCLICK motion planning methods
-  public void configureGoal(double goal, double max_v, double max_a) {
+  public void configureGoal(double goal, double max_v, double max_a, boolean dwell) {
 	  m_motionPlanEnabled = true;
 	  m_planFinished = false;
+	  m_dwell = dwell;
 	  
 	  //check if goal is negative
 	  if(goal < 0) {
@@ -353,6 +355,11 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
       m_positionAtEndOfCruise = m_positionAtMaxVelocity + (m_timeSpentCruising * m_maxVelocity);
       m_timeAtEndOfCruise = m_timeUntilMaxVelocity + m_timeSpentCruising;
 
+  }
+  
+  //overload configureGoal so that, if a dwell value is not given, it defaults to false
+  public void configureGoal(double goal, double max_v, double max_a) {
+	  configureGoal(goal, max_v, max_a, false);
   }
   
   public MotionWayPoint getCurrentWaypoint(double t) {
@@ -458,13 +465,15 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
     	  
     	  if(m_currentWaypoint == null) {
     		  synchronized(this) {
-        		  m_pidOutput.pidWrite(0.0);
         		  m_planFinished = true;
+    			  if(!m_dwell) {
+    				  m_pidOutput.pidWrite(0.0);
+    	        	  return;
+    			  }
         	  }
-        	  return;
+    	  } else {
+    		  m_setpoint = m_currentWaypoint.m_position;
     	  }
-    	  
-    	  m_setpoint = m_currentWaypoint.m_position;
     			  
       }
       
@@ -559,9 +568,13 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
 	      
       if(m_logEnabled) {
     	  try{
-   		  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError + 
-    				  ", " + result + ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + (m_currentWaypoint.m_expectedAcceleration * m_kA) + ", " + (m_currentWaypoint.m_expectedVelocity * m_kV) + ", " + m_setpoint + "\n");
-
+    		  if(m_currentWaypoint == null) {
+    			  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError +
+    					  ", " + result + ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", N/A, N/A, " + m_setpoint + "\n");
+    		  } else {
+    			  m_bw.write(currentTime + ", " + input + ", " + m_error + ", " + m_totalError + 
+        				  ", " + result + ", " + m_POutput + ", " + m_IOutput + ", " + m_DOutput + ", " + (m_currentWaypoint.m_expectedAcceleration * m_kA) + ", " + (m_currentWaypoint.m_expectedVelocity * m_kV) + ", " + m_setpoint + "\n");
+    		  }
     	  } catch(IOException e) {
     		  System.out.println("PID logging died on us");
     		  m_logEnabled = false;
@@ -593,7 +606,7 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
     }
     else {
     	
-    	if(m_motionPlanEnabled) {
+    	if(m_motionPlanEnabled && m_currentWaypoint != null) {
     		return (m_currentWaypoint.m_expectedAcceleration * m_kA) + (m_currentWaypoint.m_expectedVelocity * m_kV);
     	}
     	

@@ -387,7 +387,7 @@ public class Robot extends IterativeRobot {
 		xControl = new AdvancedPIDController(0.02, 0.000001, 1.0, xSource, xOutput, 0.01);
 		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);
 		rControl = new AdvancedPIDController(0.03, 0.0002, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
-		rMotionControl = new AdvancedPIDController(0.03, 0.0002, 0.3, rMotionSource, rMotionOutput, 0.01);
+		rMotionControl = new AdvancedPIDController(0.04, 0.0002, 1.2, rMotionSource, rMotionOutput, 0.01);
 		
 		gearControl = new AdvancedPIDController(0.05, 0.0, 0.0, gearSource, gearOutput, 0.01);
 		
@@ -604,7 +604,7 @@ public class Robot extends IterativeRobot {
 		rMotionControl.reset();
 		rMotionSource.reset();
 		
-		rMotionControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am);
+		rMotionControl.configureGoal(t, MAX_ROTATIONAL_VEL * vm, MAX_ROTATIONAL_ACCEL * am, true);
 		
 		rMotionControl.enableLog(file);
 		rMotionControl.enable();
