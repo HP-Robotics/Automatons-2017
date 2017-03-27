@@ -35,6 +35,11 @@ public class Autonomous {
 		robot.navx.reset();
 		robot.encoderThread.reset();
 		
+		robot.xControl.reset();
+		robot.yControl.reset();
+		robot.rControl.reset();
+		robot.rMotionControl.reset();
+		
         if(robot.allianceChooser.getSelected().equals("-1.0")) {
         	robot.allianceMult = -1.0;
         } else {
@@ -86,6 +91,7 @@ public class Autonomous {
 		robot.xControl.reset();
 		robot.yControl.reset();
 		robot.rControl.reset();
+		robot.rMotionControl.reset();
 		
 		robot.robotDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
 	}
