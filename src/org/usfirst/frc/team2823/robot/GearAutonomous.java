@@ -15,7 +15,7 @@ public class GearAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {5.0, 2.0, 5.0, 0.5, 2.5, 0.1};
+		double[] timeouts = {5.0, 2.0, 5.0, 1.0, 2.5, 0.1};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -150,8 +150,7 @@ public class GearAutonomous extends Autonomous {
 	private void placeGear() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.gearControl.setSetpoint(robot.GEAR_KICK_OUT);
-			robot.gearControl.enable();
+			robot.gearControl.setSetpoint(robot.GEAR_KICK_OUT * robot.DEG_TO_G_ENC);
 			
 			stageData[stage].entered = true;
 		} 
@@ -197,8 +196,7 @@ public class GearAutonomous extends Autonomous {
 	private void retractKicker() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN);
-			robot.gearControl.enable();
+			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN * robot.DEG_TO_G_ENC);
 			
 			stageData[stage].entered = true;
 		} 
