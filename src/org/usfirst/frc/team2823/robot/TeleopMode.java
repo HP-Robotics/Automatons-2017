@@ -438,11 +438,9 @@ public class TeleopMode {
 		
 		if(robot.gearKickButton.held()){
 			if(robot.gearKickButton.changed()){
-				robot.gearControl.enable();
 				robot.gearControl.setSetpoint(robot.GEAR_KICK_OUT * robot.DEG_TO_G_ENC);
 			}
 		}else{
-			robot.gearControl.enable();
 			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN * robot.DEG_TO_G_ENC);
 		}
 	}
