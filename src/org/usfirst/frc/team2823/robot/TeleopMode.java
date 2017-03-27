@@ -36,6 +36,9 @@ public class TeleopMode {
     		robot.operatorStick = robot.stick1;
     	}
     	
+    	robot.leftServo.set(robot.FAR_SERVO);
+    	robot.rightServo.set(robot.FAR_SERVO);
+    	
     	robot.log.open("gyro_comparison.csv", "ADXR,navX,encR\n");
 	}
 	
@@ -352,8 +355,13 @@ public class TeleopMode {
 					robot.topShooter.set(-robot.FAR_SHOT_SPEED);
 					robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
 				} else {
-					robot.topShooter.set(-robot.CLOSE_SHOT_SPEED);
-					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED);
+					//add extra RPM using the slider
+					//TODO: NOTE: This code works SO LONG AS this if statement runs periodically
+					//				This should probably be moved elsewhere
+					double extra = ((1 - robot.driverStick.getRawAxis(3)) / 2) * robot.EXTRA_SCALE;
+					
+					robot.topShooter.set(-(robot.CLOSE_SHOT_SPEED + extra));
+					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED + extra);
 				}
 			}
 			
