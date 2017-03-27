@@ -182,6 +182,19 @@ public class Robot extends IterativeRobot {
 	
 	final double SMALL_I = 0.0002;
 	
+	//PID controller constants for straight and strafe movements
+	final double STRAIGHT_P = 0.02;
+	final double STRAIGHT_I = 0.000001;
+	final double STRAIGHT_D = 1.0;
+	
+	final double STRAFE_P = 0.16;
+	final double STRAFE_I = 0.001;
+	final double STRAFE_D = 2.5;
+	
+	final double STRAIGHT_WITH_I_P = 0.02;
+	final double STRAIGHT_WITH_I_I = 0.0001;
+	final double STRAIGHT_WITH_I_D = 1.0;
+	
 	//motion profiling constants
 	//final double MAX_FORWARD_VEL = 4.8;		//simulator
 	//final double MAX_FORWARD_ACCEL = 19.0;	//simulator
@@ -384,8 +397,8 @@ public class Robot extends IterativeRobot {
 		
 		//old 0.0045, 0.000001, 0.35
 		//vControl = new AdvancedPIDController(0.2, 0.0006, 0.1, vSource, vOutput, 0.01);
-		xControl = new AdvancedPIDController(0.16, 0.001, 2.5, xSource, xOutput, 0.01);
-		yControl = new AdvancedPIDController(0.02, 0.000001, 1.0, ySource, yOutput, 0.01);	//I of 0.0001 works better for step PID, but I of 0.000001 works for motion profiling
+		xControl = new AdvancedPIDController(STRAFE_P, STRAFE_I, STRAFE_D, xSource, xOutput, 0.01);
+		yControl = new AdvancedPIDController(STRAIGHT_P, STRAIGHT_I, STRAIGHT_D, ySource, yOutput, 0.01);	//I of 0.0001 works better for step PID, but I of 0.000001 works for motion profiling
 		rControl = new AdvancedPIDController(0.03, 0.0002, 0.3, rSource, rOutput, 0.01);		//I should be 0.0002 for small-angle moves
 		rMotionControl = new AdvancedPIDController(0.04, 0.0002, 1.2, rMotionSource, rMotionOutput, 0.01);
 		
@@ -639,6 +652,19 @@ public class Robot extends IterativeRobot {
 		
 		return current + adjust;
 		
+	}
+	
+	//configure PID controllers differently for X and Y movements
+	public void configureStrafe(AdvancedPIDController c) {
+		c.setPID(STRAFE_P, STRAFE_I, STRAFE_D);
+	}
+	
+	public void configureStraight(AdvancedPIDController c) {
+		c.setPID(STRAIGHT_P, STRAIGHT_I, STRAIGHT_D);
+	}
+	
+	public void configureStraightWithI(AdvancedPIDController c) {
+		c.setPID(STRAIGHT_WITH_I_P, STRAIGHT_WITH_I_I, STRAIGHT_WITH_I_D);
 	}
 	
 	//get drive values for use in autonomous and teleop

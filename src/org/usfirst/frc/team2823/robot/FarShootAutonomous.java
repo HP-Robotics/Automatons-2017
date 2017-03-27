@@ -95,7 +95,10 @@ public class FarShootAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
-			robot.driveTo_Cartesian(0, 81);
+			robot.configureStrafe(robot.xControl);
+			robot.configureStraight(robot.yControl);
+			
+			robot.driveTo_Cartesian(0, 75);	//real 81
 			robot.rotateTo(0);
 			
 			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
@@ -135,7 +138,10 @@ public class FarShootAutonomous extends Autonomous {
 		}
 		
 		//move on to the next stage once plan is complete
-		if(Math.abs(robot.rControl.getError()) < 2) {
+		//if(Math.abs(robot.rControl.getError()) < 2) {
+		//	nextStage();
+		//}
+		if(robot.rMotionControl.isPlanFinished()) {
 			nextStage();
 		}
 	}
@@ -144,9 +150,12 @@ public class FarShootAutonomous extends Autonomous {
 	private void driveIntoHopper() {
 		//run entry code
 		if(!stageData[stage].entered) {
-			robot.rControl.reset();
+			robot.rMotionControl.reset();
 			
-			robot.driveTo_Cartesian(-62 * robot.allianceMult, 0);
+			robot.configureStraightWithI(robot.xControl);
+			robot.configureStrafe(robot.yControl);
+			
+			robot.driveTo_Cartesian(-62 * robot.allianceMult, 75 - robot.encoderThread.getY());	//real 81
 			robot.rotateTo(90);
 			
 			stageData[stage].entered = true;
@@ -217,7 +226,7 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
-			robot.rotateTo_Relative(10 * robot.allianceMult);
+			robot.rotateTo_Relative(9 * robot.allianceMult);
 			
 			stageData[stage].entered = true;
 			
