@@ -482,7 +482,7 @@ public class Robot extends IterativeRobot {
 		//c.startAutomaticCapture(1);
         
         UsbCamera c = CameraServer.getInstance().startAutomaticCapture();
-        c.setResolution(640, 480);
+        c.setResolution(320, 180);
         
         //enable gear kicker PID to hold gear in place during autonomous
         gearControl.setSetpoint(GEAR_KICK_IN * DEG_TO_G_ENC);
