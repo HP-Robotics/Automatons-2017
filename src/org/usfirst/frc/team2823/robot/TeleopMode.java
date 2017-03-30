@@ -51,7 +51,14 @@ public class TeleopMode {
 		double y = Math.abs(robot.driverStick.getY()) < robot.STICKTHRESHOLD ? 0.0 : Math.pow(robot.driverStick.getY(), 3);
 		double r = Math.abs(robot.driverStick.getZ()) < robot.ROTATIONTHRESHOLD ? 0.0 : 0.75 * robot.driverStick.getZ();
 		
-		if(mode == DriveMode.ROBOT_GEAR) {
+		//drastically lower drive power while shooting
+		if(robot.shootTrigger.held()) {
+			x *= 0.4;
+			y *= 0.2;
+			r *= 0.4;
+			
+		} else if(mode == DriveMode.ROBOT_GEAR) {
+			//lower strafe and rotation power when in ROBOT mode
 			x *= 0.35;
 			r *= 0.45;
 		}
@@ -351,15 +358,15 @@ public class TeleopMode {
 				//robot.topShooter.set(-SmartDashboard.getNumber("Speed", -robot.CLOSE_SHOT_SPEED));
 				//robot.bottomShooter.set(SmartDashboard.getNumber("Speed", robot.CLOSE_SHOT_SPEED));
 				
+				//add extra RPM using the slider
+				//TODO: NOTE: This code works SO LONG AS this if statement runs periodically
+				//				This should probably be moved elsewhere
+				double extra = ((1 - robot.driverStick.getRawAxis(3)) / 2) * robot.EXTRA_SCALE;
+				
 				if(robot.farShot) {
-					robot.topShooter.set(-robot.FAR_SHOT_SPEED);
-					robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
-				} else {
-					//add extra RPM using the slider
-					//TODO: NOTE: This code works SO LONG AS this if statement runs periodically
-					//				This should probably be moved elsewhere
-					double extra = ((1 - robot.driverStick.getRawAxis(3)) / 2) * robot.EXTRA_SCALE;
-					
+					robot.topShooter.set(-(robot.FAR_SHOT_SPEED + extra));
+					robot.bottomShooter.set(robot.FAR_SHOT_SPEED + extra);
+				} else {	
 					robot.topShooter.set(-(robot.CLOSE_SHOT_SPEED + extra));
 					robot.bottomShooter.set(robot.CLOSE_SHOT_SPEED + extra);
 				}
