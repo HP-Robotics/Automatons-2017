@@ -141,7 +141,7 @@ public class Robot extends IterativeRobot {
 	final int BELT_FEED_CHANNEL = 4;
 	final int UPTAKE_CHANNEL = 13;
 	
-	final int GEAR_KICK_OUT = -90;
+	final int GEAR_KICK_OUT = -100;
 	final int GEAR_KICK_IN = 0;
 	
 	//joystick zero-sensitivity threshold
