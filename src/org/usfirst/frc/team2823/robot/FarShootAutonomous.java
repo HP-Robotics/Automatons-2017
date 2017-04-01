@@ -98,7 +98,7 @@ public class FarShootAutonomous extends Autonomous {
 			robot.configureStrafe(robot.xControl);
 			robot.configureStraight(robot.yControl);
 			
-			robot.driveTo_Cartesian(0, 75);	//real 81
+			robot.driveTo_Cartesian(0, 80);	//real 81
 			robot.rotateTo(0);
 			
 			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
@@ -141,7 +141,7 @@ public class FarShootAutonomous extends Autonomous {
 		//if(Math.abs(robot.rControl.getError()) < 2) {
 		//	nextStage();
 		//}
-		if(robot.rMotionControl.isPlanFinished()) {
+		if(robot.rMotionControl.isPlanFinished() && Math.abs(robot.navx.getAngle() - 90) < 2) {
 			nextStage();
 		}
 	}
@@ -155,8 +155,10 @@ public class FarShootAutonomous extends Autonomous {
 			robot.configureStraightWithI(robot.xControl);
 			robot.configureStrafe(robot.yControl);
 			
-			robot.driveTo_Cartesian(-62 * robot.allianceMult, 75 - robot.encoderThread.getY());	//real 81
+			robot.driveTo_Cartesian(-42 * robot.allianceMult, robot.encoderThread.getY());	//real 62, 81
 			robot.rotateTo(90);
+			
+			robot.yControl.disable();
 			
 			stageData[stage].entered = true;
 		}

@@ -64,7 +64,7 @@ public class TestMode {
 		//robot.yControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		//robot.rMotionControl.setPID(SmartDashboard.getNumber("P", 0.0), SmartDashboard.getNumber("I", 0.0), SmartDashboard.getNumber("D", 0.0));
 		
-		robot.xControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
+		//robot.xControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
 		
 		System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 		System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
@@ -84,17 +84,17 @@ public class TestMode {
 			robot.gearControl.setSetpoint(robot.GEAR_KICK_IN * robot.DEG_TO_G_ENC);
 		}*/
 		
-		/*if(robot.robotButton.changed()) {
+		if(robot.robotButton.changed()) {
 			if(robot.robotButton.on()) {
-				robot.rotateTo(robot.navx.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
+				robot.rotateTo_Relative(SmartDashboard.getNumber("RSetpoint", 0.0));
 				//robot.rotateTo(robot.navx.getAngle() + SmartDashboard.getNumber("RSetpoint", 0.0));
 			} else {
-				//robot.rMotionControl.closeLog();
-				//robot.rMotionControl.reset();
-				robot.rControl.closeLog();
-				robot.rControl.reset();
+				robot.rMotionControl.closeLog();
+				robot.rMotionControl.reset();
+				//robot.rControl.closeLog();
+				//robot.rControl.reset();
 			}
-		}*/
+		}
 		
 		if(robot.shootTrigger.changed()) {
 			if(robot.shootTrigger.on()) {
