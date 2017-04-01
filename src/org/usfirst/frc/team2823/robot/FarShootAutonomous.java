@@ -268,7 +268,7 @@ public class FarShootAutonomous extends Autonomous {
 			unjamInitTime = Timer.getFPGATimestamp();
 		}
 		
-		if(Timer.getFPGATimestamp() - initTime >= 14.25){
+		if(Timer.getFPGATimestamp() - initTime >= 14.6){
 			robot.beltFeed.set(0.0);
 			nextStage();
 		}
@@ -276,7 +276,7 @@ public class FarShootAutonomous extends Autonomous {
 	
 	//turn off uptake at time 14.75 seconds
 	private void stopUptake(){
-		if(Timer.getFPGATimestamp() - initTime >= 14.75){
+		if(Timer.getFPGATimestamp() - initTime >= 14.8){
 			robot.uptake.set(0.0);
 			robot.climbMotor1.set(0.0);
 			robot.climbMotor2.set(0.0);
