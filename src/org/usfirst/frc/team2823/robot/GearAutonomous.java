@@ -15,7 +15,7 @@ public class GearAutonomous extends Autonomous {
 	
 	@Override
 	public void init() {
-		double[] timeouts = {5.0, 2.0, 5.0, 1.0, 2.5, 0.1};
+		double[] timeouts = {2.5, 1.0, 2.0, 2.0, 1.5, 0.5, 2.0, 0.1};
 		setStageTimeouts(timeouts);
 		
 		start();
@@ -41,14 +41,30 @@ public class GearAutonomous extends Autonomous {
 			break;
 		
 		case 3:
-			placeGear();
+			if(side == Side.CENTER) {
+				nextStage();
+			} else {
+				rotateToPlaceGear();
+			}
 			break;
 		
 		case 4:
-			driveBack();
+			if(side == Side.CENTER) {
+				nextStage();
+			} else {
+				driveToPlaceGear();
+			}
 			break;
 		
 		case 5:
+			placeGear();
+			break;
+		
+		case 6:
+			driveBack();
+			break;
+		
+		case 7:
 			retractKicker();
 			break;
 			
@@ -67,10 +83,13 @@ public class GearAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
+			robot.configureStraight(robot.yControl);
+			robot.configureStrafe(robot.xControl);
+			
 			if(side == Side.CENTER) {
-				robot.driveTo_Cartesian(0, 63.25, 0.6, 0.6);
+				robot.driveTo_Cartesian(0, 59.25, 0.6, 0.6);
 			} else {
-				robot.driveTo_Cartesian(0, 70.4, 0.6, 0.6);
+				robot.driveTo_Cartesian(0, 60.4, 0.6, 0.6);
 			}
 			
 			robot.rotateTo(0);
@@ -92,17 +111,16 @@ public class GearAutonomous extends Autonomous {
 		}
 	}
 	
-	//rotate to point gear loader toward lift
-	/** TODO make this read SmartDashboard to decide which lift to rotate to **/
+	//rotate to point intake toward lift (except for center gear)
 	private void rotateToLift() {
 		//run entry code
 		if(!stageData[stage].entered) {
 			robot.rControl.reset();
 			
 			if(side == Side.LEFT) {
-				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE + 90);
 			} else if(side == Side.RIGHT) {
-				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE + 90);
 			} else {
 				robot.rotateTo(robot.MIDDLE_LIFT_ANGLE);
 			}
@@ -111,7 +129,7 @@ public class GearAutonomous extends Autonomous {
 		}
 	}
 	
-	//drive to place the gear
+	//drive up to the lift
 	private void driveToLift() {
 		//run entry code
 		if(!stageData[stage].entered) {
@@ -119,21 +137,77 @@ public class GearAutonomous extends Autonomous {
 			robot.yControl.reset();
 			robot.rControl.reset();
 			
+			robot.configureStraightWithI(robot.xControl);
+			robot.configureStrafe(robot.yControl);
+			
 			if(side == Side.LEFT) {
-				robot.driveTo_Cartesian(72, 41, 0.6, 0.6);
-				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
+				robot.driveTo_Cartesian(37 - robot.encoderThread.getX(), 83 - robot.encoderThread.getY(), 0.6, 0.6);
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE + 90);
 			} else if(side == Side.RIGHT) {
-				robot.driveTo_Cartesian(-72, 41, 0.6, 0.6);
-				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
+				robot.driveTo_Cartesian(-37 - robot.encoderThread.getX(), 83 - robot.encoderThread.getY(), 0.6, 0.6);
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE + 90);
 			} else{
-				robot.driveTo_Cartesian(4, 36, 0.6, 0.6);
+				robot.driveTo_Cartesian(0 - robot.encoderThread.getX(), 95.25 - robot.encoderThread.getY(), 0.6, 0.6);
 				robot.rotateTo(robot.MIDDLE_LIFT_ANGLE);
 			}
 			
 			stageData[stage].entered = true;
 		}
 		
-		if(robot.yControl.isPlanFinished() && robot.xControl.isPlanFinished()) {
+		if((robot.yControl.isPlanFinished() && robot.xControl.isPlanFinished()) &&
+				(Math.abs(robot.yControl.getError()) < 2 && Math.abs(robot.xControl.getError()) < 2)) {
+			robot.xControl.closeLog();
+			robot.yControl.closeLog();
+			robot.rControl.closeLog();
+			
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			nextStage();
+		}
+	}
+	
+	//rotate to point gear catcher toward lift
+	private void rotateToPlaceGear() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.rControl.reset();
+			
+			if(side == Side.LEFT) {
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
+			} else if(side == Side.RIGHT) {
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
+			}
+			
+			stageData[stage].entered = true;
+		}
+	}
+	
+	//drive to place gear on lift
+	private void driveToPlaceGear() {
+		//run entry code
+		if(!stageData[stage].entered) {
+			robot.xControl.reset();
+			robot.yControl.reset();
+			robot.rControl.reset();
+			
+			robot.configureStraightWithI(robot.yControl);
+			robot.configureStrafe(robot.xControl);
+			
+			if(side == Side.LEFT) {
+				robot.driveTo_Cartesian(58 - robot.encoderThread.getX(), 96 - robot.encoderThread.getY(), 0.6, 0.6);
+				robot.rotateTo(robot.LEFT_LIFT_ANGLE);
+			} else if(side == Side.RIGHT) {
+				robot.driveTo_Cartesian(-58 - robot.encoderThread.getX(), 96 - robot.encoderThread.getY(), 0.6, 0.6);
+				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
+			}
+			
+			stageData[stage].entered = true;
+		}
+		
+		if((robot.yControl.isPlanFinished() && robot.xControl.isPlanFinished()) &&
+				(Math.abs(robot.yControl.getError()) < 2 && Math.abs(robot.xControl.getError()) < 2)) {
 			robot.xControl.closeLog();
 			robot.yControl.closeLog();
 			robot.rControl.closeLog();
@@ -172,7 +246,7 @@ public class GearAutonomous extends Autonomous {
 				robot.driveTo_Cartesian(72, -41, 0.6, 0.6);
 				robot.rotateTo(robot.RIGHT_LIFT_ANGLE);
 			} else{
-				robot.driveTo_Cartesian(-4, -36, 0.6, 0.6);
+				robot.driveTo_Cartesian(0, -36, 0.6, 0.6);
 				robot.rotateTo(robot.MIDDLE_LIFT_ANGLE);
 			}
 			
