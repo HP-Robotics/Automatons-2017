@@ -457,8 +457,9 @@ public class Robot extends IterativeRobot {
         
         //wait up to 20 seconds for the navx to calibrate
         double initTime = Timer.getFPGATimestamp();
-        while(navx.isCalibrating() && Math.abs(Timer.getFPGATimestamp() - initTime) <= 20)
-        	;	//do nothing
+        while(navx.isCalibrating() && Math.abs(Timer.getFPGATimestamp() - initTime) <= 20) {
+        	Thread.yield();
+        }
         
         System.out.println("calibration took: " + Math.abs(Timer.getFPGATimestamp() - initTime));
         
@@ -473,8 +474,9 @@ public class Robot extends IterativeRobot {
         
         //wait one second after resetting navx to instantiate cameras
         initTime = Timer.getFPGATimestamp();
-        while(Math.abs(Timer.getFPGATimestamp() - initTime) <= 1)
-        	;	//do nothing
+        while(Math.abs(Timer.getFPGATimestamp() - initTime) <= 2) {
+        	Thread.yield();
+        }
         
         //create camera objects
 		//CameraServer c = CameraServer.getInstance();
