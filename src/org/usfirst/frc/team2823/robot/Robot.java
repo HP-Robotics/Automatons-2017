@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
 	EncoderThread encoderThread;
 	
 	OurAHRS navx;
-	OurADXRS450_Gyro gyro;
+	//OurADXRS450_Gyro gyro;
 	//AnalogGyro opponentGyro;
 	Encoder gearEncoder;
 	
@@ -374,7 +374,7 @@ public class Robot extends IterativeRobot {
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         
         navx = new OurAHRS();
-        gyro = new OurADXRS450_Gyro();
+        //gyro = new OurADXRS450_Gyro();
         //opponentGyro = new AnalogGyro(40);
         gearEncoder = new Encoder(6, 7, false, EncodingType.k4X);
         
@@ -466,7 +466,7 @@ public class Robot extends IterativeRobot {
         //reset gyros
         try{
         	navx.reset();
-        	gyro.reset();
+        	//gyro.reset();
         	//opponentGyro.reset();
         }catch(Exception e) {
         	System.out.println("Gyro not work");

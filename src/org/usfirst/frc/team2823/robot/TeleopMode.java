@@ -124,7 +124,7 @@ public class TeleopMode {
 			
 			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
 			System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
-			System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
+			//System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
 			
 			prevTime = Timer.getFPGATimestamp();
 		}

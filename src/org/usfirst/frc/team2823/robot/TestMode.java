@@ -12,7 +12,7 @@ public class TestMode {
 	
 	public void testInit(){
 		robot.navx.reset();
-		robot.gyro.reset();
+		//robot.gyro.reset();
 		
     	if(robot.stick1.getName().contains("3D") || robot.stick1.getName().isEmpty()){
     		robot.driverStick = robot.stick1;

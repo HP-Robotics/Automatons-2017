@@ -31,7 +31,7 @@ public class Autonomous {
 	}
 	
 	public void start() {
-		robot.gyro.reset();
+		//robot.gyro.reset();
 		robot.navx.reset();
 		robot.encoderThread.reset();
 		
