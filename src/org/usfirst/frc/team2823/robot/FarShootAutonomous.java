@@ -98,7 +98,11 @@ public class FarShootAutonomous extends Autonomous {
 			robot.configureStrafe(robot.xControl);
 			robot.configureStraight(robot.yControl);
 			
-			robot.driveTo_Cartesian(0, 80);	//real 81
+			if(robot.allianceMult > 0) {
+				robot.driveTo_Cartesian(0, 76);	//blue, real 81
+			} else {
+				robot.driveTo_Cartesian(0, 86); //red
+			}
 			robot.rotateTo(0);
 			
 			//robot.yControl.configureGoal(76.4, robot.MAX_FORWARD_VEL, robot.MAX_FORWARD_ACCEL * 0.8);
@@ -155,7 +159,7 @@ public class FarShootAutonomous extends Autonomous {
 			robot.configureStraightWithI(robot.xControl);
 			robot.configureStrafe(robot.yControl);
 			
-			robot.driveTo_Cartesian(-42 * robot.allianceMult, robot.encoderThread.getY());	//real 62, 81
+			robot.driveTo_Cartesian(-52 * robot.allianceMult, robot.encoderThread.getY());	//real 62, 81
 			robot.rotateTo(90);
 			
 			robot.yControl.disable();
@@ -182,9 +186,13 @@ public class FarShootAutonomous extends Autonomous {
 		if(!stageData[stage].entered) {
 			robot.topShooter.speedMode();
 			robot.bottomShooter.speedMode();
-			
-			robot.topShooter.set(-robot.FAR_SHOT_SPEED);
-			robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+			if(robot.allianceMult < 0){
+				robot.topShooter.set(-robot.FAR_SHOT_SPEED + 50);
+				robot.bottomShooter.set(robot.FAR_SHOT_SPEED - 50);
+			}else{
+				robot.topShooter.set(-robot.FAR_SHOT_SPEED);
+				robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
+			}
 			
 			robot.shooterSolenoid.set(robot.FAR_SOLENOID);
 			

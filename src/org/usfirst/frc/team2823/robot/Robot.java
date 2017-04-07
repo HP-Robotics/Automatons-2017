@@ -159,13 +159,13 @@ public class Robot extends IterativeRobot {
 	//final double FORWARD_FUDGE_FACTOR = 1.03471;
 	
 	//shooter speeds
-	final double CLOSE_SHOT_SPEED = 3800;	//old 3785, older old 3800, oldest old 3650
-	final double FAR_SHOT_SPEED = 4470;		//old 4175, older old 4175
-	final double EXTRA_SCALE = 250;
+	final double CLOSE_SHOT_SPEED = 3755;	//old 3785, older old 3800, oldest old 3650
+	final double FAR_SHOT_SPEED = 4245;		//old 4175, older old 4175
+	final double EXTRA_SCALE = 350;
 	
 	//shooter servo positions
-	final double CLOSE_SERVO = 0.85;
-	final double FAR_SERVO = 0.27;
+	final double CLOSE_SERVO = 1.0;
+	final double FAR_SERVO = 0.29;
 	
 	//shooter solenoid positions
 	final Value CLOSE_SOLENOID = Value.kForward;
