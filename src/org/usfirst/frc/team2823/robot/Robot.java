@@ -160,7 +160,7 @@ public class Robot extends IterativeRobot {
 	
 	//shooter speeds
 	final double CLOSE_SHOT_SPEED = 3755;	//old 3785, older old 3800, oldest old 3650
-	final double FAR_SHOT_SPEED = 4245;		//old 4175, older old 4175
+	final double FAR_SHOT_SPEED = 4295;		//old 4175, older old 4175
 	final double EXTRA_SCALE = 350;
 	
 	//shooter servo positions
@@ -484,6 +484,7 @@ public class Robot extends IterativeRobot {
         
         UsbCamera c = CameraServer.getInstance().startAutomaticCapture();
         c.setResolution(320, 180);
+        c.setFPS(10);
         
         //enable gear kicker PID to hold gear in place during autonomous
         gearControl.setSetpoint(GEAR_KICK_IN * DEG_TO_G_ENC);

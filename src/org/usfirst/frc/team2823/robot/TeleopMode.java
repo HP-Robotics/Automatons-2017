@@ -59,7 +59,7 @@ public class TeleopMode {
 			
 		} else if(mode == DriveMode.ROBOT_GEAR) {
 			//lower strafe and rotation power when in ROBOT mode
-			x *= 0.35;
+			x *= 0.21;
 			r *= 0.45;
 		}
 		
@@ -122,8 +122,8 @@ public class TeleopMode {
 		if(Math.abs(Timer.getFPGATimestamp() - prevTime) > 1.0) {
 			//System.out.println("a: " + robot.gyro.getAngle() + " c: " + robot.getCousin(robot.gyro.getAngle(), SmartDashboard.getNumber("Setpoint", 0.0)));
 			
-			System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
-			System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
+			//System.out.println("l: " + robot.encoderThread.getLDistance() + " r: " + robot.encoderThread.getRDistance() + " c: " + robot.encoderThread.getCDistance());
+			//System.out.println("x: " + robot.encoderThread.getX() + " y: " + robot.encoderThread.getY() + " r: " + robot.encoderThread.getR());
 			//System.out.println("g: " + robot.gyro.getAngle() + " n: " + robot.navx.getAngle() + " e: " + robot.encoderThread.getR());
 			
 			prevTime = Timer.getFPGATimestamp();
@@ -214,7 +214,7 @@ public class TeleopMode {
 			if (robot.rControl.isEnabled()) {
 				robot.rControl.reset();
 				robot.rControl.closeLog();
-				System.out.println("Robot");
+				//System.out.println("Robot");
 			}
  			break;
  		
@@ -222,7 +222,7 @@ public class TeleopMode {
  			if(robot.rControl.isEnabled()) {
  				robot.rControl.reset();
  				robot.rControl.closeLog();
- 				System.out.println("Robot-intake");
+ 				//System.out.println("Robot-intake");
  			}
  			break;
  		
@@ -230,7 +230,7 @@ public class TeleopMode {
 			if (robot.rControl.isEnabled()) {
 				robot.rControl.reset();
 				robot.rControl.closeLog();
-				System.out.println("Field");
+				//System.out.println("Field");
 			}
  			break;
  		
@@ -238,7 +238,7 @@ public class TeleopMode {
 			if (!robot.rControl.isEnabled()) {
 				robot.rControl.enable();
 				robot.rControl.enableLog("intake.csv");
-				System.out.println("Intake");
+				//System.out.println("Intake");
 			}
  			break;
  		
@@ -246,7 +246,7 @@ public class TeleopMode {
 			if (!robot.rControl.isEnabled()) {
 				robot.rControl.enable();
 				robot.rControl.enableLog("gearout.csv");
-				System.out.println("GearOut");
+				//System.out.println("GearOut");
 				
 			}
  			break;

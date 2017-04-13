@@ -187,8 +187,8 @@ public class FarShootAutonomous extends Autonomous {
 			robot.topShooter.speedMode();
 			robot.bottomShooter.speedMode();
 			if(robot.allianceMult < 0){
-				robot.topShooter.set(-robot.FAR_SHOT_SPEED + 50);
-				robot.bottomShooter.set(robot.FAR_SHOT_SPEED - 50);
+				robot.topShooter.set(-robot.FAR_SHOT_SPEED + 100);
+				robot.bottomShooter.set(robot.FAR_SHOT_SPEED - 100);
 			}else{
 				robot.topShooter.set(-robot.FAR_SHOT_SPEED);
 				robot.bottomShooter.set(robot.FAR_SHOT_SPEED);
